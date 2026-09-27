@@ -17,11 +17,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from vizanix_atlas.core.atlas_time import to_epoch_ms, utc_now
 from vizanix_atlas.core.config import load_collection_config
-from vizanix_atlas.discovery.collector import CollectionRequest
 from vizanix_atlas.discovery.pipeline import Generation, build_generation
 from vizanix_atlas.models.enums import PriceSource
 from vizanix_atlas.models.observations import (
@@ -34,17 +31,8 @@ from vizanix_atlas.models.observations import (
 )
 from vizanix_atlas.publishing.publish import publish_generation
 from vizanix_atlas.publishing.publisher import FilesystemPublisher
-from vizanix_atlas.storage.tables import (
-    build_adapter_health_table,
-    build_asset_alias_table,
-    build_asset_market_state_table,
-    build_asset_table,
-    build_instrument_table,
-    build_quality_event_table,
-    build_venue_asset_state_table,
-    split_by_shard,
-)
-from vizanix_atlas.storage.writer import WrittenFile, sha256_file, write_json, write_parquet
+from vizanix_atlas.storage.dataset_builder import build_dataset_files
+from vizanix_atlas.storage.writer import WrittenFile
 
 T0 = to_epoch_ms(utc_now())
 
@@ -137,30 +125,9 @@ def build_sample_generation(*, price_multiplier: float = 1.0, extra_asset: bool 
 
 
 def write_generation_files(generation: Generation, out_dir: Path, *, config) -> list[WrittenFile]:
-    """Write every table for a generation to Parquet/JSON, mirroring the real dataset builder."""
-    written: list[WrittenFile] = []
-    tables = {
-        "assets": build_asset_table(generation.assets),
-        "asset_aliases": build_asset_alias_table(generation.aliases),
-        "instruments": build_instrument_table(generation.instruments),
-        "adapter_health": build_adapter_health_table(generation.health),
-        "quality_events": build_quality_event_table(generation.quality_events),
-        "venue_asset_state": build_venue_asset_state_table(generation.bundles),
-    }
-    for name, frame in tables.items():
-        written.append(write_parquet(frame, out_dir / f"{name}.parquet", table=name, config=config.publishing))
-
-    market_state = build_asset_market_state_table(
-        generation.bundles, shard_count=config.publishing.shard_count
-    )
-    shard_indices: dict[str, int] = {}
-    for index, shard_frame in split_by_shard(market_state, shard_count=config.publishing.shard_count).items():
-        filename = f"assets-{index:02d}.parquet"
-        written.append(
-            write_parquet(shard_frame, out_dir / filename, table="asset_market_state", config=config.publishing)
-        )
-        shard_indices[filename] = index
-    return written, shard_indices  # type: ignore[return-value]
+    """Write every table for a generation, via the real production dataset builder."""
+    built = build_dataset_files(generation, out_dir, config=config)
+    return list(built.written_files), built.shard_indices
 
 
 def _permissive_config():
