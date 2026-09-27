@@ -1,0 +1,610 @@
+# Vizanix Atlas - exchange registry
+#
+# Every fact in this file is either verified against the venue's official public
+# API or explicitly marked unknown. Capability flags are asserted by contract
+# tests against recorded fixtures (tests/contract/), so a claim here that the
+# adapter cannot honour fails CI.
+#
+# Rate limits
+# -----------
+# Atlas deliberately runs far below every venue's published ceiling. The rates
+# below are conservative fixed targets chosen so that a full-market collection
+# completes inside a GitHub Actions job while issuing a small number of requests,
+# not an attempt to approach a documented maximum.
+#
+# `documented_limit` is null throughout this release. Atlas had not re-verified
+# each venue's current published ceiling at the time of writing, and recording a
+# remembered number as though it were verified would be worse than recording
+# nothing. docs/EXCHANGE_ADAPTERS.md lists this as an open item, and
+# CONTRIBUTING.md requires the documented limit to be filled in whenever an
+# adapter is added or revised. The conservative targets below do not depend on it.
+#
+# Availability
+# ------------
+# `enabled: false` always carries `disabled_reason`. A venue unreachable from one
+# network is not a broken venue; see tests/fixtures/exchanges/AVAILABILITY.md.
+
+schema_version: "1.0.0"
+
+defaults:
+  rate_limit:
+    requests_per_second: 4.0
+    burst: 4
+    max_concurrency: 4
+    request_timeout_seconds: 20.0
+    max_retries: 3
+    max_response_bytes: 50331648   # 48 MiB
+    documented_limit: null
+
+exchanges:
+
+  # --------------------------------------------------------------------------
+  - id: okx
+    display_name: OKX
+    enabled: true
+    priority: core
+    documentation_url: https://www.okx.com/docs-v5/en/
+    terms_url: https://www.okx.com/docs-v5/en/#overview
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: true
+      future: true
+      option: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 5.0
+      burst: 5
+      max_concurrency: 4
+    notes:
+      # Verified 2026-09-27: for SWAP, vol24h is contracts and volCcy24h is base
+      # units; volCcy24h == vol24h * ctVal held exactly for linear contracts.
+      - "Derivative volume is published in contracts and in base units; both are preserved."
+      # Verified 2026-09-27: nextFundingTime - fundingTime was 4h for some swaps
+      # and 8h for others, so the interval is derived per instrument.
+      - "Funding interval is derived from the venue's own funding timestamps, not assumed."
+
+  # --------------------------------------------------------------------------
+  - id: binance
+    display_name: Binance
+    enabled: true
+    priority: core
+    base_url: https://data-api.binance.vision
+    documentation_url: https://developers.binance.com/docs/binance-spot-api-docs
+    terms_url: https://www.binance.com/en/terms
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: false
+      future: false
+      option: false
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: false
+      open_interest: false
+      index_price: false
+      mark_price: false
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 3
+      max_response_bytes: 33554432   # 32 MiB; the exchangeInfo body is large
+    notes:
+      - "Spot only. Atlas uses the official market-data host data-api.binance.vision."
+      - >-
+        Binance USD-M and COIN-M futures are not collected. Their hosts
+        (fapi.binance.com, dapi.binance.com) returned HTTP 451 from the network used
+        to build this release. A separate adapter can be enabled from an
+        unrestricted network; see docs/EXCHANGE_ADAPTERS.md.
+
+  # --------------------------------------------------------------------------
+  - id: coinbase
+    display_name: Coinbase Exchange
+    enabled: true
+    priority: core
+    documentation_url: https://docs.cdp.coinbase.com/exchange/docs/welcome
+    terms_url: https://www.coinbase.com/legal/market_data
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: false
+      quote_volume_in_bulk: false
+      orderbook: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 3
+    notes:
+      # Verified 2026-09-27: /products/stats returns open, high, low, last and
+      # base volume only. No bid, no ask, no timestamp.
+      - "The bulk stats endpoint carries no bid, ask or timestamp, so spread is tier B only."
+      - "Only base volume is published, so quote volume stays null rather than being derived."
+
+  # --------------------------------------------------------------------------
+  - id: kraken
+    display_name: Kraken
+    enabled: true
+    priority: core
+    documentation_url: https://docs.kraken.com/api/docs/rest-api/get-ticker-information
+    terms_url: https://www.kraken.com/legal
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: false
+      orderbook: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 1.0
+      burst: 2
+      max_concurrency: 2
+    notes:
+      # Verified 2026-09-27 from /0/public/AssetPairs and /0/public/Ticker.
+      - "Uses XBT for bitcoin and X/Z-prefixed legacy asset codes; resolved via wsname."
+      - "Ticker carries no timestamp, so freshness falls back to collector receive time."
+      - "Quote volume is not published; the 24h VWAP is preserved instead of deriving one."
+
+  # --------------------------------------------------------------------------
+  - id: krakenfutures
+    display_name: Kraken Futures
+    enabled: true
+    priority: core
+    documentation_url: https://docs.kraken.com/api/docs/futures-api/trading/get-tickers
+    terms_url: https://www.kraken.com/legal
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      perpetual: true
+      future: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 3.0
+      burst: 3
+      max_concurrency: 3
+    notes:
+      # Verified 2026-09-27 against the venue's own /v4/historicalfundingrates,
+      # which publishes relativeFundingRate alongside the absolute rate. See
+      # docs/METHODOLOGY.md for the arithmetic.
+      - "Publishes absolute funding, not a rate; converted using the venue's own published relation."
+      - "Funding is hourly, confirmed from consecutive hourly historical funding records."
+      - "openInterest units are undocumented; treated as contracts with contractSize applied."
+
+  # --------------------------------------------------------------------------
+  - id: bitget
+    display_name: Bitget
+    enabled: true
+    priority: core
+    documentation_url: https://www.bitget.com/api-doc/common/intro
+    terms_url: https://www.bitget.com/en/support/articles/360007255754
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: true
+      future: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 5.0
+      burst: 5
+      max_concurrency: 4
+    notes:
+      # Verified 2026-09-27: /api/v2/mix/market/tickers carries markPrice,
+      # indexPrice, fundingRate and holdingAmount in one bulk response.
+      - "One bulk request per product type returns quotes, mark, index, funding and open interest."
+      - "fundInterval is published per contract in hours."
+
+  # --------------------------------------------------------------------------
+  - id: gateio
+    display_name: Gate.io
+    enabled: true
+    priority: standard
+    documentation_url: https://www.gate.com/docs/developers/apiv4/
+    terms_url: https://www.gate.com/docs/developers/apiv4/
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 5.0
+      burst: 5
+      max_concurrency: 4
+    notes:
+      # Verified 2026-09-27: funding_interval is seconds (28800 == 8h) and
+      # quanto_multiplier is the contract size.
+      - "funding_interval is published in seconds; quanto_multiplier is the contract size."
+      - "Neither spot tickers nor futures contracts carry a timestamp."
+
+  # --------------------------------------------------------------------------
+  - id: kucoin
+    display_name: KuCoin
+    enabled: true
+    priority: standard
+    documentation_url: https://www.kucoin.com/docs-new/
+    terms_url: https://www.kucoin.com/legal/terms-of-use
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 3
+    notes:
+      - "Spot only in this release; KuCoin Futures uses a separate host and is not yet implemented."
+      - "allTickers carries one response-level timestamp shared by every record."
+
+  # --------------------------------------------------------------------------
+  - id: mexc
+    display_name: MEXC
+    enabled: true
+    priority: standard
+    documentation_url: https://mexcdevelop.github.io/apidocs/spot_v3_en/
+    terms_url: https://www.mexc.com/user-agreement
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 3
+    notes:
+      # Verified 2026-09-27: 1224 of 1898 symbols carried an EVM-shaped or
+      # base58-shaped contractAddress. This is the strongest identity evidence
+      # any supported venue publishes in its instrument catalogue.
+      - "Publishes a contract address for most listings, used as primary identity evidence."
+      - "Also publishes a full asset name, used as secondary identity evidence."
+
+  # --------------------------------------------------------------------------
+  - id: htx
+    display_name: HTX
+    enabled: true
+    priority: standard
+    documentation_url: https://huobiapi.github.io/docs/spot/v1/en/
+    terms_url: https://www.htx.com/en-us/support/
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 3.0
+      burst: 3
+      max_concurrency: 3
+    notes:
+      # Verified 2026-09-27: symbols use abbreviated keys (bc, qc, sc, dn) and
+      # /market/tickers returned 609 records against 2165 catalogue entries.
+      - "Instrument catalogue uses abbreviated field names; mapped in the adapter."
+      - "The bulk ticker endpoint covers only actively traded symbols, not the whole catalogue."
+      - "amount is base volume and vol is quote volume, which is the reverse of most venues."
+
+  # --------------------------------------------------------------------------
+  - id: cryptocom
+    display_name: Crypto.com Exchange
+    enabled: true
+    priority: standard
+    documentation_url: https://exchange-docs.crypto.com/exchange/v1/rest-ws/index.html
+    terms_url: https://crypto.com/exchange/document/terms-and-conditions
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: true
+      future: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      open_interest: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 3
+    notes:
+      # Verified 2026-09-27: get-tickers uses single-letter keys
+      # (i, h, l, a, v, vv, c, b, k, oi, t).
+      - "Ticker fields are single letters; mapped in the adapter."
+      - "Open interest is published in the ticker; funding is not, so funding stays null."
+
+  # --------------------------------------------------------------------------
+  - id: deribit
+    display_name: Deribit
+    enabled: true
+    priority: core
+    documentation_url: https://docs.deribit.com/
+    terms_url: https://www.deribit.com/kb/deribit-rules
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: true
+      future: true
+      option: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 3
+    notes:
+      # Verified 2026-09-27: /public/ticker publishes funding_8h directly, and
+      # book summaries return null (not 0) for last/high/low with no trades.
+      - "Publishes an 8-hour funding equivalent directly, so no rescaling is needed."
+      - "Returns null for untraded fields; these are never read as zero."
+      - "future_combo and option_combo are calendar spreads and are excluded from aggregation."
+      - "Inverse contracts report open interest in USD."
+
+  # --------------------------------------------------------------------------
+  - id: hyperliquid
+    display_name: Hyperliquid
+    enabled: true
+    priority: standard
+    documentation_url: https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api
+    terms_url: https://hyperliquid.gitbook.io/hyperliquid-docs
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      perpetual: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: false
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: false
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 2.0
+      burst: 2
+      max_concurrency: 2
+    notes:
+      # Verified 2026-09-27 from the venue's funding documentation: funding is
+      # paid hourly at one eighth of the computed 8-hour rate. The observed
+      # baseline funding of 0.0000125/hour is exactly 0.01% per 8 hours.
+      - "Funding is hourly; the published rate is one eighth of the 8-hour computed rate."
+      - "metaAndAssetCtxs returns two parallel arrays aligned by universe index."
+      - "No response timestamp, so freshness falls back to collector receive time."
+      - "Requests are POST with a JSON body, unlike every other supported venue."
+
+  # --------------------------------------------------------------------------
+  - id: dydx
+    display_name: dYdX v4
+    enabled: true
+    priority: standard
+    documentation_url: https://docs.dydx.xyz/
+    terms_url: https://dydx.trade/terms
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      perpetual: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: false
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: false
+      server_time: false
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 2.0
+      burst: 2
+      max_concurrency: 2
+    notes:
+      # Verified 2026-09-27 from /v4/historicalFunding/BTC-USD, whose effectiveAt
+      # values were consecutive hours.
+      - "Funding is hourly, confirmed from consecutive hourly historical funding records."
+      - "Publishes an oracle price rather than a mark price; used as the index price."
+      - "perpetualMarkets carries no bid or ask, so spread is tier B only."
+
+  # --------------------------------------------------------------------------
+  - id: bitstamp
+    display_name: Bitstamp
+    enabled: true
+    priority: standard
+    documentation_url: https://www.bitstamp.net/api/
+    terms_url: https://www.bitstamp.net/terms-of-use/
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: false
+      orderbook: true
+      server_time: false
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 3.0
+      burst: 3
+      max_concurrency: 2
+    notes:
+      - "A USD-native venue, valuable for observing stablecoin-to-USD rates directly."
+      - "The bulk ticker carries a per-pair timestamp and a 24h VWAP."
+
+  # --------------------------------------------------------------------------
+  - id: bitfinex
+    display_name: Bitfinex
+    enabled: true
+    priority: standard
+    documentation_url: https://docs.bitfinex.com/docs/rest-public
+    terms_url: https://www.bitfinex.com/legal/terms
+    terms_reviewed_on: "2026-09-27"
+    redistributes_raw_observations: false
+    capabilities:
+      spot: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: false
+      orderbook: true
+      server_time: false
+      liquidations: not_available
+    rate_limit:
+      requests_per_second: 1.0
+      burst: 2
+      max_concurrency: 2
+    notes:
+      # Verified 2026-09-27: pub:map:currency:sym maps ALG->ALGO, ATO->ATOM,
+      # DSH->DASH; pub:map:currency:label gives UST -> "Tether USDt".
+      - >-
+        Uses venue-specific contractions that collide with other venues' tickers
+        (UST is Tether, not TerraUSD). Resolved from the venue's own published
+        currency symbol and label maps, never from a hand-written guess.
+      - "Tickers are positional arrays; only the documented 11 fields are read."
+
+  # --------------------------------------------------------------------------
+  # Disabled adapters. Each records why, and each is exercised by tests so the
+  # code does not rot while it waits for the blocker to clear.
+  # --------------------------------------------------------------------------
+  - id: bybit
+    display_name: Bybit
+    enabled: false
+    priority: core
+    disabled_reason: >-
+      Every Bybit API host (api.bybit.com, api.bytick.com, api.bybit.nl) returned
+      HTTP 403 from a CloudFront edge with the body "The Amazon CloudFront
+      distribution is configured to block access from your country" on 2026-09-27.
+      No live payload could be captured, so no fixture exists and no parser could
+      be written against a verified schema. Writing one from memory would violate
+      the project's rule against inventing response fields. The adapter is a
+      documented stub. To enable it, capture fixtures from an unrestricted network
+      and follow the adapter checklist in CONTRIBUTING.md.
+    documentation_url: https://bybit-exchange.github.io/docs/v5/intro
+    capabilities:
+      liquidations: unknown_semantics
+    rate_limit:
+      requests_per_second: 4.0
+
+  - id: bitmex
+    display_name: BitMEX
+    enabled: false
+    priority: standard
+    disabled_reason: >-
+      Reachable on 2026-09-27, but the instrument catalogue returned from the
+      network used to build this release was not representative of the venue:
+      /api/v1/instrument/active returned 12 unlisted placeholder spot pairs with
+      listing dates in the year 2200, /api/v1/instrument/activeIntervals returned
+      empty arrays, and XBTUSD (the venue's flagship perpetual) was reported with
+      state "Settled". An adapter cannot be validated against a catalogue that
+      does not reflect the venue's real state. Re-capture from an unrestricted
+      network before enabling.
+    documentation_url: https://www.bitmex.com/app/apiOverview
+    capabilities:
+      liquidations: unknown_semantics
+    rate_limit:
+      requests_per_second: 2.0
+
+  - id: binance_derivatives
+    display_name: Binance Derivatives
+    enabled: false
+    priority: core
+    disabled_reason: >-
+      fapi.binance.com (USD-M) and dapi.binance.com (COIN-M) both returned HTTP
+      451 on 2026-09-27 with the venue's jurisdiction-restriction message. Unlike
+      Binance spot, these hosts have no market-data-only mirror, so no fixture
+      could be captured. Binance is one of the largest derivative venues, so its
+      absence materially reduces Atlas's funding and open-interest coverage; this
+      is stated in docs/LIMITATIONS.md rather than hidden.
+    documentation_url: https://developers.binance.com/docs/derivatives
+    capabilities:
+      liquidations: unknown_semantics
+    rate_limit:
+      requests_per_second: 4.0

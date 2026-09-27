@@ -1,0 +1,171 @@
+# Vizanix Atlas - collection policy
+#
+# Coverage is tiered on purpose. "Every coin" does not mean "an order book for
+# every microcap": that would be hundreds of thousands of requests per snapshot,
+# which is neither achievable inside a GitHub Actions job nor a reasonable way to
+# treat a public API. Tier A is universal and cheap because it uses bulk
+# endpoints; tiers B and C are selective and their selection is deterministic.
+#
+# Every state row publishes the tier it reached, so a missing tier B metric is
+# never mistaken for a zero.
+
+schema_version: "1.0.0"
+
+schedule:
+  # Four snapshots per hour. Minute 0 is avoided deliberately: GitHub Actions
+  # queues the largest volume of scheduled work on the hour, and a run that
+  # starts late is a run whose snapshot is stale.
+  cron_minutes: [7, 22, 37, 52]
+  slot_minutes: 15
+  # A run that starts more than this late is still published, but its slot is
+  # derived from the wall clock rather than the cron minute, so freshness stays honest.
+  max_acceptable_start_delay_seconds: 420
+
+tiers:
+  a_universal:
+    description: >-
+      Every eligible active instrument on every enabled venue. Metadata, quote,
+      24h volume, and mark, index, funding and open interest wherever the venue
+      exposes them in a bulk response.
+    requires_bulk_endpoints: true
+    # An adapter that would need one request per symbol for tier A is a bug, not
+    # a slow adapter. This ceiling makes that fail loudly.
+    max_requests_per_venue: 40
+
+  b_liquidity:
+    description: >-
+      Order-book snapshots for a deterministically selected liquid universe.
+      Produces spread, depth bands and observable impact estimates.
+    order_book_depth_levels: 100
+    depth_bands_bps: [5, 10, 25, 50, 100]
+    impact_notionals_usd: [10000, 100000, 1000000]
+    selection:
+      # Deterministic and documented: same inputs produce the same universe.
+      # Ordered by reported USD volume descending, with ties broken by asset_id
+      # so the result never depends on dict ordering.
+      max_instruments_total: 600
+      max_instruments_per_venue: 60
+      min_reported_volume_24h_usd: 2000000
+      min_venue_count: 2
+      # Instruments on assets that already have a book from this many venues are
+      # skipped, so budget goes to breadth rather than a tenth BTC book.
+      max_books_per_asset: 6
+      always_include_assets: []
+
+  c_advanced:
+    description: >-
+      Deeper analytics for high-information markets: extended book depth and, for
+      venues that publish them, option surfaces.
+    enabled: true
+    order_book_depth_levels: 400
+    selection:
+      max_instruments_total: 60
+      min_reported_volume_24h_usd: 100000000
+      min_venue_count: 4
+    options:
+      enabled: true
+      # Deribit publishes a full book summary per currency in one request, so
+      # option coverage costs a handful of requests rather than one per strike.
+      max_currencies: 6
+
+quality:
+  # An observation older than this is excluded from the reference price with
+  # reason `stale`. Chosen relative to the 15-minute cadence: a venue whose data
+  # is older than two slots is not describing the current snapshot.
+  max_observation_age_seconds: 1800
+  # Deviation beyond this from the provisional robust centre is excluded as
+  # `extreme_deviation`. Wide enough to keep genuinely fragmented microcaps,
+  # narrow enough to drop a venue quoting a different asset.
+  max_deviation_bps: 2000
+  # Below this many qualified venues Atlas still publishes a price, but marks the
+  # method `single_venue_spot` so the weakness is visible.
+  min_venues_for_dispersion: 2
+  # Stablecoin conversion is refused beyond this deviation from parity: a rate
+  # that far from 1.0 is more likely a broken market than a real depeg, and
+  # publishing USD figures through it would corrupt every downstream total.
+  max_stablecoin_deviation_bps: 500
+
+reference_price:
+  # See docs/METHODOLOGY.md for the derivation and worked example.
+  method: robust_weighted_median
+  # No venue may exceed this share of total weight, however large its reported
+  # volume. Without a cap, the largest venue effectively becomes the price.
+  max_venue_weight: 0.35
+  # Weight is sqrt of reported USD volume: it rewards real liquidity while
+  # compressing the several-orders-of-magnitude spread between venue volumes.
+  volume_weight_exponent: 0.5
+  # Freshness multiplier decays linearly to this floor at max_observation_age.
+  min_freshness_weight: 0.25
+  # Spot is preferred; derivatives contribute only when no spot venue qualifies,
+  # and the method field records that it happened.
+  allow_derivative_fallback: true
+  derivative_fallback_price_source: index
+
+universes:
+  # Market-wide statistics are meaningless without a universe, so each is defined
+  # deterministically here and named in every published aggregate.
+  all_resolved:
+    criteria: "Every asset with a resolved or manual_override identity and one qualified observation."
+  multi_venue:
+    criteria: "Assets quoted on at least three venues."
+    min_venue_count: 3
+  liquid:
+    criteria: "Assets with at least 1,000,000 USD reported 24h volume and at least two venues."
+    min_reported_volume_24h_usd: 1000000
+    min_venue_count: 2
+  top_100_liquidity:
+    criteria: "The 100 assets with the greatest 50 bps observable depth, ties broken by asset_id."
+    rank_by: observable_depth_50bps_usd
+    limit: 100
+  top_500_liquidity:
+    criteria: "The 500 assets with the greatest 50 bps observable depth, ties broken by asset_id."
+    rank_by: observable_depth_50bps_usd
+    limit: 500
+  spot_only:
+    criteria: "Assets with spot markets and no derivative markets."
+  derivative_active:
+    criteria: "Assets with at least one qualified perpetual or dated future."
+
+history:
+  # Minimum inputs before a windowed metric is published. A 30-day percentile
+  # computed from two days is not a 30-day percentile, so Atlas returns null.
+  minimum_observations:
+    realised_volatility_1h: 4
+    realised_volatility_4h: 12
+    realised_volatility_24h: 48
+    realised_volatility_7d: 240
+    rsi_14: 15
+    atr_14: 15
+    funding_percentile_30d: 720
+    basis_percentile_30d: 720
+  # A window with more than this fraction missing is treated as insufficient even
+  # when the absolute count is met, so a sparse window cannot masquerade as dense.
+  max_window_missingness: 0.35
+  genome:
+    minimum_observations: 2688     # 28 days at 15-minute cadence
+    warming_up_threshold: 672      # 7 days; below this the status is insufficient_history
+    feature_version: "1.0.0"
+
+publishing:
+  # Hard safety budgets. A venue schema change must not silently produce a
+  # multi-gigabyte "current snapshot".
+  shard_count: 64
+  max_single_asset_bytes: 33554432      # 32 MiB
+  max_generation_bytes: 268435456       # 256 MiB
+  max_snapshot_rows: 5000000
+  max_release_assets: 80
+  compression: zstd
+  compression_level: 9
+  parquet_row_group_size: 65536
+
+  # Anomaly guards, evaluated against the previous published generation. A
+  # generation tripping one of these is quarantined rather than published.
+  anomaly_guards:
+    max_instrument_count_drop_ratio: 0.5
+    max_asset_count_drop_ratio: 0.5
+    max_generation_bytes_change_ratio: 4.0
+    max_adapter_parse_failure_ratio: 0.25
+    # A generation built from fewer than this many successful venues does not
+    # replace the last known good one. One venue out of sixteen is not the market.
+    min_successful_venues: 4
+    min_successful_venue_ratio: 0.35

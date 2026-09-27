@@ -1,0 +1,46 @@
+[
+ {
+  "base_decimals": 8,
+  "counter_decimals": 2,
+  "description": "Bitcoin / U.S. dollar",
+  "instant_and_market_orders": "Enabled",
+  "instant_order_counter_decimals": 2,
+  "minimum_order": "10.00 USD",
+  "name": "BTC/USD",
+  "trading": "Enabled",
+  "url_symbol": "btcusd"
+ },
+ {
+  "base_decimals": 6,
+  "counter_decimals": 2,
+  "description": "Ethereum / U.S. dollar",
+  "instant_and_market_orders": "Enabled",
+  "instant_order_counter_decimals": 2,
+  "minimum_order": "10.00 USD",
+  "name": "ETH/USD",
+  "trading": "Enabled",
+  "url_symbol": "ethusd"
+ },
+ {
+  "base_decimals": 5,
+  "counter_decimals": 5,
+  "description": "USDC / U.S. dollar",
+  "instant_and_market_orders": "Enabled",
+  "instant_order_counter_decimals": 5,
+  "minimum_order": "10.00000 USD",
+  "name": "USDC/USD",
+  "trading": "Enabled",
+  "url_symbol": "usdcusd"
+ },
+ {
+  "base_decimals": 5,
+  "counter_decimals": 5,
+  "description": "Tether / U.S. dollar",
+  "instant_and_market_orders": "Enabled",
+  "instant_order_counter_decimals": 5,
+  "minimum_order": "10.00000 USD",
+  "name": "USDT/USD",
+  "trading": "Enabled",
+  "url_symbol": "usdtusd"
+ }
+]

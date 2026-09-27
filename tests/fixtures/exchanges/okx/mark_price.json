@@ -1,0 +1,54 @@
+{
+ "code": "0",
+ "data": [
+  {
+   "instId": "BTC-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "84415.7",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "BTC-USD-SWAP",
+   "instType": "SWAP",
+   "markPx": "84404.2",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "ETH-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "2686.48",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "SOL-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "121.85",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "EDEN-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "0.06279",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "ORDER-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "0.04175",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "BB-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "8.158",
+   "ts": "1790530119059"
+  },
+  {
+   "instId": "SNXX-USDT-SWAP",
+   "instType": "SWAP",
+   "markPx": "17.65",
+   "ts": "1790530119059"
+  }
+ ],
+ "msg": ""
+}

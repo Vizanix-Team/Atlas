@@ -1,0 +1,163 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vizanix-atlas"
+version = "0.1.0"
+description = "The semantic layer for global crypto markets: reproducible, cross-venue market state."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Vizanix" }]
+keywords = [
+  "cryptocurrency",
+  "market-data",
+  "market-microstructure",
+  "quantitative-finance",
+  "order-book",
+  "derivatives",
+  "parquet",
+  "duckdb",
+  "open-data",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Office/Business :: Financial :: Investment",
+  "Typing :: Typed",
+]
+
+# Every dependency here solves a problem Atlas cannot reasonably solve itself.
+#   httpx     - async HTTP with per-request timeouts and response streaming
+#   pydantic  - the validation boundary between untrusted venue JSON and analytics
+#   polars    - columnar transformation of the observation tables
+#   pyarrow   - Parquet encoding and the published Arrow schemas
+#   duckdb    - the execution engine MQL compiles down to
+#   PyYAML    - declarative configuration
+#   rich      - CLI rendering
+#   typer     - CLI argument parsing
+#   zstandard - snapshot bundle compression
+dependencies = [
+  "httpx>=0.27,<1",
+  "pydantic>=2.7,<3",
+  "polars>=1.0,<2",
+  "pyarrow>=16",
+  "duckdb>=1.0",
+  "PyYAML>=6",
+  "rich>=13.7",
+  "typer>=0.12",
+  "zstandard>=0.22",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2",
+  "pytest-asyncio>=0.23",
+  "pytest-cov>=5.0",
+  "hypothesis>=6.100",
+  "respx>=0.21",
+  "mypy>=1.10",
+  "ruff>=0.5",
+  "types-PyYAML",
+]
+
+[project.urls]
+Homepage = "https://github.com/Vizanix/Atlas"
+Documentation = "https://github.com/Vizanix/Atlas/tree/main/docs"
+Source = "https://github.com/Vizanix/Atlas"
+Issues = "https://github.com/Vizanix/Atlas/issues"
+Changelog = "https://github.com/Vizanix/Atlas/blob/main/CHANGELOG.md"
+
+[project.scripts]
+atlas = "vizanix_atlas.cli.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vizanix_atlas"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"config" = "vizanix_atlas/_bundled_config"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E", "W",    # pycodestyle
+  "F",         # pyflakes
+  "I",         # import sorting
+  "B",         # bugbear
+  "UP",        # pyupgrade
+  "SIM",       # simplify
+  "RUF",       # ruff-specific
+  "C4",        # comprehensions
+  "TID",       # tidy imports
+  "PTH",       # prefer pathlib
+  "ASYNC",     # async correctness
+  "BLE",       # blind except
+  "TRY",       # exception antipatterns
+  "N",         # naming
+  "ANN",       # missing annotations
+  "D",         # docstrings
+]
+ignore = [
+  "D105",   # magic method docstrings
+  "D107",   # __init__ docstring; the class docstring covers it
+  "D203",   # incompatible with D211
+  "D213",   # incompatible with D212
+  "ANN401", # deliberate Any at untrusted-payload boundaries
+  "TRY003", # Atlas errors carry contextual messages by design
+  "TRY400", # logger.error is intentional where a traceback would be noise
+  "N818",   # Atlas error classes are named for the condition, not suffixed Error
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D100", "D101", "D102", "D103", "D104", "ANN", "B011"]
+"examples/**" = ["D100", "D103", "T201", "ANN"]
+"scripts/**" = ["D100", "D103", "ANN"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+disallow_any_generics = true
+files = ["src", "tests", "scripts"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["duckdb.*", "zstandard.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["error"]
+markers = [
+  "live: contacts a real exchange; excluded from pull-request CI",
+  "slow: measurable runtime; excluded from the fast unit pass",
+]
+addopts = "--strict-markers --strict-config"
+
+[tool.coverage.run]
+branch = true
+source = ["src/vizanix_atlas"]
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "@overload"]

@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Atlas local working data. Market data never belongs in git history.
+.local-data/
+.atlas-cache/
+dataset/
+observations/
+*.parquet
+!tests/fixtures/**/*.parquet
+*.tar.zst
+
+# Frontend
+web/node_modules/
+web/dist/
+web/.vite/
+web/public/data/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store

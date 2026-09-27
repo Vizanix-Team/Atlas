@@ -1,0 +1,26 @@
+{
+ "rates": [
+  {
+   "fundingRate": -0.13686331409893,
+   "relativeFundingRate": -1.609895833333e-06,
+   "timestamp": "2026-09-27T14:00:00Z"
+  },
+  {
+   "fundingRate": -0.0897719931795,
+   "relativeFundingRate": -1.062175e-06,
+   "timestamp": "2026-09-27T15:00:00Z"
+  },
+  {
+   "fundingRate": 0.19393750636106982,
+   "relativeFundingRate": 2.296454166667e-06,
+   "timestamp": "2026-09-27T16:00:00Z"
+  },
+  {
+   "fundingRate": 0.18037855027822186,
+   "relativeFundingRate": 2.136845833333e-06,
+   "timestamp": "2026-09-27T17:00:00Z"
+  }
+ ],
+ "result": "success",
+ "serverTime": "2026-09-27T17:33:31.501Z"
+}

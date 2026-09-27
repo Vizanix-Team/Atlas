@@ -1,0 +1,69 @@
+# Vizanix Atlas - retention policy
+#
+# Atlas publishes to GitHub Releases, which grow without bound unless something
+# prunes them. Nothing here deletes anything until its replacement has been
+# verified, and every cleanup path supports a dry run.
+#
+# Software releases (tags matching v*) are never touched by housekeeping.
+
+schema_version: "1.0.0"
+
+retention:
+  # Intra-day snapshot bundles. Deleted only after the day's compacted output
+  # exists and its checksums verify.
+  raw_snapshot_days: 2
+
+  # Compacted daily asset-state partitions: the main research surface.
+  daily_market_state_days: 365
+
+  # Per-venue observation rows are far larger than asset state and are useful
+  # mostly for recent debugging and cross-venue verification.
+  daily_venue_observations_days: 90
+
+  # Order-book derived liquidity rows, kept shorter than price history because of
+  # their volume.
+  daily_liquidity_days: 120
+
+  # Quality events and adapter health, kept long because they are small and are
+  # what explains a gap a year later.
+  quality_events_days: 400
+
+  long_term_rollups: true
+
+rollups:
+  # Rather than keeping raw high-volume data forever, Atlas rolls it up. A
+  # rollup is generated before its source becomes eligible for deletion.
+  hourly_from_snapshots:
+    enabled: true
+    retain_days: 730
+    aggregates: [first, last, min, max, mean, observation_count]
+  daily_from_hourly:
+    enabled: true
+    retain_days: null            # null means indefinitely
+    aggregates: [first, last, min, max, mean, observation_count]
+  monthly_from_daily:
+    enabled: true
+    retain_days: null
+  instrument_lifecycle:
+    enabled: true
+    retain_days: null            # instrument identities are never deleted
+  venue_coverage_history:
+    enabled: true
+    retain_days: null
+
+generations:
+  # How many complete current-state generations to keep in the data-latest
+  # release. Keeping the predecessor lets a client that caught a half-published
+  # generation fall back instead of failing.
+  keep_recent_generations: 3
+
+housekeeping:
+  # Every destructive operation validates all of these before acting.
+  dry_run_default: true
+  require_tag_prefix: ["atlas-data-", "atlas-month-", "atlas-snapshot-"]
+  never_delete_tag_prefix: ["v"]
+  min_age_hours_before_delete: 6
+  require_compacted_replacement: true
+  require_checksum_verification: true
+  max_deletions_per_run: 200
+  log_every_deletion: true

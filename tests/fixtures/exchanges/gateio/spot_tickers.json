@@ -1,0 +1,83 @@
+[
+ {
+  "base_volume": "2489.258596",
+  "change_percentage": "0.43",
+  "currency_pair": "BTC_USDT",
+  "high_24h": "85164.3",
+  "highest_bid": "84440",
+  "last": "84440.1",
+  "low_24h": "83841",
+  "lowest_ask": "84440.1",
+  "quote_volume": "210515749.0997076"
+ },
+ {
+  "base_volume": "41074.2378",
+  "change_percentage": "-0.08",
+  "currency_pair": "ETH_USDT",
+  "high_24h": "2723.14",
+  "highest_bid": "2686.64",
+  "last": "2686.64",
+  "low_24h": "2664.77",
+  "lowest_ask": "2686.65",
+  "quote_volume": "110835059.672377"
+ },
+ {
+  "base_volume": "620536.3",
+  "change_percentage": "0.46",
+  "currency_pair": "SOL_USDT",
+  "high_24h": "124.95",
+  "highest_bid": "121.86",
+  "last": "121.86",
+  "low_24h": "120.08",
+  "lowest_ask": "121.87",
+  "quote_volume": "75983691.99678"
+ },
+ {
+  "base_volume": "12162862.86",
+  "change_percentage": "0",
+  "currency_pair": "USDC_USDT",
+  "high_24h": "1.0002",
+  "highest_bid": "1.0001",
+  "last": "1.0001",
+  "low_24h": "1",
+  "lowest_ask": "1.0002",
+  "quote_volume": "12164234.046407"
+ },
+ {
+  "base_volume": "15545168463",
+  "change_percentage": "-0.97",
+  "currency_pair": "RATS_USDT",
+  "high_24h": "0.00004331",
+  "highest_bid": "0.00004065",
+  "last": "0.00004072",
+  "low_24h": "0.00003865",
+  "lowest_ask": "0.0000407",
+  "quote_volume": "624256.25184974"
+ },
+ {
+  "base_volume": "2973944",
+  "change_percentage": "-2.74",
+  "currency_pair": "TCOM_USDT",
+  "high_24h": "0.008125",
+  "highest_bid": "0.007848",
+  "last": "0.007858",
+  "low_24h": "0.00784",
+  "lowest_ask": "0.007859",
+  "quote_volume": "23834.79379"
+ },
+ {
+  "base_volume": "6904.93",
+  "change_percentage": "-3.8",
+  "currency_pair": "SUSHI3L_USDT",
+  "etf_leverage": "2.968923418423973",
+  "etf_net_value": "0.98584077",
+  "etf_pre_net_value": "0.97268160",
+  "etf_pre_timestamp": 1790524800,
+  "high_24h": "1.08893",
+  "highest_bid": "0.98256",
+  "last": "0.99064",
+  "low_24h": "0.92576",
+  "lowest_ask": "0.98453",
+  "quote_volume": "6904.1205646"
+ }
+]

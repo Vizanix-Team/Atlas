@@ -1,0 +1,342 @@
+{
+ "data": [
+  {
+   "bc": "btc",
+   "bcdn": "BTC",
+   "cd": false,
+   "cfn": "",
+   "d": null,
+   "dn": "BTC/USDT",
+   "elr": null,
+   "enable_rpi": true,
+   "flr": "3",
+   "fp": 8,
+   "lr": 10,
+   "mbph": 1,
+   "mspl": 1,
+   "p": [
+    {
+     "id": 9,
+     "name": "Grayscale Investment",
+     "weight": 90
+    }
+   ],
+   "p1": [
+    {
+     "id": 24,
+     "name": "USDT",
+     "weight": 99
+    }
+   ],
+   "qc": "usdt",
+   "qcdn": "USDT",
+   "sc": "btcusdt",
+   "scr": "online",
+   "si": "online",
+   "sm": 0,
+   "smlr": "5",
+   "sp": "main",
+   "state": "online",
+   "suspend_desc": "Trading is currently suspended",
+   "tags": "activities",
+   "tap": 6,
+   "te": true,
+   "toa": 1514779200000,
+   "tpp": 2,
+   "ttp": 8,
+   "w": 999900000,
+   "whe": false,
+   "wr": "1.5"
+  },
+  {
+   "bc": "eth",
+   "bcdn": "ETH",
+   "cd": false,
+   "cfn": "",
+   "d": null,
+   "dn": "ETH/USDT",
+   "elr": null,
+   "enable_rpi": true,
+   "flr": null,
+   "fp": 8,
+   "lr": 10,
+   "mbph": 1,
+   "mspl": 1,
+   "p": [
+    {
+     "id": 59,
+     "name": "Layer1",
+     "weight": 91
+    },
+    {
+     "id": 9,
+     "name": "Grayscale Investment",
+     "weight": 90
+    }
+   ],
+   "p1": [
+    {
+     "id": 24,
+     "name": "USDT",
+     "weight": 99
+    }
+   ],
+   "qc": "usdt",
+   "qcdn": "USDT",
+   "sc": "ethusdt",
+   "scr": "online",
+   "si": "online",
+   "sm": 0,
+   "smlr": "5",
+   "sp": "main",
+   "state": "online",
+   "tags": "",
+   "tap": 4,
+   "te": true,
+   "toa": 1514779200000,
+   "tpp": 2,
+   "ttp": 8,
+   "w": 999400000,
+   "whe": false,
+   "wr": "1.5"
+  },
+  {
+   "bc": "sol",
+   "bcdn": "SOL",
+   "cd": false,
+   "cfn": "",
+   "d": null,
+   "dn": "SOL/USDT",
+   "elr": null,
+   "enable_rpi": true,
+   "flr": null,
+   "fp": 8,
+   "lr": 10,
+   "mbph": 2,
+   "mspl": 2,
+   "p": [
+    {
+     "id": 59,
+     "name": "Layer1",
+     "weight": 91
+    },
+    {
+     "id": 9,
+     "name": "Grayscale Investment",
+     "weight": 90
+    },
+    {
+     "id": 19,
+     "name": "SOL",
+     "weight": 90
+    }
+   ],
+   "p1": [
+    {
+     "id": 24,
+     "name": "USDT",
+     "weight": 99
+    }
+   ],
+   "qc": "usdt",
+   "qcdn": "USDT",
+   "sc": "solusdt",
+   "scr": "online",
+   "si": "online",
+   "sm": 0,
+   "smlr": null,
+   "sp": "main",
+   "state": "online",
+   "tags": "",
+   "tap": 3,
+   "te": true,
+   "toa": 1606996800000,
+   "tpp": 4,
+   "ttp": 8,
+   "w": 950000000,
+   "whe": false,
+   "wr": "2"
+  },
+  {
+   "bc": "usdc",
+   "bcdn": "USDC",
+   "cd": false,
+   "cfn": null,
+   "d": null,
+   "dn": "USDC/USDT",
+   "elr": null,
+   "enable_rpi": false,
+   "flr": null,
+   "fp": 8,
+   "lr": 10,
+   "mbph": 1,
+   "mspl": 1,
+   "p": [
+    {
+     "id": 37,
+     "name": "Stablecoin",
+     "weight": 73
+    }
+   ],
+   "p1": [
+    {
+     "id": 24,
+     "name": "USDT",
+     "weight": 99
+    }
+   ],
+   "qc": "usdt",
+   "qcdn": "USDT",
+   "sc": "usdcusdt",
+   "scr": "online",
+   "si": "online",
+   "sm": 0,
+   "smlr": null,
+   "sp": "main",
+   "state": "online",
+   "tags": "zerofee",
+   "tap": 4,
+   "te": true,
+   "toa": 1612861200000,
+   "tpp": 4,
+   "ttp": 8,
+   "w": 993100000,
+   "whe": false,
+   "wr": "2"
+  },
+  {
+   "bc": "boo",
+   "bcdn": "BOO",
+   "cd": false,
+   "cfn": null,
+   "d": null,
+   "dn": "BOO/USDT",
+   "elr": null,
+   "enable_rpi": false,
+   "flr": null,
+   "fp": 8,
+   "lr": null,
+   "mbph": 10,
+   "mspl": 10,
+   "p": [
+    {
+     "id": 3,
+     "name": "DeFi",
+     "weight": 97
+    }
+   ],
+   "p1": [
+    {
+     "id": 24,
+     "name": "USDT",
+     "weight": 99
+    }
+   ],
+   "qc": "usdt",
+   "qcdn": "USDT",
+   "sc": "boousdt",
+   "scr": "offline",
+   "si": "offline",
+   "sm": 0,
+   "smlr": null,
+   "sp": "st",
+   "state": "offline",
+   "suspend_desc": "Trading is currently suspended.",
+   "tags": "",
+   "tap": 4,
+   "te": false,
+   "toa": 1647519300000,
+   "tpp": 4,
+   "ttp": 8,
+   "w": 910000000,
+   "whe": false,
+   "wr": ""
+  },
+  {
+   "bc": "ssv",
+   "bcdn": "SSV",
+   "cd": false,
+   "cfn": null,
+   "d": null,
+   "dn": "SSV/USDT",
+   "elr": null,
+   "enable_rpi": false,
+   "flr": null,
+   "fp": 8,
+   "lr": null,
+   "mbph": 10,
+   "mspl": 10,
+   "p": [
+    {
+     "id": 3,
+     "name": "DeFi",
+     "weight": 97
+    }
+   ],
+   "p1": [
+    {
+     "id": 24,
+     "name": "USDT",
+     "weight": 99
+    }
+   ],
+   "qc": "usdt",
+   "qcdn": "USDT",
+   "sc": "ssvusdt",
+   "scr": "offline",
+   "si": "offline",
+   "sm": 0,
+   "smlr": null,
+   "sp": "main",
+   "state": "online",
+   "tags": "",
+   "tap": 4,
+   "te": true,
+   "toa": 1675166400000,
+   "tpp": 4,
+   "ttp": 8,
+   "w": 990100000,
+   "whe": false,
+   "wr": ""
+  },
+  {
+   "bc": "zrx",
+   "bcdn": "ZRX",
+   "cd": false,
+   "cfn": null,
+   "d": null,
+   "dn": "ZRX/HUSD",
+   "elr": null,
+   "enable_rpi": false,
+   "flr": null,
+   "fp": 8,
+   "lr": null,
+   "mbph": 10,
+   "mspl": 10,
+   "p": null,
+   "p1": null,
+   "qc": "husd",
+   "qcdn": "HUSD",
+   "sc": "zrxhusd",
+   "scr": "offline",
+   "si": "offline",
+   "sm": 0,
+   "smlr": null,
+   "sp": "main",
+   "state": "offline",
+   "suspend_desc": "Trading is currently suspended.",
+   "tags": "",
+   "tap": 4,
+   "te": false,
+   "toa": 1608793200000,
+   "tpp": 4,
+   "ttp": 8,
+   "w": 921000000,
+   "whe": false,
+   "wr": ""
+  }
+ ],
+ "full": 1,
+ "status": "ok",
+ "ts": "1790530239937"
+}

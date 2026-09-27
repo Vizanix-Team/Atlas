@@ -1,0 +1,219 @@
+# Vizanix Atlas - curated identity overrides
+#
+# Atlas resolves identity from evidence (see docs/ASSET_RESOLUTION.md). This file
+# is for the cases evidence cannot settle, and it exists to make those decisions
+# reviewable rather than hidden in code.
+#
+# Every entry requires reason, source, date and author. The loader rejects an
+# entry missing any of them, so an unexplained mapping cannot be merged.
+#
+# An override is a last resort. Prefer teaching the resolver to read a venue's own
+# published evidence: Bitfinex's contractions are resolved from the venue's own
+# currency symbol map rather than from entries here, and MEXC listings resolve
+# from the contract addresses MEXC publishes.
+
+schema_version: "1.0.0"
+
+# --------------------------------------------------------------------------
+# Canonical assets Atlas asserts directly. Native chain assets have no contract
+# address to resolve against, so their identity has to be declared somewhere.
+# --------------------------------------------------------------------------
+canonical_assets:
+  - asset_id: asset:native:bitcoin:BTC
+    symbol: BTC
+    name: Bitcoin
+    chain_slug: bitcoin
+    reason: Native asset of the Bitcoin chain; no contract address exists to resolve against.
+    source: https://bitcoin.org
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:native:ethereum:ETH
+    symbol: ETH
+    name: Ethereum
+    chain_slug: ethereum
+    reason: Native asset of the Ethereum chain.
+    source: https://ethereum.org
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:native:solana:SOL
+    symbol: SOL
+    name: Solana
+    chain_slug: solana
+    reason: Native asset of the Solana chain.
+    source: https://solana.com
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:fiat:usd
+    symbol: USD
+    name: United States dollar
+    is_fiat: true
+    reason: The unit every Atlas USD-normalised metric is expressed in.
+    source: ISO 4217
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:fiat:eur
+    symbol: EUR
+    name: Euro
+    is_fiat: true
+    reason: Quote currency on several supported venues.
+    source: ISO 4217
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:fiat:gbp
+    symbol: GBP
+    name: Pound sterling
+    is_fiat: true
+    reason: Quote currency on Coinbase and Kraken.
+    source: ISO 4217
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:evm:1:0xdac17f958d2ee523a2206206994597c13d831ec7
+    symbol: USDT
+    name: Tether USD
+    chain_slug: ethereum
+    chain_id: 1
+    contract_address: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+    is_stablecoin: true
+    tracks_asset_id: asset:fiat:usd
+    reason: >-
+      The dominant quote currency across supported venues. Atlas anchors it to the
+      Ethereum issuance so that venue aliases resolve to one identity. tracks_asset_id
+      records the issuer's design intent only; Atlas still measures USDT/USD.
+    source: https://tether.to
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - asset_id: asset:evm:1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    symbol: USDC
+    name: USD Coin
+    chain_slug: ethereum
+    chain_id: 1
+    contract_address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+    is_stablecoin: true
+    tracks_asset_id: asset:fiat:usd
+    reason: Second most common quote currency across supported venues.
+    source: https://www.circle.com/usdc
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+# --------------------------------------------------------------------------
+# Venue symbol mappings that evidence cannot establish.
+# --------------------------------------------------------------------------
+aliases:
+  - venue_slug: kraken
+    venue_symbol: XBT
+    asset_id: asset:native:bitcoin:BTC
+    reason: >-
+      Kraken uses XBT rather than BTC, following the ISO 4217 convention for a
+      non-national currency. Nothing in the venue's catalogue states that XBT is
+      bitcoin, so the mapping is asserted here.
+    source: https://support.kraken.com/hc/en-us/articles/360001185506
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - venue_slug: krakenfutures
+    venue_symbol: XBT
+    asset_id: asset:native:bitcoin:BTC
+    reason: Kraken Futures inherits the XBT convention from Kraken spot.
+    source: https://support.kraken.com/hc/en-us/articles/360001185506
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - venue_slug: deribit
+    venue_symbol: BTC
+    asset_id: asset:native:bitcoin:BTC
+    reason: >-
+      Deribit denominates inverse contracts in BTC as the settlement asset. Stated
+      explicitly so that its options and perpetuals join the same canonical asset
+      as spot BTC elsewhere.
+    source: https://docs.deribit.com/
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+# --------------------------------------------------------------------------
+# Assets that must never be merged, even though venues use the same ticker.
+# The resolver treats these as ambiguous and keeps them venue-scoped. A false
+# merge is more damaging than an unresolved identity.
+# --------------------------------------------------------------------------
+never_merge:
+  - symbol: UST
+    reason: >-
+      Bitfinex uses UST as its code for Tether (confirmed by the venue's own
+      currency label map, which gives "Tether USDt"). Other venues have used UST
+      for TerraUSD. Merging on the ticker would combine two unrelated assets, so
+      UST is only ever resolved through a venue's published evidence.
+    source: https://api-pub.bitfinex.com/v2/conf/pub:map:currency:label
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - symbol: ARB
+    reason: >-
+      Used for Arbitrum and historically for unrelated listings on smaller venues.
+      Requires contract-address evidence to resolve.
+    source: Atlas resolution review
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - symbol: MASK
+    reason: Used by more than one unrelated project across supported venues.
+    source: Atlas resolution review
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - symbol: PAY
+    reason: Reused across unrelated listings over time.
+    source: Atlas resolution review
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - symbol: ONE
+    reason: Used for Harmony and for unrelated listings elsewhere.
+    source: Atlas resolution review
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - symbol: MAGIC
+    reason: Used by more than one unrelated project.
+    source: Atlas resolution review
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+# --------------------------------------------------------------------------
+# Asset graph relationships. Wrapped and bridged representations are related to
+# their reference asset, never collapsed into it.
+# --------------------------------------------------------------------------
+relationships:
+  - from_asset_id: asset:evm:1:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599
+    to_asset_id: asset:native:bitcoin:BTC
+    relationship: wrapped_of
+    reason: >-
+      WBTC is an Ethereum representation of bitcoin, not bitcoin. Recorded as a
+      relationship so that a consumer can choose to treat them together, while Atlas
+      keeps their prices, liquidity and venue coverage separate.
+    source: https://wbtc.network
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - from_asset_id: asset:evm:1:0xdac17f958d2ee523a2206206994597c13d831ec7
+    to_asset_id: asset:fiat:usd
+    relationship: tracks
+    reason: >-
+      Records the issuer's design intent. Atlas does not assume USDT equals USD and
+      measures the rate from observed markets.
+    source: https://tether.to
+    date: "2026-09-27"
+    author: Atlas maintainers
+
+  - from_asset_id: asset:evm:1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+    to_asset_id: asset:fiat:usd
+    relationship: tracks
+    reason: Records the issuer's design intent; the rate is still measured.
+    source: https://www.circle.com/usdc
+    date: "2026-09-27"
+    author: Atlas maintainers

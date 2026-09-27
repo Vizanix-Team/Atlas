@@ -1,0 +1,348 @@
+{
+ "exchangeFilters": [],
+ "rateLimits": [],
+ "serverTime": 1790530224733,
+ "symbols": [
+  {
+   "baseAsset": "BTC",
+   "baseAssetPrecision": 8,
+   "baseCommissionPrecision": 8,
+   "baseSizePrecision": "0.000001",
+   "conceptPlateIds": [
+    50,
+    5,
+    39,
+    12
+   ],
+   "conceptPlates": [
+    "Main",
+    "LAYER 1 / LAYER 2",
+    "BTC Ecosystem",
+    "POW"
+   ],
+   "contractAddress": "",
+   "filters": [
+    {
+     "askMultiplierDown": "0.005",
+     "bidMultiplierUp": "0.005",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "firstOpenTime": 1506787200000,
+   "fullName": "Bitcoin",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "4000000",
+   "maxQuoteAmountMarket": "4000000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 2,
+   "quoteCommissionPrecision": 2,
+   "quotePrecision": 2,
+   "st": false,
+   "status": "1",
+   "symbol": "BTCUSDT",
+   "takerCommission": "0.0005",
+   "tradeSideType": 1
+  },
+  {
+   "baseAsset": "ETH",
+   "baseAssetPrecision": 5,
+   "baseCommissionPrecision": 5,
+   "baseSizePrecision": "0.0001",
+   "conceptPlateIds": [
+    50,
+    5,
+    55
+   ],
+   "conceptPlates": [
+    "Main",
+    "LAYER 1 / LAYER 2",
+    "WLFI"
+   ],
+   "contractAddress": "",
+   "filters": [
+    {
+     "askMultiplierDown": "0.005",
+     "bidMultiplierUp": "0.005",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "fullName": "Ethereum",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "4000000",
+   "maxQuoteAmountMarket": "4000000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 2,
+   "quoteCommissionPrecision": 2,
+   "quotePrecision": 2,
+   "st": false,
+   "status": "1",
+   "symbol": "ETHUSDT",
+   "takerCommission": "0.0005",
+   "tradeSideType": 1
+  },
+  {
+   "baseAsset": "SOL",
+   "baseAssetPrecision": 3,
+   "baseCommissionPrecision": 3,
+   "baseSizePrecision": "0.01",
+   "conceptPlateIds": [
+    50,
+    5,
+    12
+   ],
+   "conceptPlates": [
+    "Main",
+    "LAYER 1 / LAYER 2",
+    "POW"
+   ],
+   "contractAddress": "",
+   "filters": [
+    {
+     "askMultiplierDown": "0.02",
+     "bidMultiplierUp": "0.02",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "firstOpenTime": 1594191600000,
+   "fullName": "Solana",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "2000000",
+   "maxQuoteAmountMarket": "2000000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 2,
+   "quoteCommissionPrecision": 2,
+   "quotePrecision": 2,
+   "st": false,
+   "status": "1",
+   "symbol": "SOLUSDT",
+   "takerCommission": "0.0005",
+   "tradeSideType": 1
+  },
+  {
+   "baseAsset": "USDC",
+   "baseAssetPrecision": 2,
+   "baseCommissionPrecision": 2,
+   "baseSizePrecision": "1",
+   "conceptPlateIds": [
+    50,
+    10,
+    45
+   ],
+   "conceptPlates": [
+    "Main",
+    "Stablecoins",
+    "0 Fees"
+   ],
+   "contractAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+   "filters": [
+    {
+     "askMultiplierDown": "0.02",
+     "bidMultiplierUp": "0.02",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "firstOpenTime": 1598686200000,
+   "fullName": "USDCoin",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "5000000",
+   "maxQuoteAmountMarket": "5000000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 5,
+   "quoteCommissionPrecision": 5,
+   "quotePrecision": 5,
+   "st": false,
+   "status": "1",
+   "symbol": "USDCUSDT",
+   "takerCommission": "0",
+   "tradeSideType": 1
+  },
+  {
+   "baseAsset": "METAL",
+   "baseAssetPrecision": 2,
+   "baseCommissionPrecision": 2,
+   "baseSizePrecision": "0.1",
+   "conceptPlateIds": [
+    51
+   ],
+   "conceptPlates": [
+    "Innovation"
+   ],
+   "contractAddress": "xtokens",
+   "filters": [
+    {
+     "askMultiplierDown": "0.2",
+     "bidMultiplierUp": "0.2",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "fullName": "Metal Blockchain",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "2000000",
+   "maxQuoteAmountMarket": "100000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 5,
+   "quoteCommissionPrecision": 5,
+   "quotePrecision": 5,
+   "st": false,
+   "status": "1",
+   "symbol": "METALUSDT",
+   "takerCommission": "0.0005",
+   "tradeSideType": 1
+  },
+  {
+   "baseAsset": "NEX",
+   "baseAssetPrecision": 0,
+   "baseCommissionPrecision": 0,
+   "baseSizePrecision": "0",
+   "conceptPlateIds": [
+    51,
+    23
+   ],
+   "conceptPlates": [
+    "Innovation",
+    "AI"
+   ],
+   "contractAddress": "0xf57D49646621F563b0B905aFc8336923AC569Ec5",
+   "filters": [
+    {
+     "askMultiplierDown": "0.2",
+     "bidMultiplierUp": "0.2",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "firstOpenTime": 1779289200000,
+   "fullName": "Nexus",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "2000000",
+   "maxQuoteAmountMarket": "100000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 10,
+   "quoteCommissionPrecision": 10,
+   "quotePrecision": 10,
+   "st": false,
+   "status": "1",
+   "symbol": "NEXUSDT",
+   "takerCommission": "0.0005",
+   "tradeSideType": 1
+  },
+  {
+   "baseAsset": "PYTH",
+   "baseAssetPrecision": 2,
+   "baseCommissionPrecision": 2,
+   "baseSizePrecision": "0",
+   "conceptPlateIds": [
+    50
+   ],
+   "conceptPlates": [
+    "Main"
+   ],
+   "contractAddress": "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3",
+   "filters": [
+    {
+     "askMultiplierDown": "0.02",
+     "bidMultiplierUp": "0.02",
+     "filterType": "PERCENT_PRICE_BY_SIDE"
+    }
+   ],
+   "firstOpenTime": 1700488800000,
+   "fullName": "Pyth Network",
+   "isMarginTradingAllowed": false,
+   "isSpotTradingAllowed": true,
+   "makerCommission": "0",
+   "maxQuoteAmount": "2000000",
+   "maxQuoteAmountMarket": "200000",
+   "orderTypes": [
+    "LIMIT",
+    "MARKET",
+    "LIMIT_MAKER"
+   ],
+   "permissions": [
+    "SPOT"
+   ],
+   "quoteAmountPrecision": "1",
+   "quoteAmountPrecisionMarket": "1",
+   "quoteAsset": "USDT",
+   "quoteAssetPrecision": 5,
+   "quoteCommissionPrecision": 5,
+   "quotePrecision": 5,
+   "st": false,
+   "status": "1",
+   "symbol": "PYTHUSDT",
+   "takerCommission": "0.0005",
+   "tradeSideType": 1
+  }
+ ],
+ "timezone": "CST"
+}
