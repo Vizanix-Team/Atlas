@@ -153,6 +153,19 @@ def market_state_columns(bundles: Sequence[AssetStateBundle]) -> tuple[str, ...]
     return tuple(flatten_model(bundles[0].state).keys())
 
 
+#: Convenience columns computed from a model *property* rather than a stored field,
+#: materialised here so MQL and other Parquet-only consumers can read them without
+#: reconstructing the Pydantic model. Each has exactly one definition - the property
+#: itself - which this dict calls rather than re-deriving, so the published value and
+#: ``btc.state().volume.reported_volume_24h_usd`` (the SDK's in-Python view) can never
+#: drift apart.
+_COMPUTED_COLUMNS: dict[str, object] = {
+    "reported_volume_24h_usd": lambda state: state.volume.reported_volume_24h_usd,
+    "venue_count": lambda state: state.venue_count,
+    "is_partial": lambda state: state.is_partial,
+}
+
+
 def build_asset_market_state_table(
     bundles: Sequence[AssetStateBundle], *, shard_count: int
 ) -> pl.DataFrame:
@@ -160,11 +173,17 @@ def build_asset_market_state_table(
 
     Adds ``shard_index``, computed the same deterministic way the SDK computes it on
     read (``sha256(asset_id) mod shard_count``), so writer and reader always agree on
-    which shard an asset lives in without either having to ask the other.
+    which shard an asset lives in without either having to ask the other. Also adds
+    the computed convenience columns in ``_COMPUTED_COLUMNS``.
     """
     columns = market_state_columns(bundles)
-    rows = [flatten_model(bundle.state) for bundle in bundles]
-    frame = _frame(rows, columns)
+    rows = []
+    for bundle in bundles:
+        row = flatten_model(bundle.state)
+        for name, getter in _COMPUTED_COLUMNS.items():
+            row[name] = getter(bundle.state)
+        rows.append(row)
+    frame = _frame(rows, (*columns, *_COMPUTED_COLUMNS))
     shard_indices = [shard_for(bundle.state.asset_id, shard_count) for bundle in bundles]
     return frame.with_columns(pl.Series("shard_index", shard_indices, dtype=pl.Int32))
 
