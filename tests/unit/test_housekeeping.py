@@ -24,14 +24,14 @@ def housekeeping_config():
 
 
 def _candidate(**overrides) -> DeletionCandidate:
-    defaults = dict(
-        generation_id="gen1",
-        tag="atlas-data-2026-09-27",
-        filename="snapshot-20260927T183700Z.tar.zst",
-        age_hours=200.0,
-        has_compacted_replacement=True,
-        checksum_verified=True,
-    )
+    defaults = {
+        "generation_id": "gen1",
+        "tag": "atlas-data-2026-09-27",
+        "filename": "snapshot-20260927T183700Z.tar.zst",
+        "age_hours": 200.0,
+        "has_compacted_replacement": True,
+        "checksum_verified": True,
+    }
     defaults.update(overrides)
     return DeletionCandidate(**defaults)
 
@@ -58,9 +58,7 @@ def test_a_protected_tag_prefix_is_never_deletable(housekeeping_config) -> None:
     the "not an allowed prefix" guard before the dedicated protected-prefix guard ever
     has to fire; either way, the outcome that matters is that it is never deletable.
     """
-    plan = plan_cleanup(
-        [_candidate(tag="v0.1.0", age_hours=10_000.0)], housekeeping_config
-    )
+    plan = plan_cleanup([_candidate(tag="v0.1.0", age_hours=10_000.0)], housekeeping_config)
     assert not plan.to_delete
 
     # The dedicated protected-prefix guard is exercised directly, independent of the
@@ -83,9 +81,7 @@ def test_a_too_young_candidate_is_skipped(housekeeping_config) -> None:
 
 def test_missing_compacted_replacement_blocks_deletion(housekeeping_config) -> None:
     """A raw snapshot must never be removed before its day has been compacted."""
-    plan = plan_cleanup(
-        [_candidate(has_compacted_replacement=False)], housekeeping_config
-    )
+    plan = plan_cleanup([_candidate(has_compacted_replacement=False)], housekeeping_config)
     assert not plan.to_delete
     assert "compacted replacement" in plan.skipped[0].reason
 

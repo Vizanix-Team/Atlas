@@ -19,7 +19,7 @@ from datetime import UTC, datetime, timedelta
 
 import polars as pl
 
-from vizanix_atlas.core.atlas_time import slot_label
+from vizanix_atlas.core.atlas_time import floor_to_slot, slot_label
 from vizanix_atlas.core.config import ScheduleConfig
 from vizanix_atlas.models.manifest import DailyCompactionReport, GenerationManifest
 
@@ -29,14 +29,22 @@ def expected_slots_for_day(day: str, schedule: ScheduleConfig) -> tuple[str, ...
 
     Derived from the schedule's own cron minutes rather than a hardcoded cadence, so a
     schedule change in ``config/collection.yaml`` is reflected here automatically
-    rather than needing a matching change to this function.
+    rather than needing a matching change to this function. Each cron time is floored
+    to its slot exactly as :func:`~vizanix_atlas.discovery.pipeline.build_generation`
+    floors a run's start, so a run at 00:07 is expected under the label ``000000Z``.
 
     Args:
         day: A UTC calendar day as ``YYYY-MM-DD``.
+        schedule: The collection schedule whose cron minutes define the slots.
+
     """
     base = datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=UTC)
     return tuple(
-        slot_label(base + timedelta(hours=hour, minutes=minute))
+        slot_label(
+            floor_to_slot(
+                base + timedelta(hours=hour, minutes=minute), slot_minutes=schedule.slot_minutes
+            )
+        )
         for hour in range(24)
         for minute in schedule.cron_minutes
     )
@@ -96,6 +104,7 @@ def build_daily_report(
         schedule: The collection schedule, for the expected-window calculation.
         invalid_generation_ids: Generations that exist but failed validation (did not
             pass the publish validity gate, or failed a checksum re-check).
+
     """
     expected = expected_slots_for_day(day, schedule)
     by_slot: dict[str, list[DiscoveredGeneration]] = defaultdict(list)
@@ -170,6 +179,7 @@ def compact_tables(per_generation_tables: dict[str, list[pl.DataFrame]]) -> dict
         One concatenated frame per table name. A table entirely absent from every
         generation (an empty input list) is omitted rather than published as an empty
         file with no rows to justify its existence.
+
     """
     return {
         name: pl.concat(frames, how="vertical_relaxed")

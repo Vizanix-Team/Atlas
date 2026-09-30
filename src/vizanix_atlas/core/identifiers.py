@@ -69,6 +69,7 @@ def evm_asset_id(chain_id: int, contract_address: str) -> str:
     Raises:
         ValueError: If ``contract_address`` is not a 20-byte hex address. Atlas
             does not store a malformed address as though it were an identity.
+
     """
     if not _EVM_ADDRESS.match(contract_address):
         raise ValueError(f"not an EVM contract address: {contract_address!r}")
@@ -85,6 +86,7 @@ def solana_asset_id(mint: str) -> str:
 
     Raises:
         ValueError: If ``mint`` is not plausible base58 of mint length.
+
     """
     if not _SOLANA_MINT.match(mint):
         raise ValueError(f"not a Solana mint address: {mint!r}")
@@ -133,6 +135,7 @@ def asset_namespace(asset_id: str) -> str:
 
     Raises:
         ValueError: If ``asset_id`` is not an asset identifier.
+
     """
     parts = asset_id.split(SCHEMA_SEPARATOR)
     if len(parts) < 3 or parts[0] != "asset":
@@ -150,6 +153,7 @@ def shard_for(asset_id: str, shard_count: int) -> int:
 
     Raises:
         ValueError: If ``shard_count`` is not positive.
+
     """
     if shard_count <= 0:
         raise ValueError("shard_count must be positive")

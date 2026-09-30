@@ -6,8 +6,6 @@ Every test here is a scenario where merging would be plausible and wrong.
 
 from __future__ import annotations
 
-import pytest
-
 from vizanix_atlas.core.identifiers import is_unresolved
 from vizanix_atlas.identity.resolver import build_resolver
 from vizanix_atlas.models.enums import ResolutionState
@@ -47,9 +45,7 @@ def test_same_ticker_on_two_venues_is_not_merged_without_evidence() -> None:
     This is the core conservative behaviour. Neither venue said what ZZZ is, so Atlas
     records two venue-scoped identities rather than inventing a shared one.
     """
-    resolver = build_resolver(
-        [instrument("okx", "ZZZ"), instrument("mexc", "ZZZ")]
-    )
+    resolver = build_resolver([instrument("okx", "ZZZ"), instrument("mexc", "ZZZ")])
     okx = resolver.asset_id_for("okx", "ZZZ")
     mexc = resolver.asset_id_for("mexc", "ZZZ")
 
@@ -173,7 +169,9 @@ def test_native_chain_assets_resolve_across_venues() -> None:
 
 
 def test_fiat_quote_currencies_resolve_by_iso_code() -> None:
-    resolver = build_resolver([instrument("coinbase", "BTC", "USD"), instrument("kraken", "BTC", "EUR")])
+    resolver = build_resolver(
+        [instrument("coinbase", "BTC", "USD"), instrument("kraken", "BTC", "EUR")]
+    )
     assert resolver.asset_id_for("coinbase", "USD") == "asset:fiat:usd"
     assert resolver.asset_id_for("kraken", "EUR") == "asset:fiat:eur"
 
@@ -285,8 +283,13 @@ def test_report_counts_reconcile() -> None:
     )
     report = resolver.report
     assert report.total == len(resolver.aliases())
-    assert sum(report.summary()[k] for k in
-               ("resolved", "probable", "ambiguous", "unresolved", "manual_override")) == report.total
+    assert (
+        sum(
+            report.summary()[k]
+            for k in ("resolved", "probable", "ambiguous", "unresolved", "manual_override")
+        )
+        == report.total
+    )
 
 
 def test_resolution_is_deterministic() -> None:

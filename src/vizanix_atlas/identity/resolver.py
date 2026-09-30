@@ -56,9 +56,36 @@ _log = get_logger(__name__)
 #: currency is never treated as a token needing a contract address.
 _FIAT_CODES: Final = frozenset(
     {
-        "USD", "EUR", "GBP", "JPY", "CHF", "AUD", "CAD", "NZD", "SGD", "HKD",
-        "KRW", "TRY", "BRL", "MXN", "ZAR", "PLN", "RON", "HUF", "CZK", "SEK",
-        "NOK", "DKK", "AED", "ARS", "INR", "IDR", "THB", "VND", "NGN", "UAH",
+        "USD",
+        "EUR",
+        "GBP",
+        "JPY",
+        "CHF",
+        "AUD",
+        "CAD",
+        "NZD",
+        "SGD",
+        "HKD",
+        "KRW",
+        "TRY",
+        "BRL",
+        "MXN",
+        "ZAR",
+        "PLN",
+        "RON",
+        "HUF",
+        "CZK",
+        "SEK",
+        "NOK",
+        "DKK",
+        "AED",
+        "ARS",
+        "INR",
+        "IDR",
+        "THB",
+        "VND",
+        "NGN",
+        "UAH",
     }
 )
 
@@ -158,11 +185,7 @@ class ResolutionReport:
     def total(self) -> int:
         """Every symbol considered."""
         return (
-            self.resolved
-            + self.probable
-            + self.ambiguous
-            + self.unresolved
-            + self.manual_override
+            self.resolved + self.probable + self.ambiguous + self.unresolved + self.manual_override
         )
 
     def summary(self) -> dict[str, int]:
@@ -331,8 +354,7 @@ class AssetResolver:
                 name_venues[asset_name].add(venue_slug)
 
         corroborated_names = {
-            name for name, venues in name_venues.items()
-            if len(venues) >= _NAME_AGREEMENT_THRESHOLD
+            name for name, venues in name_venues.items() if len(venues) >= _NAME_AGREEMENT_THRESHOLD
         }
 
         for key in sorted(self._evidence):
@@ -365,9 +387,7 @@ class AssetResolver:
         # 2. A contract address names the asset, so it is decisive.
         address = evidence.best("venue_contract_address")
         if address is not None:
-            asset_id = asset_id_from_address(
-                address, chain_hint=evidence.best("venue_chain")
-            )
+            asset_id = asset_id_from_address(address, chain_hint=evidence.best("venue_chain"))
             if asset_id is not None:
                 keys = list(evidence.keys())
                 if not evidence.best("venue_chain"):

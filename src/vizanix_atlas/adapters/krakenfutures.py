@@ -60,7 +60,7 @@ from typing import Any, Final
 from vizanix_atlas.adapters.base import DEFAULT_BOOK_DEPTH, ExchangeAdapter
 from vizanix_atlas.core.atlas_time import parse_iso, to_epoch_ms
 from vizanix_atlas.core.errors import ExchangeApplicationError, SchemaMismatch
-from vizanix_atlas.core.numeric import parse_non_negative, parse_positive, parse_float
+from vizanix_atlas.core.numeric import parse_float, parse_non_negative, parse_positive
 from vizanix_atlas.models.enums import OpenInterestUnit
 from vizanix_atlas.models.observations import (
     RawDerivativeObservation,
@@ -102,6 +102,7 @@ class KrakenFuturesAdapter(ExchangeAdapter):
 
         Raises:
             ExchangeApplicationError: If ``result`` is not ``"success"``.
+
         """
         body = self.require_mapping(payload, path=path)
         result = str(body.get("result", ""))
@@ -209,9 +210,7 @@ class KrakenFuturesAdapter(ExchangeAdapter):
             funding_interval_hours=(
                 _FUNDING_INTERVAL_HOURS if instrument_type == "perpetual" else None
             ),
-            funding_semantics=(
-                "absolute_per_interval" if instrument_type == "perpetual" else None
-            ),
+            funding_semantics=("absolute_per_interval" if instrument_type == "perpetual" else None),
             open_interest_unit=OpenInterestUnit.CONTRACTS.value,
             active=True,
             listing_time=listing_time,
@@ -285,9 +284,7 @@ class KrakenFuturesAdapter(ExchangeAdapter):
                     ),
                     open_interest_raw=parse_non_negative(row.get("openInterest")),
                     open_interest_unit=(
-                        OpenInterestUnit.CONTRACTS
-                        if row.get("openInterest") is not None
-                        else None
+                        OpenInterestUnit.CONTRACTS if row.get("openInterest") is not None else None
                     ),
                 )
             )
@@ -354,9 +351,7 @@ class KrakenFuturesAdapter(ExchangeAdapter):
 
     async def server_time_ms(self) -> int | None:
         """Fetch the venue clock, which the instruments response already carries."""
-        payload = await self.client.get_json(
-            "/derivatives/api/v3/instruments", operation="time"
-        )
+        payload = await self.client.get_json("/derivatives/api/v3/instruments", operation="time")
         body = self._unwrap(payload, path="/derivatives/api/v3/instruments")
         raw = body.get("serverTime")
         if not isinstance(raw, str):

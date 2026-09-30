@@ -15,7 +15,7 @@ from pathlib import Path
 import duckdb
 import polars as pl
 
-from vizanix_atlas.core.errors import MqlSemanticError, MqlSyntaxError
+from vizanix_atlas.core.errors import MqlSemanticError
 from vizanix_atlas.mql.ast_nodes import Query
 from vizanix_atlas.mql.compiler import MARKET_VIEW, CompiledQuery, compile_query
 from vizanix_atlas.mql.parser import parse_query
@@ -38,6 +38,7 @@ def explain(text: str) -> ExplainedQuery:
     Raises:
         MqlSyntaxError: On a grammar violation.
         MqlSemanticError: On an unknown or misused metric.
+
     """
     parsed = parse_query(text)
     validated = validate(parsed)
@@ -59,6 +60,7 @@ class MqlEngine:
         Raises:
             MqlSemanticError: If ``shard_paths`` is empty; there is no honest way to
                 answer a query with zero data files.
+
         """
         if not shard_paths:
             raise MqlSemanticError("no dataset shard files were provided to query")
@@ -77,6 +79,7 @@ class MqlEngine:
         Raises:
             MqlSyntaxError: On a grammar violation.
             MqlSemanticError: On an unknown or misused metric.
+
         """
         compiled = explain(text).compiled
         return self._connection.execute(compiled.sql, compiled.parameters).pl()

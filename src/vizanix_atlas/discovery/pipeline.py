@@ -14,8 +14,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
-from vizanix_atlas.analytics.state import AssetObservations, build_market_state
 from vizanix_atlas.analytics.series import PriceSeries
+from vizanix_atlas.analytics.state import AssetObservations, build_market_state
 from vizanix_atlas.core.atlas_time import floor_to_slot, from_epoch_ms, to_epoch_ms, utc_now
 from vizanix_atlas.core.config import CollectionConfig, OverrideConfig
 from vizanix_atlas.core.logging import get_logger
@@ -31,7 +31,7 @@ from vizanix_atlas.models.instrument import Instrument
 from vizanix_atlas.models.observations import AdapterHealth, CollectionResult
 from vizanix_atlas.models.quality import QualityEvent
 from vizanix_atlas.models.state import AssetStateBundle
-from vizanix_atlas.normalization.conversion import ConversionGraph, build_conversion_graph
+from vizanix_atlas.normalization.conversion import build_conversion_graph
 from vizanix_atlas.normalization.instruments import InstrumentIndex, normalise_instruments
 from vizanix_atlas.quality.validation import (
     ObservationValidator,
@@ -87,8 +87,7 @@ class Generation:
             {
                 h.venue_slug
                 for h in self.health
-                if h.status
-                in (CollectionStatus.SUCCESS.value, CollectionStatus.DEGRADED.value)
+                if h.status in (CollectionStatus.SUCCESS.value, CollectionStatus.DEGRADED.value)
             }
         )
 
@@ -119,15 +118,14 @@ def build_generation(
             not misattribute the snapshot.
         history: Per-asset reference-price history for the windowed metrics.
         origin: How these observations were obtained.
+
     """
     started = min((r.collection_started_at for r in results), default=to_epoch_ms(utc_now()))
     finished = max((r.collection_finished_at for r in results), default=started)
     effective = snapshot_effective_time or to_epoch_ms(
         floor_to_slot(from_epoch_ms(started), slot_minutes=config.schedule.slot_minutes)
     )
-    slot = floor_to_slot(
-        from_epoch_ms(effective), slot_minutes=config.schedule.slot_minutes
-    )
+    slot = floor_to_slot(from_epoch_ms(effective), slot_minutes=config.schedule.slot_minutes)
     from vizanix_atlas.core.atlas_time import slot_label as render_slot
 
     label = render_slot(slot)
@@ -184,7 +182,9 @@ def build_generation(
             snapshot_effective_time=effective,
             observed_through=finished,
             coverage_tier=(
-                CollectionTier.B_LIQUIDITY if observations.order_books else CollectionTier.A_UNIVERSAL
+                CollectionTier.B_LIQUIDITY
+                if observations.order_books
+                else CollectionTier.A_UNIVERSAL
             ),
             origin=origin,
         )
@@ -268,22 +268,26 @@ def _group_by_asset(
 
     for result in results:
         for observation in result.derivatives:
-            instrument = index.by_venue_symbol(
+            derivative_instrument = index.by_venue_symbol(
                 observation.venue_slug,
                 observation.symbol_native,
                 instrument_class=observation.instrument_class,
             )
-            if instrument is not None:
-                bundle_for(instrument.base_asset_id).derivatives.append((observation, instrument))
+            if derivative_instrument is not None:
+                bundle_for(derivative_instrument.base_asset_id).derivatives.append(
+                    (observation, derivative_instrument)
+                )
         for book in result.order_books:
-            instrument = index.by_venue_symbol(
+            book_instrument = index.by_venue_symbol(
                 book.venue_slug, book.symbol_native, instrument_class=book.instrument_class
             )
-            if instrument is None:
+            if book_instrument is None:
                 continue
-            outcome = validator.validate_order_book(book, instrument)
+            outcome = validator.validate_order_book(book, book_instrument)
             if outcome.valid:
-                bundle_for(instrument.base_asset_id).order_books.append((book, instrument))
+                bundle_for(book_instrument.base_asset_id).order_books.append(
+                    (book, book_instrument)
+                )
             else:
                 quarantine.record(
                     outcome,

@@ -34,7 +34,6 @@ from typing import Any, Final
 from vizanix_atlas.adapters.base import DEFAULT_BOOK_DEPTH, ExchangeAdapter
 from vizanix_atlas.core.errors import ExchangeApplicationError, SchemaMismatch
 from vizanix_atlas.core.numeric import parse_int, parse_non_negative, parse_positive
-from vizanix_atlas.models.enums import PriceSource
 from vizanix_atlas.models.observations import (
     RawFxObservation,
     RawInstrument,
@@ -71,6 +70,7 @@ class KrakenAdapter(ExchangeAdapter):
         Raises:
             ExchangeApplicationError: If ``error`` is non-empty.
             SchemaMismatch: If the envelope is not the documented shape.
+
         """
         body = self.require_mapping(payload, path=path)
         errors = body.get("error")

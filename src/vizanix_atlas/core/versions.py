@@ -50,8 +50,8 @@ def commit_sha() -> str | None:
     if from_env:
         return from_env.strip()
     try:
-        completed = subprocess.run(  # noqa: S603 - fixed argv, no shell
-            ["git", "rev-parse", "HEAD"],  # noqa: S607 - git resolved from PATH by design
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
             capture_output=True,
             text=True,
             timeout=5,

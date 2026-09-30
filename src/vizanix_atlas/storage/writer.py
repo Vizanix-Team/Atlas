@@ -60,11 +60,12 @@ def write_parquet(
             ``config.max_single_asset_bytes``. Atlas would rather refuse a single
             oversized file than publish something a venue schema change quietly
             inflated to gigabytes.
+
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     frame.write_parquet(
         path,
-        compression=config.compression,
+        compression=config.compression,  # type: ignore[arg-type]
         compression_level=config.compression_level,
         row_group_size=config.parquet_row_group_size,
         statistics=True,

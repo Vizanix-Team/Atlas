@@ -138,10 +138,7 @@ def normalise_funding(
         # Verified against the venue's own published relative rate; see the module
         # docstring and docs/METHODOLOGY.md.
         relative = raw * mark_price if instrument.is_inverse else raw / mark_price
-        note = (
-            "derived_from_absolute:"
-            + ("raw*mark" if instrument.is_inverse else "raw/mark")
-        )
+        note = "derived_from_absolute:" + ("raw*mark" if instrument.is_inverse else "raw/mark")
     else:
         relative = raw
 
@@ -205,9 +202,7 @@ def normalise_open_interest(
         return None
 
     unit = (
-        observation.open_interest_unit
-        or instrument.open_interest_unit
-        or OpenInterestUnit.UNKNOWN
+        observation.open_interest_unit or instrument.open_interest_unit or OpenInterestUnit.UNKNOWN
     )
 
     # A venue-published base or USD figure needs no reconstruction.
@@ -329,9 +324,7 @@ class MarkObservation:
     mark_price_usd: float
 
 
-def compute_basis(
-    marks: Sequence[MarkObservation], *, reference_price: float | None
-) -> BasisState:
+def compute_basis(marks: Sequence[MarkObservation], *, reference_price: float | None) -> BasisState:
     """Compute derivative premium over the reference price, in basis points.
 
     Perpetual and dated-futures basis are reported separately, because a perpetual's

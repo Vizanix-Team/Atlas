@@ -85,6 +85,7 @@ class ExchangeAdapter(abc.ABC):
 
         Raises:
             UnsupportedCapability: For a spot-only venue. Recorded as expected.
+
         """
         raise UnsupportedCapability(
             "this venue exposes no derivative observations", venue=self.slug
@@ -97,6 +98,7 @@ class ExchangeAdapter(abc.ABC):
 
         Raises:
             UnsupportedCapability: When the venue has no public book endpoint.
+
         """
         raise UnsupportedCapability("this venue exposes no order-book endpoint", venue=self.slug)
 
@@ -151,6 +153,7 @@ class ExchangeAdapter(abc.ABC):
 
         Raises:
             SchemaMismatch: If the value is missing or is not a list.
+
         """
         value = payload if key is None else (payload or {}).get(key)
         if not isinstance(value, list):
@@ -168,6 +171,7 @@ class ExchangeAdapter(abc.ABC):
 
         Raises:
             SchemaMismatch: If the value is missing or is not an object.
+
         """
         value = payload if key is None else (payload or {}).get(key)
         if not isinstance(value, dict):
@@ -199,6 +203,7 @@ class ExchangeAdapter(abc.ABC):
         Returns:
             The levels, best price first, and whether the venue returned more than
             ``depth`` of them.
+
         """
         levels: list[OrderBookLevel] = []
         for row in rows:

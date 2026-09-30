@@ -207,4 +207,3 @@ class CoinbaseAdapter(ExchangeAdapter):
         body = self.require_mapping(payload, path="/time")
         epoch = parse_positive(body.get("epoch"))
         return int(epoch * 1000) if epoch is not None else None
-

@@ -42,6 +42,7 @@ class CompiledQuery:
     Attributes:
         sql: The statement text, with ``?`` placeholders for every literal value.
         parameters: The values to bind to those placeholders, in order.
+
     """
 
     sql: str

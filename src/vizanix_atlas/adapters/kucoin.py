@@ -46,6 +46,7 @@ class KucoinAdapter(ExchangeAdapter):
 
         Raises:
             ExchangeApplicationError: If ``code`` is not ``"200000"``.
+
         """
         body = self.require_mapping(payload, path=path)
         code = str(body.get("code", ""))

@@ -36,6 +36,7 @@ def weighted_median(values: Sequence[float], weights: Sequence[float]) -> float 
 
     Raises:
         ValueError: If the lengths differ or a weight is negative.
+
     """
     if len(values) != len(weights):
         raise ValueError("values and weights must be the same length")
@@ -110,6 +111,7 @@ def weighted_mad(
         values: The observations.
         weights: Non-negative weights.
         centre: The reference point; defaults to the weighted median of ``values``.
+
     """
     reference = centre if centre is not None else weighted_median(values, weights)
     if reference is None:
@@ -123,6 +125,7 @@ def quantile(values: Sequence[float], q: float) -> float | None:
 
     Raises:
         ValueError: If ``q`` is outside ``[0, 1]``.
+
     """
     if not 0.0 <= q <= 1.0:
         raise ValueError("q must be between 0 and 1")
@@ -132,7 +135,7 @@ def quantile(values: Sequence[float], q: float) -> float | None:
     if len(finite) == 1:
         return finite[0]
     position = q * (len(finite) - 1)
-    lower = int(math.floor(position))
+    lower = math.floor(position)
     upper = min(lower + 1, len(finite) - 1)
     fraction = position - lower
     return finite[lower] * (1.0 - fraction) + finite[upper] * fraction
@@ -160,6 +163,7 @@ def cap_weights(weights: Sequence[float], *, maximum_share: float) -> tuple[floa
 
     Raises:
         ValueError: If ``maximum_share`` is outside ``(0, 1]``.
+
     """
     if not 0.0 < maximum_share <= 1.0:
         raise ValueError("maximum_share must be in (0, 1]")
@@ -185,9 +189,7 @@ def cap_weights(weights: Sequence[float], *, maximum_share: float) -> tuple[floa
         if headroom <= 1e-12:
             break
         shares = [
-            maximum_share
-            if s >= maximum_share
-            else s + excess * (maximum_share - s) / headroom
+            maximum_share if s >= maximum_share else s + excess * (maximum_share - s) / headroom
             for s in shares
         ]
     # Renormalise to correct accumulated floating-point drift.
@@ -227,6 +229,7 @@ def trimmed_mean(values: Sequence[float], *, trim_fraction: float = 0.1) -> floa
 
     Raises:
         ValueError: If ``trim_fraction`` is not in ``[0, 0.5)``.
+
     """
     if not 0.0 <= trim_fraction < 0.5:
         raise ValueError("trim_fraction must be in [0, 0.5)")

@@ -1,0 +1,93 @@
+# Scheduled collection: fan out one job per venue, fan in to one aggregation job.
+#
+# A venue that fails records its failure inside its own CollectionResult and the job
+# still succeeds, so one exchange being down never cancels the others. Cron minutes
+# avoid :00, where GitHub queues the most scheduled work; they match
+# config/collection.yaml (schedule.cron_minutes).
+name: Collect
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One collection at a time. A queued run is dropped in favour of the newest, because a
+# stale snapshot published late is worse than a gap that is recorded honestly.
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      venues: ${{ steps.venues.outputs.venues }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      - id: venues
+        run: |
+          echo "venues=$(atlas exchanges --json | python -c 'import json,sys; print(json.dumps([r["slug"] for r in json.load(sys.stdin) if r["enabled"]]))')" >> "$GITHUB_OUTPUT"
+
+  collect:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        venue: ${{ fromJSON(needs.plan.outputs.venues) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      - name: Collect ${{ matrix.venue }}
+        run: atlas collect --exchange "${{ matrix.venue }}" --output collected
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: collected-${{ matrix.venue }}
+          path: collected/
+          retention-days: 2
+
+  aggregate:
+    needs: collect
+    # Aggregate even if some collection jobs died outright; the missing venues are
+    # simply absent, and the validity gate decides whether enough remain.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # create/update data releases; the only job that needs it
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: collected-*
+          path: collected
+          merge-multiple: true
+      - name: Build, validate and publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: atlas publish-github --input collected

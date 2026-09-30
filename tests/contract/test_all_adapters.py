@@ -9,6 +9,8 @@ Venue-specific semantics live in the per-venue test modules.
 
 from __future__ import annotations
 
+import contextlib
+
 import pytest
 
 from tests.conftest import RouteRecorder, make_client, venue_for
@@ -88,17 +90,13 @@ async def test_tickers_are_wellformed(slug: str, routes: RouteRecorder) -> None:
 
 
 @pytest.mark.parametrize("slug", ENABLED_SLUGS)
-async def test_collection_uses_a_small_number_of_requests(
-    slug: str, routes: RouteRecorder
-) -> None:
+async def test_collection_uses_a_small_number_of_requests(slug: str, routes: RouteRecorder) -> None:
     """Tier A must be bulk. A per-symbol adapter would blow this ceiling immediately."""
     adapter = build(slug, routes)
     await adapter.discover_instruments()
     await adapter.fetch_tickers()
-    try:
+    with contextlib.suppress(UnsupportedCapability):
         await adapter.fetch_derivatives()
-    except UnsupportedCapability:
-        pass
 
     ceiling = 40
     assert routes.request_count <= ceiling, (
@@ -161,12 +159,12 @@ async def test_order_books_are_ordered_and_uncrossed(slug: str, routes: RouteRec
     book = await adapter.fetch_order_book(BOOK_SYMBOLS[slug], depth=15)
 
     assert book.bids and book.asks, f"{slug} returned an empty order book"
-    assert [b.price for b in book.bids] == sorted(
-        (b.price for b in book.bids), reverse=True
-    ), "bids must be ordered best first"
-    assert [a.price for a in book.asks] == sorted(
-        a.price for a in book.asks
-    ), "asks must be ordered best first"
+    assert [b.price for b in book.bids] == sorted((b.price for b in book.bids), reverse=True), (
+        "bids must be ordered best first"
+    )
+    assert [a.price for a in book.asks] == sorted(a.price for a in book.asks), (
+        "asks must be ordered best first"
+    )
     assert not book.is_crossed, f"{slug} returned a crossed book"
     assert all(level.size > 0 for level in (*book.bids, *book.asks))
 
@@ -183,10 +181,8 @@ async def test_adapter_does_not_reach_for_unmocked_endpoints(
     adapter = build(slug, routes)
     await adapter.discover_instruments()
     await adapter.fetch_tickers()
-    try:
+    with contextlib.suppress(UnsupportedCapability):
         await adapter.fetch_derivatives()
-    except UnsupportedCapability:
-        pass
 
     assert routes.request_count > 0
     unmatched = [

@@ -72,6 +72,7 @@ def adapter_class(slug: str) -> type[ExchangeAdapter]:
 
     Raises:
         ConfigurationError: If no adapter is registered, listing the known slugs.
+
     """
     try:
         return ADAPTERS[slug]
@@ -92,6 +93,7 @@ def build_adapter(
         venue: The declared venue.
         base_url: Overrides the adapter's default host, for a regional endpoint.
         transport: Injected httpx transport, used by tests.
+
     """
     cls = adapter_class(venue.slug)
     client = ExchangeHttpClient(
@@ -110,6 +112,7 @@ def verify_registry_matches_configuration() -> None:
         ConfigurationError: If either side has a venue the other does not. Called at
             import time so that a half-finished adapter addition fails immediately
             rather than producing a generation missing a venue.
+
     """
     declared = set(load_exchange_registry().slugs())
     implemented = set(ADAPTERS)

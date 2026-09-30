@@ -68,6 +68,7 @@ class CanonicalAsset(AtlasModel):
         is_stablecoin: Whether the asset is issued as a value-tracking instrument.
             Used to build the quote-conversion graph, never to assume a price.
         is_fiat: Whether the asset is a government-issued currency.
+
     """
 
     asset_id: str

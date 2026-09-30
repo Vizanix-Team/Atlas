@@ -25,9 +25,18 @@ def test_lexer_recognises_keywords_case_insensitively() -> None:
     tokens = tokenise("select * from market where a and B or Not c")
     types = [t.type for t in tokens]
     assert types == [
-        TokenType.SELECT, TokenType.STAR, TokenType.FROM, TokenType.IDENT,
-        TokenType.WHERE, TokenType.IDENT, TokenType.AND, TokenType.IDENT,
-        TokenType.OR, TokenType.NOT, TokenType.IDENT, TokenType.EOF,
+        TokenType.SELECT,
+        TokenType.STAR,
+        TokenType.FROM,
+        TokenType.IDENT,
+        TokenType.WHERE,
+        TokenType.IDENT,
+        TokenType.AND,
+        TokenType.IDENT,
+        TokenType.OR,
+        TokenType.NOT,
+        TokenType.IDENT,
+        TokenType.EOF,
     ]
 
 
@@ -35,13 +44,19 @@ def test_lexer_distinguishes_operators() -> None:
     tokens = tokenise("a<>b != c <= d >= e < f > g = h")
     types = [t.type for t in tokens if t.type is not TokenType.IDENT]
     assert types == [
-        TokenType.NEQ, TokenType.NEQ, TokenType.LE, TokenType.GE,
-        TokenType.LT, TokenType.GT, TokenType.EQ, TokenType.EOF,
+        TokenType.NEQ,
+        TokenType.NEQ,
+        TokenType.LE,
+        TokenType.GE,
+        TokenType.LT,
+        TokenType.GT,
+        TokenType.EQ,
+        TokenType.EOF,
     ]
 
 
 def test_lexer_parses_string_literals_with_escapes() -> None:
-    tokens = tokenise(r"'it''s' 'a\'b' 'plain'")
+    tokenise(r"'it''s' 'a\'b' 'plain'")
     # Note: MQL uses backslash-escaping (\'), not SQL-standard doubled quotes; the
     # first literal here is two adjacent string tokens by design of this test's
     # deliberately awkward input, so only the escape-based literal is asserted on.
@@ -69,7 +84,11 @@ def test_parser_handles_the_documented_market_scan_example() -> None:
     )
     assert not query.select_star
     assert [item.name.name for item in query.select_items] == [
-        "asset", "reference_price", "venue_count", "funding_rate_8h_median", "open_interest_usd",
+        "asset",
+        "reference_price",
+        "venue_count",
+        "funding_rate_8h_median",
+        "open_interest_usd",
     ]
     assert query.source.name == "market"
     assert query.limit == 100
@@ -172,7 +191,8 @@ def test_semantic_rejects_duplicate_output_names() -> None:
 
 def test_semantic_resolves_every_column_in_the_registry() -> None:
     """Every column MQL exposes must actually be a declared metric or a plain
-    identity column (asset/asset_id/symbol), never a name nobody documented."""
+    identity column (asset/asset_id/symbol), never a name nobody documented.
+    """
     columns = market_table_columns()
     assert "reference_price" in columns
     assert columns["reference_price"].metric is not None
@@ -202,7 +222,8 @@ def test_compiler_output_never_contains_forbidden_sql_constructs() -> None:
     """The compiler's own output must never contain anything beyond a single SELECT:
     no semicolons, no PRAGMA, no ATTACH, no COPY, no multi-statement chaining -
     because there is nothing in the grammar that could produce them, but this locks
-    that invariant in explicitly."""
+    that invariant in explicitly.
+    """
     validated = validate(
         parse_query(
             "SELECT asset, reference_price FROM market WHERE venue_count >= 4 "
@@ -259,8 +280,12 @@ def sample_shard(tmp_path) -> list:
             columns[physical] = [None] * row_count
 
     frame = pl.DataFrame(
-        {name: pl.Series(name, values, dtype=pl.Float64 if all(v is None for v in values) else None)
-         for name, values in columns.items()}
+        {
+            name: pl.Series(
+                name, values, dtype=pl.Float64 if all(v is None for v in values) else None
+            )
+            for name, values in columns.items()
+        }
     )
     path = tmp_path / "assets-00.parquet"
     frame.write_parquet(path)
@@ -284,8 +309,11 @@ def test_engine_respects_limit(sample_shard) -> None:
 
 def test_engine_handles_null_reference_prices_without_a_type_error(sample_shard) -> None:
     """The unresolved asset's null price must not crash the engine or silently
-    become zero."""
-    result = run_query("SELECT asset, reference_price FROM market WHERE asset = 'ZZZ'", sample_shard)
+    become zero.
+    """
+    result = run_query(
+        "SELECT asset, reference_price FROM market WHERE asset = 'ZZZ'", sample_shard
+    )
     assert result.height == 1
     assert result["reference_price"][0] is None
 

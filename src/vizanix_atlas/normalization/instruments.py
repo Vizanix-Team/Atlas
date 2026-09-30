@@ -148,9 +148,7 @@ def normalise_instrument(
             instrument_type=instrument_type,
             instrument_class=raw.instrument_class,
             symbol_native=raw.symbol_native,
-            symbol_normalized=normalise_symbol(
-                raw.base_symbol_native, raw.quote_symbol_native
-            ),
+            symbol_normalized=normalise_symbol(raw.base_symbol_native, raw.quote_symbol_native),
             base_asset_id=base_asset_id,
             quote_asset_id=quote_asset_id,
             settlement_asset_id=settlement_asset_id,
@@ -239,7 +237,11 @@ class InstrumentIndex:
         self._collision_symbols: set[tuple[str, str]] = set()
 
         for instrument in instruments:
-            class_key = (instrument.venue_slug, instrument.instrument_class, instrument.symbol_native)
+            class_key = (
+                instrument.venue_slug,
+                instrument.instrument_class,
+                instrument.symbol_native,
+            )
             self._by_venue_class_symbol[class_key] = instrument
 
             symbol_key = (instrument.venue_slug, instrument.symbol_native)
@@ -292,9 +294,7 @@ class InstrumentIndex:
         unmatched than silently attached to the wrong market's volume and price.
         """
         if instrument_class is not None:
-            exact = self._by_venue_class_symbol.get(
-                (venue_slug, instrument_class, symbol_native)
-            )
+            exact = self._by_venue_class_symbol.get((venue_slug, instrument_class, symbol_native))
             if exact is not None:
                 return exact
             candidates = self._by_venue_symbol.get((venue_slug, symbol_native), [])
@@ -306,11 +306,11 @@ class InstrumentIndex:
                 if len(non_spot) == 1:
                     return non_spot[0]
 
-        candidates = self._by_venue_symbol.get((venue_slug, symbol_native))
-        if not candidates:
+        all_candidates = self._by_venue_symbol.get((venue_slug, symbol_native))
+        if not all_candidates:
             return None
-        if len(candidates) == 1:
-            return candidates[0]
+        if len(all_candidates) == 1:
+            return all_candidates[0]
         return None
 
     def has_collision(self, venue_slug: str, symbol_native: str) -> bool:
@@ -341,6 +341,7 @@ class InstrumentIndex:
 
         Raises:
             SchemaMismatch: If no such instrument exists in this generation.
+
         """
         instrument = self._by_id.get(identifier)
         if instrument is None:

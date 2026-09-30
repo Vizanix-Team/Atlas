@@ -227,11 +227,19 @@ def test_conversion_is_deterministic_regardless_of_observation_order(resolver, q
 def test_edge_cost_prefers_a_directly_quoted_rate(quality) -> None:
     """When both a quoted and an inverted edge reach USD, the quoted one wins."""
     direct = RateEdge(
-        from_asset_id="asset:x", to_asset_id=USD_ASSET_ID, rate=1.0,
-        venue_slug="a", observed_at=OBSERVED_AT, inverted=False,
+        from_asset_id="asset:x",
+        to_asset_id=USD_ASSET_ID,
+        rate=1.0,
+        venue_slug="a",
+        observed_at=OBSERVED_AT,
+        inverted=False,
     )
     inverted = RateEdge(
-        from_asset_id="asset:x", to_asset_id=USD_ASSET_ID, rate=1.0,
-        venue_slug="a", observed_at=OBSERVED_AT, inverted=True,
+        from_asset_id="asset:x",
+        to_asset_id=USD_ASSET_ID,
+        rate=1.0,
+        venue_slug="a",
+        observed_at=OBSERVED_AT,
+        inverted=True,
     )
     assert direct.cost < inverted.cost

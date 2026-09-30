@@ -254,7 +254,8 @@ class GateioAdapter(ExchangeAdapter):
                             plausible_epoch_ms(next_apply * 1000) if next_apply else None
                         ),
                         open_interest_raw=(
-                            float(position_size) if position_size is not None and position_size >= 0
+                            float(position_size)
+                            if position_size is not None and position_size >= 0
                             else None
                         ),
                         open_interest_unit=(

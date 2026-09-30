@@ -26,7 +26,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Final
 
-from vizanix_atlas.core.atlas_time import utc_now, to_epoch_ms
+from vizanix_atlas.core.atlas_time import to_epoch_ms, utc_now
 from vizanix_atlas.core.config import QualityConfig
 from vizanix_atlas.core.identifiers import fiat_asset_id
 from vizanix_atlas.core.logging import get_logger
@@ -56,6 +56,7 @@ class RateEdge:
         inverted: Whether this edge was derived by inverting an observed rate. An
             inverse is arithmetically exact, so it is not a weaker measurement, but it
             is recorded so provenance says what was quoted.
+
     """
 
     from_asset_id: str
@@ -158,7 +159,10 @@ class ConversionGraph:
         deviation_bps = (rate - 1.0) * 10_000.0
         # A stablecoin whose observed rate is far from parity is refused rather than
         # used. The deviation is still reported so a genuine depeg is visible.
-        if asset_id in self._stablecoins and abs(deviation_bps) > self.quality.max_stablecoin_deviation_bps:
+        if (
+            asset_id in self._stablecoins
+            and abs(deviation_bps) > self.quality.max_stablecoin_deviation_bps
+        ):
             _log.warning(
                 "refusing a stablecoin conversion that is too far from parity",
                 extra={
@@ -217,9 +221,7 @@ class ConversionGraph:
                 if next_cost < best.get(edge.to_asset_id, float("inf")):
                     best[edge.to_asset_id] = next_cost
                     counter += 1
-                    heapq.heappush(
-                        queue, (next_cost, counter, edge.to_asset_id, [*path, edge])
-                    )
+                    heapq.heappush(queue, (next_cost, counter, edge.to_asset_id, [*path, edge]))
         return None
 
     def edge_count(self) -> int:

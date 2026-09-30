@@ -59,6 +59,7 @@ def select_for_books(
 
     Returns:
         A mapping of venue slug to the venue's selected native symbols, both sorted.
+
     """
     eligible = [
         candidate

@@ -65,27 +65,32 @@ class Publisher(Protocol):
         self, generation_id: str, manifest: GenerationManifest
     ) -> None:
         """Publish a generation's manifest. Called only after every file it
-        references has been uploaded and verified."""
+        references has been uploaded and verified.
+        """
         ...
 
     async def read_latest_pointer(self) -> LatestPointer | None:
         """Return the current ``latest`` pointer, or ``None`` if none has ever been
-        published."""
+        published.
+        """
         ...
 
     async def publish_latest_pointer(self, pointer: LatestPointer) -> None:
         """Advance the ``latest`` pointer. The last write in the publication
-        sequence; see ``docs/STORAGE.md`` section 8."""
+        sequence; see ``docs/STORAGE.md`` section 8.
+        """
         ...
 
     async def list_generation_ids(self) -> tuple[str, ...]:
         """Return every generation with a published manifest, for housekeeping and
-        recovery."""
+        recovery.
+        """
         ...
 
     async def delete_generation_file(self, generation_id: str, filename: str) -> None:
         """Remove one file from a generation. Used by housekeeping only, and only
-        under the guard rails in ``config/retention.yaml``."""
+        under the guard rails in ``config/retention.yaml``.
+        """
         ...
 
 
@@ -122,7 +127,7 @@ class FilesystemPublisher:
         """Copy a file into the generation's directory."""
         destination = self._generation_dir(generation_id) / filename
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(local_path.read_bytes())
+        destination.write_bytes(local_path.read_bytes())  # noqa: ASYNC240 - local test publisher
 
     async def read_generation_manifest(self, generation_id: str) -> GenerationManifest | None:
         """Read a generation's manifest, if one was published."""
@@ -135,7 +140,8 @@ class FilesystemPublisher:
         self, generation_id: str, manifest: GenerationManifest
     ) -> None:
         """Write the manifest. Published last among a generation's own files, but
-        still before the ``latest`` pointer can reference it."""
+        still before the ``latest`` pointer can reference it.
+        """
         path = self._generation_dir(generation_id) / MANIFEST_FILENAME
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(manifest.model_dump_json(indent=2), encoding="utf-8")
@@ -220,6 +226,7 @@ class GitHubReleasePublisher:
         Raises:
             PublicationFailure: If GitHub refuses the lookup or the creation for a
                 reason other than "not found".
+
         """
         response = await self._api.get(f"/repos/{self.owner}/{self.repo}/releases/tags/{tag}")
         if response.status_code == 200:
@@ -241,7 +248,10 @@ class GitHubReleasePublisher:
         )
         if created.status_code != 201:
             raise PublicationFailure(
-                "could not create release", tag=tag, status=created.status_code, body=created.text[:300]
+                "could not create release",
+                tag=tag,
+                status=created.status_code,
+                body=created.text[:300],
             )
         return int(created.json()["id"])
 
@@ -310,7 +320,7 @@ class GitHubReleasePublisher:
         await self._upload_asset(
             release_id,
             filename,
-            local_path.read_bytes(),
+            local_path.read_bytes(),  # noqa: ASYNC240 - bounded by max_single_asset_bytes
             content_type=self._content_type(filename),
         )
 
@@ -359,7 +369,8 @@ class GitHubReleasePublisher:
 
     async def publish_latest_pointer(self, pointer: LatestPointer) -> None:
         """Advance the pointer. The last call in a publish; see
-        :mod:`vizanix_atlas.publishing.publish`."""
+        :mod:`vizanix_atlas.publishing.publish`.
+        """
         release_id = await self._find_or_create_release(DATA_LATEST_TAG)
         await self._upload_asset(
             release_id,
@@ -379,9 +390,7 @@ class GitHubReleasePublisher:
                 params={"per_page": 100, "page": page},
             )
             if response.status_code != 200:
-                raise PublicationFailure(
-                    "could not list releases", status=response.status_code
-                )
+                raise PublicationFailure("could not list releases", status=response.status_code)
             page_releases = response.json()
             if not page_releases:
                 break

@@ -1,0 +1,46 @@
+# Compacts yesterday's 15-minute generations into one verified daily release
+# (atlas-data-YYYY-MM-DD). Missed windows are recorded in daily-report.json and never
+# interpolated. Re-running for the same day is safe: uploads replace same-named assets.
+name: Compact daily
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      day:
+        description: "UTC day to compact (YYYY-MM-DD). Defaults to yesterday."
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compact-daily
+  cancel-in-progress: false
+
+jobs:
+  compact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      - name: Compact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DAY: ${{ inputs.day }}
+        run: |
+          if [ -n "$DAY" ]; then
+            atlas compact-day --day "$DAY"
+          else
+            atlas compact-day
+          fi

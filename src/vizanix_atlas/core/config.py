@@ -49,6 +49,7 @@ def config_dir(explicit: Path | None = None) -> Path:
         ConfigurationError: If no candidate directory exists. The message lists
             every location tried, because a missing config directory is otherwise a
             confusing failure.
+
     """
     candidates: list[Path] = []
     if explicit is not None:
@@ -72,6 +73,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
     Raises:
         ConfigurationError: If the file is missing, unparseable, or not a mapping.
+
     """
     if not path.is_file():
         raise ConfigurationError("configuration file not found", path=str(path))
@@ -100,13 +102,12 @@ class ExchangeRegistry(AtlasModel):
 
         Raises:
             ConfigurationError: If no such venue is declared.
+
         """
         for venue in self.venues:
             if venue.slug == slug:
                 return venue
-        raise ConfigurationError(
-            "unknown venue", slug=slug, known=[v.slug for v in self.venues]
-        )
+        raise ConfigurationError("unknown venue", slug=slug, known=[v.slug for v in self.venues])
 
     def enabled(self) -> tuple[Venue, ...]:
         """Return enabled venues, ordered by priority band then slug.
@@ -156,7 +157,7 @@ def _build_venue(raw: dict[str, Any], defaults: dict[str, Any]) -> Venue:
     try:
         capabilities = VenueCapabilities(**capabilities_raw)
         rate_limit = RateLimitPolicy(**rate_limit_raw)
-    except Exception as exc:  # noqa: BLE001 - re-raised as a configuration error below
+    except Exception as exc:
         raise ConfigurationError("invalid venue configuration", slug=slug, detail=str(exc)) from exc
 
     return Venue(
@@ -201,6 +202,7 @@ def load_exchange_registry(path: Path | None = None) -> ExchangeRegistry:
     Raises:
         ConfigurationError: If the document is malformed, a slug is duplicated, or
             an enabled venue declares no way to collect in bulk.
+
     """
     resolved = path or (config_dir() / "exchanges.yaml")
     document = _load_yaml(resolved)
@@ -433,12 +435,13 @@ def load_collection_config(path: Path | None = None) -> CollectionConfig:
 
     Raises:
         ConfigurationError: If the document is malformed or internally inconsistent.
+
     """
     resolved = path or (config_dir() / "collection.yaml")
     document = _load_yaml(resolved)
     try:
         return CollectionConfig(**document)
-    except Exception as exc:  # noqa: BLE001 - re-raised as a configuration error
+    except Exception as exc:
         raise ConfigurationError(
             "invalid collection configuration", path=str(resolved), detail=str(exc)
         ) from exc
@@ -498,9 +501,7 @@ class HousekeepingConfig(AtlasModel):
         for allowed in self.require_tag_prefix:
             for denied in self.never_delete_tag_prefix:
                 if allowed.startswith(denied) or denied.startswith(allowed):
-                    raise ValueError(
-                        f"tag prefix {allowed!r} overlaps protected prefix {denied!r}"
-                    )
+                    raise ValueError(f"tag prefix {allowed!r} overlaps protected prefix {denied!r}")
         return self
 
 
@@ -520,12 +521,13 @@ def load_retention_config(path: Path | None = None) -> RetentionConfig:
 
     Raises:
         ConfigurationError: If the document is malformed or its guard rails are unsafe.
+
     """
     resolved = path or (config_dir() / "retention.yaml")
     document = _load_yaml(resolved)
     try:
         return RetentionConfig(**document)
-    except Exception as exc:  # noqa: BLE001 - re-raised as a configuration error
+    except Exception as exc:
         raise ConfigurationError(
             "invalid retention configuration", path=str(resolved), detail=str(exc)
         ) from exc
@@ -627,6 +629,7 @@ def _split_provenance(raw: dict[str, Any], *, context: str) -> dict[str, Any]:
     Raises:
         ConfigurationError: If any provenance field is missing. Enforced at load
             time so an unexplained override cannot be merged.
+
     """
     missing = [field for field in _PROVENANCE_FIELDS if not raw.get(field)]
     if missing:
@@ -651,6 +654,7 @@ def load_override_config(path: Path | None = None) -> OverrideConfig:
 
     Raises:
         ConfigurationError: If an entry is malformed or lacks provenance.
+
     """
     resolved = path or (config_dir() / "asset_overrides.yaml")
     document = _load_yaml(resolved)
@@ -676,7 +680,7 @@ def load_override_config(path: Path | None = None) -> OverrideConfig:
         )
     except ConfigurationError:
         raise
-    except Exception as exc:  # noqa: BLE001 - re-raised as a configuration error
+    except Exception as exc:
         raise ConfigurationError(
             "invalid override configuration", path=str(resolved), detail=str(exc)
         ) from exc

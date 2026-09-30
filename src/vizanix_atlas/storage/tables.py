@@ -12,73 +12,152 @@ to produce the row.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
+from typing import Any
 
 import polars as pl
 
 from vizanix_atlas.core.identifiers import shard_for
-from vizanix_atlas.discovery.pipeline import Generation
 from vizanix_atlas.models.asset import AssetAlias, AssetRelationship, CanonicalAsset
 from vizanix_atlas.models.instrument import Instrument
 from vizanix_atlas.models.observations import AdapterHealth
 from vizanix_atlas.models.quality import QualityEvent
-from vizanix_atlas.models.state import AssetStateBundle
+from vizanix_atlas.models.state import AssetStateBundle, MarketState
 from vizanix_atlas.storage.flatten import flatten_model, flatten_models
 
 #: Canonical column order for each published table. Declared once here rather than
 #: left to whatever order a flattened dict produces, so that the same generation
 #: always serialises byte-identical Parquet (see docs/METHODOLOGY.md on determinism).
 ASSET_COLUMNS: tuple[str, ...] = (
-    "asset_id", "symbol", "name", "chain_slug", "chain_id", "contract_address",
-    "resolution_state", "is_stablecoin", "is_fiat", "tracks_asset_id",
-    "first_seen_at", "last_seen_at", "venue_count",
+    "asset_id",
+    "symbol",
+    "name",
+    "chain_slug",
+    "chain_id",
+    "contract_address",
+    "resolution_state",
+    "is_stablecoin",
+    "is_fiat",
+    "tracks_asset_id",
+    "first_seen_at",
+    "last_seen_at",
+    "venue_count",
 )
 ASSET_ALIAS_COLUMNS: tuple[str, ...] = (
-    "asset_id", "venue_slug", "venue_symbol", "resolution_state", "evidence",
+    "asset_id",
+    "venue_slug",
+    "venue_symbol",
+    "resolution_state",
+    "evidence",
     "confidence_note",
 )
 ASSET_RELATIONSHIP_COLUMNS: tuple[str, ...] = (
-    "from_asset_id", "to_asset_id", "relationship", "source", "note",
+    "from_asset_id",
+    "to_asset_id",
+    "relationship",
+    "source",
+    "note",
 )
 INSTRUMENT_COLUMNS: tuple[str, ...] = (
-    "instrument_id", "venue_slug", "instrument_type", "instrument_class",
-    "symbol_native", "symbol_normalized", "base_asset_id", "quote_asset_id",
-    "settlement_asset_id", "underlying_asset_id", "contract_type",
-    "contract_multiplier", "contract_value_asset_id", "settlement_period",
-    "tick_size", "quantity_step", "minimum_quantity", "minimum_notional",
-    "expiry", "strike", "option_type", "funding_interval_hours",
-    "funding_semantics", "open_interest_unit", "active", "listing_time",
-    "delisting_time", "first_seen_at", "last_seen_at",
+    "instrument_id",
+    "venue_slug",
+    "instrument_type",
+    "instrument_class",
+    "symbol_native",
+    "symbol_normalized",
+    "base_asset_id",
+    "quote_asset_id",
+    "settlement_asset_id",
+    "underlying_asset_id",
+    "contract_type",
+    "contract_multiplier",
+    "contract_value_asset_id",
+    "settlement_period",
+    "tick_size",
+    "quantity_step",
+    "minimum_quantity",
+    "minimum_notional",
+    "expiry",
+    "strike",
+    "option_type",
+    "funding_interval_hours",
+    "funding_semantics",
+    "open_interest_unit",
+    "active",
+    "listing_time",
+    "delisting_time",
+    "first_seen_at",
+    "last_seen_at",
 )
 ADAPTER_HEALTH_COLUMNS: tuple[str, ...] = (
-    "venue_slug", "status", "duration_ms", "requests_attempted",
-    "requests_successful", "timeouts", "rate_limit_responses",
-    "application_errors", "parse_failures", "http_errors", "instrument_count",
-    "ticker_count", "derivative_observation_count", "order_book_count",
-    "bytes_received", "circuit_opened", "error_types", "unknown_enum_values",
-    "notes", "clock_skew_ms",
+    "venue_slug",
+    "status",
+    "duration_ms",
+    "requests_attempted",
+    "requests_successful",
+    "timeouts",
+    "rate_limit_responses",
+    "application_errors",
+    "parse_failures",
+    "http_errors",
+    "instrument_count",
+    "ticker_count",
+    "derivative_observation_count",
+    "order_book_count",
+    "bytes_received",
+    "circuit_opened",
+    "error_types",
+    "unknown_enum_values",
+    "notes",
+    "clock_skew_ms",
 )
 QUALITY_EVENT_COLUMNS: tuple[str, ...] = (
-    "generation_id", "venue_slug", "instrument_id", "asset_id", "event_type",
-    "severity", "detail", "observed_at",
+    "generation_id",
+    "venue_slug",
+    "instrument_id",
+    "asset_id",
+    "event_type",
+    "severity",
+    "detail",
+    "observed_at",
 )
 VENUE_ASSET_STATE_COLUMNS: tuple[str, ...] = (
-    "asset_id", "venue_slug", "observed_at", "price_usd", "price_source",
-    "deviation_bps", "reference_weight", "spread_bps",
-    "reported_base_volume_24h", "reported_quote_volume_24h",
-    "reported_volume_24h_usd", "volume_share", "liquidity_share",
-    "depth_50bps_usd", "funding_rate_raw", "funding_interval_hours",
-    "funding_rate_8h", "mark_price_usd", "index_price_usd",
-    "open_interest_raw", "open_interest_usd", "instrument_count",
-    "conversion__from_asset_id", "conversion__to_asset_id", "conversion__rate",
-    "conversion__method", "conversion__observed_at",
-    "conversion__source_venue_slug", "conversion__path",
+    "asset_id",
+    "venue_slug",
+    "observed_at",
+    "price_usd",
+    "price_source",
+    "deviation_bps",
+    "reference_weight",
+    "spread_bps",
+    "reported_base_volume_24h",
+    "reported_quote_volume_24h",
+    "reported_volume_24h_usd",
+    "volume_share",
+    "liquidity_share",
+    "depth_50bps_usd",
+    "funding_rate_raw",
+    "funding_interval_hours",
+    "funding_rate_8h",
+    "mark_price_usd",
+    "index_price_usd",
+    "open_interest_raw",
+    "open_interest_usd",
+    "instrument_count",
+    "conversion__from_asset_id",
+    "conversion__to_asset_id",
+    "conversion__rate",
+    "conversion__method",
+    "conversion__observed_at",
+    "conversion__source_venue_slug",
+    "conversion__path",
     "conversion__deviation_from_parity_bps",
-    "included_in_reference_price", "exclusion_reason",
+    "included_in_reference_price",
+    "exclusion_reason",
 )
 
 
-def _frame(rows: Sequence[dict], columns: tuple[str, ...]) -> pl.DataFrame:
+def _frame(rows: Sequence[dict[str, Any]], columns: tuple[str, ...]) -> pl.DataFrame:
     """Build a DataFrame with an exact, stable column order.
 
     Every declared column is present even when every row happened to omit it (an empty
@@ -159,7 +238,7 @@ def market_state_columns(bundles: Sequence[AssetStateBundle]) -> tuple[str, ...]
 #: itself - which this dict calls rather than re-deriving, so the published value and
 #: ``btc.state().volume.reported_volume_24h_usd`` (the SDK's in-Python view) can never
 #: drift apart.
-_COMPUTED_COLUMNS: dict[str, object] = {
+_COMPUTED_COLUMNS: dict[str, Callable[[MarketState], object]] = {
     "reported_volume_24h_usd": lambda state: state.volume.reported_volume_24h_usd,
     "venue_count": lambda state: state.venue_count,
     "is_partial": lambda state: state.is_partial,

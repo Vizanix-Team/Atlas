@@ -128,6 +128,7 @@ class ExchangeHttpClient:
             base_url: Prefix for relative request paths.
             policy: The venue's rate-limit and timeout settings.
             transport: Injected for tests, so the suite never needs a real socket.
+
         """
         self.venue_slug = venue_slug
         self.base_url = base_url.rstrip("/")
@@ -194,6 +195,7 @@ class ExchangeHttpClient:
         Raises:
             AtlasError: A subclass describing what went wrong. Never a bare
                 exception, so callers can classify without inspecting strings.
+
         """
         return await self._request_json(
             "GET", path, params=params, json_body=None, operation=operation, max_bytes=max_bytes
@@ -301,6 +303,7 @@ class ExchangeHttpClient:
 
         Raises:
             AtlasError: Classified from the transport failure or the response.
+
         """
         self.metrics.attempted += 1
         request = self._client.build_request(method, path, params=params, json=json_body)
@@ -320,9 +323,7 @@ class ExchangeHttpClient:
                 raise DnsFailure(
                     "hostname could not be resolved", venue=self.venue_slug, path=path
                 ) from exc
-            raise ConnectionFailure(
-                "connection failed", venue=self.venue_slug, path=path
-            ) from exc
+            raise ConnectionFailure("connection failed", venue=self.venue_slug, path=path) from exc
         except httpx.HTTPError as exc:
             raise ConnectionFailure(
                 "transport error", venue=self.venue_slug, path=path, detail=str(exc)
@@ -367,6 +368,7 @@ class ExchangeHttpClient:
         Raises:
             ResponseTooLarge: If the body exceeds ``budget``.
             ConnectionFailure: If the stream is cut off mid-transfer.
+
         """
         chunks: list[bytes] = []
         total = 0
@@ -400,6 +402,7 @@ class ExchangeHttpClient:
             GeoRestricted: On ``403`` or ``451``, which venues use for jurisdiction
                 refusals.
             HttpError: On any other unsuccessful status.
+
         """
         status = response.status_code
         if status < 400:

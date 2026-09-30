@@ -82,8 +82,7 @@ class FakeGitHub:
             return httpx.Response(
                 200,
                 json=[
-                    {"id": a["id"], "name": a["name"], "url": a["url"]}
-                    for a in release["assets"]
+                    {"id": a["id"], "name": a["name"], "url": a["url"]} for a in release["assets"]
                 ],
             )
 
@@ -173,7 +172,8 @@ async def test_re_uploading_the_same_filename_replaces_rather_than_fails(
     publisher: GitHubReleasePublisher, fake_github: FakeGitHub, tmp_path
 ) -> None:
     """GitHub's upload endpoint rejects a name collision (422); a retried publish
-    of the same generation must delete the stale asset first."""
+    of the same generation must delete the stale asset first.
+    """
     first = tmp_path / "manifest.json"
     first.write_text('{"version": 1}', encoding="utf-8")
     await publisher.upload_generation_file("gen1", "manifest.json", first)
@@ -195,8 +195,11 @@ async def test_latest_pointer_uses_the_data_latest_tag(
     from vizanix_atlas.models.manifest import LatestPointer
 
     pointer = LatestPointer(
-        schema_version="1.0.0", generation_id="gen1", generated_at="2026-09-27T18:45:00Z",
-        manifest_filename="manifest.json", manifest_sha256="a" * 64,
+        schema_version="1.0.0",
+        generation_id="gen1",
+        generated_at="2026-09-27T18:45:00Z",
+        manifest_filename="manifest.json",
+        manifest_sha256="a" * 64,
         release_tag="atlas-data-gen1",
     )
     await publisher.publish_latest_pointer(pointer)
@@ -213,10 +216,16 @@ async def test_manifest_round_trips_through_the_fake_release(
     from vizanix_atlas.models.manifest import BuildProvenance, GenerationManifest, VenueOutcome
 
     manifest = GenerationManifest(
-        dataset_format_version="1.0.0", schema_version="1.0.0", methodology_version="1.0.0",
-        software_version="0.1.0", generation_id="gen1", slot_label="20260927T184500Z",
-        collection_started_at="2026-09-27T18:45:00Z", collection_finished_at="2026-09-27T18:46:00Z",
-        snapshot_effective_time="2026-09-27T18:45:00Z", venues=VenueOutcome(attempted=5, successful=5),
+        dataset_format_version="1.0.0",
+        schema_version="1.0.0",
+        methodology_version="1.0.0",
+        software_version="0.1.0",
+        generation_id="gen1",
+        slot_label="20260927T184500Z",
+        collection_started_at="2026-09-27T18:45:00Z",
+        collection_finished_at="2026-09-27T18:46:00Z",
+        snapshot_effective_time="2026-09-27T18:45:00Z",
+        venues=VenueOutcome(attempted=5, successful=5),
         build=BuildProvenance(software_version="0.1.0"),
     )
     await publisher.publish_generation_manifest("gen1", manifest)

@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from vizanix_atlas.core.atlas_time import from_epoch_ms, utc_now
 from vizanix_atlas.core.config import QualityConfig
 from vizanix_atlas.core.logging import get_logger
-from vizanix_atlas.models.enums import ExclusionReason, InstrumentType
+from vizanix_atlas.models.enums import ExclusionReason
 from vizanix_atlas.models.instrument import Instrument
 from vizanix_atlas.models.observations import RawOrderBook, RawTicker
 from vizanix_atlas.models.quality import QualityEvent
@@ -156,9 +156,7 @@ class ObservationValidator:
 
         return self._check_freshness(ticker, reference_ms=reference_ms)
 
-    def _check_freshness(
-        self, ticker: RawTicker, *, reference_ms: int | None
-    ) -> ValidationOutcome:
+    def _check_freshness(self, ticker: RawTicker, *, reference_ms: int | None) -> ValidationOutcome:
         """Reject an observation too old to describe the current snapshot.
 
         Only venue-supplied times are judged. A venue that publishes no timestamp cannot
@@ -170,9 +168,7 @@ class ObservationValidator:
         if venue_time is None:
             return ValidationOutcome.ok()
 
-        reference = (
-            from_epoch_ms(reference_ms) if reference_ms is not None else utc_now()
-        )
+        reference = from_epoch_ms(reference_ms) if reference_ms is not None else utc_now()
         age = (reference - from_epoch_ms(venue_time)).total_seconds()
         if age > self.quality.max_observation_age_seconds:
             return ValidationOutcome.rejected(
@@ -209,9 +205,7 @@ class ObservationValidator:
             )
         return ValidationOutcome.ok()
 
-    def check_deviation(
-        self, price: float, centre: float
-    ) -> ValidationOutcome:
+    def check_deviation(self, price: float, centre: float) -> ValidationOutcome:
         """Reject a price too far from the provisional cross-venue centre.
 
         Runs after a provisional robust centre exists, so the comparison is against the
@@ -231,9 +225,9 @@ class ObservationValidator:
         return ValidationOutcome.ok()
 
 
-def deduplicate_instruments(instruments: Sequence[Instrument]) -> tuple[
-    tuple[Instrument, ...], tuple[Instrument, ...]
-]:
+def deduplicate_instruments(
+    instruments: Sequence[Instrument],
+) -> tuple[tuple[Instrument, ...], tuple[Instrument, ...]]:
     """Split instruments into those to count and those that would double-count.
 
     A venue that lists the same asset pair as both a spot market and a margin market, or
@@ -246,6 +240,7 @@ def deduplicate_instruments(instruments: Sequence[Instrument]) -> tuple[
 
     Returns:
         The instruments to use, and the duplicates that were set aside.
+
     """
     seen: dict[tuple[str, str, str, str, int | None, float | None], Instrument] = {}
     duplicates: list[Instrument] = []
@@ -293,6 +288,7 @@ def validated_tickers(
     Returns:
         The accepted ``(ticker, instrument)`` pairs, and the number considered. The
         difference between the two is exactly the number quarantined.
+
     """
     accepted: list[tuple[RawTicker, Instrument]] = []
     considered = 0

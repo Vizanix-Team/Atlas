@@ -25,6 +25,7 @@ class AtlasError(Exception):
         counts_against_health: Whether the condition reflects on the venue's
             observed availability. Programming errors and configuration errors do
             not, because attributing them to a venue would be misleading.
+
     """
 
     retryable: bool = False
@@ -98,6 +99,7 @@ class RateLimited(TransportError):
     Attributes:
         retry_after_seconds: The venue's own instruction when it supplied one.
             Atlas honours it in preference to its own backoff schedule.
+
     """
 
     retryable = True
@@ -186,6 +188,7 @@ class InvalidObservation(AtlasError):
     Attributes:
         reason: A stable exclusion reason recorded alongside the derived state so
             that every dropped observation remains auditable.
+
     """
 
     counts_against_health = False
@@ -244,6 +247,7 @@ class MqlSyntaxError(MqlError):
 
     Attributes:
         position: Zero-based offset into the query text, for caret rendering.
+
     """
 
     def __init__(self, message: str, /, position: int | None = None, **context: Any) -> None:
@@ -288,6 +292,7 @@ class AmbiguousAsset(AtlasError):
 
     Attributes:
         candidates: The matching canonical asset IDs, so the caller can choose.
+
     """
 
     counts_against_health = False

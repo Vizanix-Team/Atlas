@@ -26,7 +26,7 @@ _log = get_logger(__name__)
 # Backoff is seeded from a dedicated generator so that jitter never depends on,
 # nor perturbs, the global random state. Analytics must stay deterministic; only
 # retry timing is randomised, and it never influences published values.
-_jitter = random.Random(0x41544C4153)  # noqa: S311 - timing jitter, not cryptography
+_jitter = random.Random(0x41544C4153)
 
 
 class TokenBucket:
@@ -58,6 +58,7 @@ class TokenBucket:
         Raises:
             ValueError: If more tokens are requested than the bucket can ever hold,
                 which would otherwise deadlock.
+
         """
         if tokens > self._capacity:
             raise ValueError(
@@ -113,6 +114,7 @@ class CircuitBreaker:
 
         Raises:
             CircuitOpen: While the breaker is open and the cooldown has not elapsed.
+
         """
         if self.opened_at is None:
             return
@@ -171,6 +173,7 @@ def backoff_delay(
         base_seconds: Delay for the first retry, before jitter.
         max_seconds: Ceiling, so a long retry chain cannot consume a job timeout.
         retry_after: The venue's instruction, in seconds, if it gave one.
+
     """
     if retry_after is not None and retry_after >= 0:
         return min(retry_after, max_seconds)

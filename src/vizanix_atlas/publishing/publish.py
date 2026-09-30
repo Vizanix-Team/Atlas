@@ -31,7 +31,11 @@ from vizanix_atlas.core.errors import ChecksumMismatch, PublicationFailure
 from vizanix_atlas.core.logging import get_logger
 from vizanix_atlas.discovery.pipeline import Generation
 from vizanix_atlas.models.manifest import FileEntry, GenerationManifest, LatestPointer
-from vizanix_atlas.publishing.manifest import build_file_entries, build_latest_pointer, build_manifest
+from vizanix_atlas.publishing.manifest import (
+    build_file_entries,
+    build_latest_pointer,
+    build_manifest,
+)
 from vizanix_atlas.publishing.publisher import Publisher
 from vizanix_atlas.publishing.validator import ValidationReport, run_validity_gate
 from vizanix_atlas.storage.writer import WrittenFile, sha256_file
@@ -70,6 +74,7 @@ async def _verify_uploads(
     Raises:
         ChecksumMismatch: If a re-read of any file differs from what was written to
             local disk before upload.
+
     """
     for file in written:
         local_hash = sha256_file(dataset_dir / file.filename)
@@ -106,6 +111,7 @@ async def publish_generation(
         release_tag: The release tag this generation's files belong to
             (``atlas-data-<generation_id>``).
         shard_indices: Maps sharded file names to their shard index, for the manifest.
+
     """
     previous_pointer = await publisher.read_latest_pointer()
     previous_manifest = (

@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from vizanix_atlas.core.metrics_registry import REGISTRY, Metric, Scope
+from vizanix_atlas.core.metrics_registry import REGISTRY, Metric
 
 #: MQL's ``market`` table exposes one row per asset. Each entry maps a metric name (as
 #: written in a query) to the physical column name in the published
@@ -111,7 +111,8 @@ class ColumnInfo:
 
 def _registry_metric(name: str) -> Metric | None:
     """Look up ``name`` in the metric registry, tolerating a name MQL adds itself
-    (``asset``) that the registry does not declare under exactly that spelling."""
+    (``asset``) that the registry does not declare under exactly that spelling.
+    """
     try:
         return REGISTRY.get(name)
     except Exception:  # noqa: BLE001 - REGISTRY.get raises MetricUnknown; absence is fine here

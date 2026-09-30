@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from datetime import timedelta
 from pathlib import Path
 from typing import Annotated
 
@@ -18,8 +19,12 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from vizanix_atlas.core.atlas_time import to_epoch_ms, utc_now
-from vizanix_atlas.core.config import load_collection_config, load_exchange_registry
+from vizanix_atlas.core.atlas_time import day_label, to_epoch_ms, utc_now
+from vizanix_atlas.core.config import (
+    load_collection_config,
+    load_exchange_registry,
+    load_retention_config,
+)
 from vizanix_atlas.core.errors import AtlasError
 from vizanix_atlas.core.versions import (
     DATASET_FORMAT_VERSION,
@@ -29,17 +34,25 @@ from vizanix_atlas.core.versions import (
 )
 from vizanix_atlas.discovery.collector import CollectionRequest, collect_venue
 from vizanix_atlas.discovery.pipeline import build_generation
-from vizanix_atlas.models.manifest import GenerationManifest
+from vizanix_atlas.models.manifest import DailyCompactionReport, GenerationManifest
 from vizanix_atlas.models.observations import CollectionResult
+from vizanix_atlas.publishing.daily import compact_day
 from vizanix_atlas.publishing.publish import publish_generation
-from vizanix_atlas.publishing.publisher import FilesystemPublisher
+from vizanix_atlas.publishing.publisher import (
+    FilesystemPublisher,
+    GitHubReleasePublisher,
+    Publisher,
+)
+from vizanix_atlas.publishing.retention import find_candidates
 from vizanix_atlas.publishing.validator import (
     validate_checksums,
     validate_row_counts,
     validate_schema,
 )
 from vizanix_atlas.sdk.client import Atlas
+from vizanix_atlas.sdk.remote import ReleaseDownloader
 from vizanix_atlas.storage.dataset_builder import build_dataset_files
+from vizanix_atlas.storage.housekeeping import ExecutionReport, execute_cleanup, plan_cleanup
 
 app = typer.Typer(
     name="atlas",
@@ -373,16 +386,12 @@ def aggregate(
     console.print(f"quarantine        {generation.quarantine_summary}")
 
 
-@app.command(name="build-dataset")
-def build_dataset(
-    input_dir: Annotated[
-        Path, typer.Option("--input", help="Directory of per-venue CollectionResult JSON files.")
-    ],
-    output: Annotated[
-        Path, typer.Option("--output", help="Directory to publish the dataset into.")
-    ],
-) -> None:
-    """Build and locally publish a complete dataset generation from collected results."""
+def _build_and_publish(input_dir: Path, staging_root: Path, publisher: Publisher) -> None:
+    """Build a generation from collected results and offer it to ``publisher``.
+
+    Exits non-zero when the validity gate refuses the generation, so a workflow can
+    surface "the previous generation remains canonical" instead of reporting success.
+    """
     results = _read_collection_results(input_dir)
     if not results:
         error_console.print(
@@ -392,10 +401,8 @@ def build_dataset(
     config = load_collection_config()
     generation = build_generation(results, config=config)
 
-    staging_dir = output / ".staging" / generation.generation_id
+    staging_dir = staging_root / generation.generation_id
     built = build_dataset_files(generation, staging_dir, config=config)
-    publisher = FilesystemPublisher(output)
-
     outcome = asyncio.run(
         publish_generation(
             generation,
@@ -408,11 +415,117 @@ def build_dataset(
         )
     )
     if not outcome.published:
-        error_console.print(f"[bold red]validation failed:[/bold red] {outcome.reason}")
+        error_console.print(f"[bold red]not published:[/bold red] {outcome.reason}")
         raise typer.Exit(code=1)
-    console.print(f"published generation {generation.generation_id} to {output}")
+    console.print(f"published generation {generation.generation_id}")
     console.print(f"asset_count       {generation.asset_count}")
     console.print(f"instrument_count  {generation.instrument_count}")
+
+
+@app.command(name="build-dataset")
+def build_dataset(
+    input_dir: Annotated[
+        Path, typer.Option("--input", help="Directory of per-venue CollectionResult JSON files.")
+    ],
+    output: Annotated[
+        Path, typer.Option("--output", help="Directory to publish the dataset into.")
+    ],
+) -> None:
+    """Build and locally publish a complete dataset generation from collected results."""
+    _build_and_publish(input_dir, output / ".staging", FilesystemPublisher(output))
+
+
+@app.command(name="publish-github")
+def publish_github(
+    input_dir: Annotated[
+        Path, typer.Option("--input", help="Directory of per-venue CollectionResult JSON files.")
+    ],
+    repository: Annotated[
+        str,
+        typer.Option(
+            envvar="GITHUB_REPOSITORY", help="The owner/name of the repository to publish into."
+        ),
+    ],
+    token: Annotated[
+        str,
+        typer.Option(envvar="GITHUB_TOKEN", help="A token allowed to write releases."),
+    ],
+    staging: Annotated[Path, typer.Option(help="Local scratch directory for built files.")] = Path(
+        ".atlas-staging"
+    ),
+) -> None:
+    """Build a generation and publish it to GitHub Releases (used by the collect workflow)."""
+    owner, _, repo = repository.partition("/")
+    publisher = GitHubReleasePublisher(owner=owner, repo=repo, token=token)
+    try:
+        _build_and_publish(input_dir, staging, publisher)
+    finally:
+        asyncio.run(publisher.aclose())
+
+
+@app.command(name="compact-day")
+def compact_day_command(
+    day: Annotated[
+        str | None, typer.Option(help="UTC day to compact, YYYY-MM-DD. Defaults to yesterday.")
+    ] = None,
+    repository: Annotated[str, typer.Option(envvar="GITHUB_REPOSITORY")] = "",
+    token: Annotated[str, typer.Option(envvar="GITHUB_TOKEN")] = "",
+) -> None:
+    """Compact one UTC day's generations into a single verified daily release."""
+    target = day or day_label(utc_now() - timedelta(days=1))
+    owner, _, repo = repository.partition("/")
+    publisher = GitHubReleasePublisher(owner=owner, repo=repo, token=token)
+    source = ReleaseDownloader(owner=owner, repo=repo)
+
+    async def run() -> DailyCompactionReport:
+        try:
+            return await compact_day(
+                target, publisher=publisher, source=source, config=load_collection_config()
+            )
+        finally:
+            await publisher.aclose()
+
+    report = asyncio.run(run())
+    console.print(
+        f"{target}: compacted={report.compacted} "
+        f"successful={len(report.successful_windows)}/{len(report.expected_windows)} "
+        f"missing={len(report.missing_windows)} duplicate={len(report.duplicate_windows)}"
+    )
+    if not report.compacted:
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def housekeeping(
+    apply: Annotated[
+        bool, typer.Option("--apply", help="Actually delete. Without this flag nothing changes.")
+    ] = False,
+    repository: Annotated[str, typer.Option(envvar="GITHUB_REPOSITORY")] = "",
+    token: Annotated[str, typer.Option(envvar="GITHUB_TOKEN")] = "",
+) -> None:
+    """Plan (and with --apply, carry out) retention cleanup of compacted intra-day files."""
+    retention = load_retention_config()
+    owner, _, repo = repository.partition("/")
+    publisher = GitHubReleasePublisher(owner=owner, repo=repo, token=token)
+    source = ReleaseDownloader(owner=owner, repo=repo)
+
+    async def run() -> ExecutionReport:
+        try:
+            candidates = await find_candidates(publisher, source, retention)
+            plan = plan_cleanup(candidates, retention.housekeeping)
+            console.print(plan.summary())
+            return await execute_cleanup(
+                plan,
+                publisher,
+                dry_run=not apply,
+                log_every_deletion=retention.housekeeping.log_every_deletion,
+            )
+        finally:
+            await publisher.aclose()
+
+    outcome = asyncio.run(run())
+    mode = "dry run" if outcome.dry_run else "deleted"
+    console.print(f"{mode}: {len(outcome.deleted)} file(s); {len(outcome.skipped)} skipped")
 
 
 def _read_collection_results(input_dir: Path) -> list[CollectionResult]:

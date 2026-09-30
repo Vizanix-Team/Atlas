@@ -92,6 +92,7 @@ class EvidenceItem:
         value: The published value, normalised where normalising is lossless.
         strength: How decisive this evidence is.
         venue_slug: Which venue published it.
+
     """
 
     key: str
@@ -116,9 +117,7 @@ class SymbolEvidence:
         if not value:
             return
         self.items.append(
-            EvidenceItem(
-                key=key, value=value, strength=strength, venue_slug=self.venue_slug
-            )
+            EvidenceItem(key=key, value=value, strength=strength, venue_slug=self.venue_slug)
         )
 
     @property
@@ -156,9 +155,7 @@ def normalise_contract_address(raw: str | None) -> tuple[str, str] | None:
     return None
 
 
-def asset_id_from_address(
-    raw: str | None, *, chain_hint: str | None = None
-) -> str | None:
+def asset_id_from_address(raw: str | None, *, chain_hint: str | None = None) -> str | None:
     """Build a canonical asset ID from a contract address, if one can be derived.
 
     An EVM address needs a chain to be unique, because the same address can exist on
@@ -199,7 +196,7 @@ def resolve_chain_id(chain_hint: str | None) -> int:
 
 def is_recognised_chain(chain_hint: str | None) -> bool:
     """Return whether Atlas recognises ``chain_hint`` rather than falling back."""
-    return bool(chain_hint) and chain_hint.strip().lower() in _EVM_CHAIN_IDS
+    return chain_hint is not None and chain_hint.strip().lower() in _EVM_CHAIN_IDS
 
 
 def normalise_asset_name(name: str | None) -> str | None:

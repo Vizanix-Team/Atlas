@@ -45,6 +45,7 @@ def to_epoch_ms(moment: datetime) -> int:
 
     Raises:
         ValueError: If ``moment`` is naive. Atlas never guesses a timezone.
+
     """
     if moment.tzinfo is None:
         raise ValueError("refusing to convert a naive datetime; attach a timezone")
@@ -76,7 +77,9 @@ def parse_iso(text: str) -> datetime:
     return parsed.astimezone(UTC)
 
 
-def plausible_epoch_ms(value: int | float | None, *, reference: datetime | None = None) -> int | None:
+def plausible_epoch_ms(
+    value: int | float | None, *, reference: datetime | None = None
+) -> int | None:
     """Return ``value`` if it is a believable epoch-millisecond timestamp, else ``None``.
 
     Returning ``None`` rather than substituting the current time is deliberate: a
@@ -86,6 +89,7 @@ def plausible_epoch_ms(value: int | float | None, *, reference: datetime | None 
     Args:
         value: Candidate timestamp in milliseconds.
         reference: Instant to compare against; defaults to now.
+
     """
     if value is None:
         return None
@@ -115,6 +119,7 @@ def plausible_contract_time_ms(
     Args:
         value: Candidate timestamp in milliseconds.
         reference: Instant to compare against; defaults to now.
+
     """
     if value is None:
         return None

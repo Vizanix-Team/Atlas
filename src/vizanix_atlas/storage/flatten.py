@@ -39,6 +39,7 @@ def _json_default(value: Any) -> Any:
     Raises:
         TypeError: For a type genuinely unexpected in Atlas's schema, so an unhandled
             type surfaces as a loud failure rather than a silently wrong column.
+
     """
     if isinstance(value, Enum):
         return value.value
@@ -68,6 +69,7 @@ def flatten_model(model: BaseModel, *, prefix: str = "") -> dict[str, Any]:
         A flat mapping from column name to value. Nested single models are inlined
         with prefixed names; nested sequences of models become one JSON-string column
         named the same as the field.
+
     """
     row: dict[str, Any] = {}
     for name, value in model:
@@ -75,7 +77,9 @@ def flatten_model(model: BaseModel, *, prefix: str = "") -> dict[str, Any]:
         if isinstance(value, BaseModel):
             row.update(flatten_model(value, prefix=f"{column}{_SEPARATOR}"))
         elif isinstance(value, tuple | list) and value and isinstance(value[0], BaseModel):
-            row[column] = json.dumps([v.model_dump(mode="json") for v in value], default=_json_default)
+            row[column] = json.dumps(
+                [v.model_dump(mode="json") for v in value], default=_json_default
+            )
         elif isinstance(value, tuple | list) and not value:
             # An empty sequence of models is indistinguishable from an empty sequence
             # of anything else; represented as an empty JSON array either way.

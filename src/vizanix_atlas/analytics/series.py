@@ -20,6 +20,7 @@ can see how solid a value's basis is instead of inferring it.
 
 from __future__ import annotations
 
+import itertools
 import math
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -108,7 +109,7 @@ def log_returns(prices: Sequence[float]) -> list[float]:
     square-root-of-time annualisation below correct rather than approximate.
     """
     returns: list[float] = []
-    for previous, current in zip(prices, prices[1:], strict=False):
+    for previous, current in itertools.pairwise(prices):
         if previous > 0 and current > 0:
             returns.append(math.log(current / previous))
     return returns
@@ -153,11 +154,7 @@ def compute_volatility(series: PriceSeries, history: HistoryConfig) -> Volatilit
 
     atr_required = history.required_for("atr_14")
     atr_coverage = series.coverage("24h", required=atr_required)
-    atr = (
-        _average_true_range_bps(series.prices(24))
-        if _sufficient(atr_coverage, history)
-        else None
-    )
+    atr = _average_true_range_bps(series.prices(24)) if _sufficient(atr_coverage, history) else None
 
     return VolatilityState(
         realised_1h=values["1h"],
@@ -180,7 +177,7 @@ def _average_true_range_bps(prices: Sequence[float]) -> float | None:
     """
     if len(prices) < 15:
         return None
-    ranges = [abs(b - a) for a, b in zip(prices, prices[1:], strict=False)]
+    ranges = [abs(b - a) for a, b in itertools.pairwise(prices)]
     recent = ranges[-14:]
     if not recent or prices[-1] <= 0:
         return None
@@ -219,7 +216,7 @@ def wilder_rsi(prices: Sequence[float], *, period: int = 14) -> float | None:
         return None
     gains: list[float] = []
     losses: list[float] = []
-    for previous, current in zip(prices, prices[1:], strict=False):
+    for previous, current in itertools.pairwise(prices):
         change = current - previous
         gains.append(max(0.0, change))
         losses.append(max(0.0, -change))

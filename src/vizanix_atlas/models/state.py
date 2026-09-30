@@ -279,9 +279,7 @@ class LiquidationState(AtlasModel):
     aggregate_short_usd: float | None = Field(default=None, ge=0)
     venue_count: int = Field(default=0, ge=0)
     incompatible_semantics_venue_count: int = Field(default=0, ge=0)
-    note: str | None = Field(
-        default=None, description="Why an aggregate was or was not published."
-    )
+    note: str | None = Field(default=None, description="Why an aggregate was or was not published.")
 
 
 class VolatilityState(AtlasModel):

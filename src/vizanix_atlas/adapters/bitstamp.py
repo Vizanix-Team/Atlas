@@ -55,9 +55,7 @@ class BitstampAdapter(ExchangeAdapter):
             name = row.get("name")
             url_symbol = row.get("url_symbol")
             if not (isinstance(name, str) and "/" in name and isinstance(url_symbol, str)):
-                raise SchemaMismatch(
-                    "trading pair row lacked name or url_symbol", venue=self.slug
-                )
+                raise SchemaMismatch("trading pair row lacked name or url_symbol", venue=self.slug)
             if str(row.get("trading", "")) != "Enabled":
                 continue
 
@@ -123,9 +121,7 @@ class BitstampAdapter(ExchangeAdapter):
             # the url symbol keeps the two joinable.
             symbol = pair.replace("/", "").lower()
             timestamp = parse_float(row.get("timestamp"))
-            out.append(
-                (row, symbol, plausible_epoch_ms(timestamp * 1000) if timestamp else None)
-            )
+            out.append((row, symbol, plausible_epoch_ms(timestamp * 1000) if timestamp else None))
         return out
 
     async def fetch_order_book(

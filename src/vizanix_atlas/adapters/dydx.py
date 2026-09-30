@@ -67,8 +67,13 @@ class DydxAdapter(ExchangeAdapter):
         for ticker, row in await self._markets():
             status = str(row.get("status", ""))
             if status not in _ACTIVE_STATUSES:
-                if status not in ("PAUSED", "CANCEL_ONLY", "POST_ONLY", "INITIALIZING",
-                                  "FINAL_SETTLEMENT"):
+                if status not in (
+                    "PAUSED",
+                    "CANCEL_ONLY",
+                    "POST_ONLY",
+                    "INITIALIZING",
+                    "FINAL_SETTLEMENT",
+                ):
                     self.note_unknown_enum("status", status)
                 continue
             base = row.get("ticker")

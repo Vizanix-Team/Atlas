@@ -48,7 +48,7 @@ from vizanix_atlas.adapters.base import DEFAULT_BOOK_DEPTH, ExchangeAdapter
 from vizanix_atlas.core.atlas_time import plausible_contract_time_ms, plausible_epoch_ms
 from vizanix_atlas.core.errors import ExchangeApplicationError, HttpError, SchemaMismatch
 from vizanix_atlas.core.numeric import parse_float, parse_non_negative, parse_positive
-from vizanix_atlas.models.enums import OpenInterestUnit
+from vizanix_atlas.models.enums import OpenInterestUnit, PriceSource
 from vizanix_atlas.models.observations import (
     RawDerivativeObservation,
     RawFxObservation,
@@ -56,7 +56,6 @@ from vizanix_atlas.models.observations import (
     RawOrderBook,
     RawTicker,
 )
-from vizanix_atlas.models.enums import PriceSource
 
 #: Instrument types Atlas collects. ``MARGIN`` is excluded because it re-lists the
 #: same spot markets and would double-count volume.
@@ -109,6 +108,7 @@ class OkxAdapter(ExchangeAdapter):
         Raises:
             ExchangeApplicationError: If ``code`` is not ``"0"``.
             SchemaMismatch: If the envelope is not the documented shape.
+
         """
         body = self.require_mapping(payload, path=path)
         code = str(body.get("code", ""))
@@ -440,7 +440,9 @@ class OkxAdapter(ExchangeAdapter):
                 previous_funding_time=entry.get("previous_funding_time"),
                 open_interest_raw=entry.get("open_interest_raw"),
                 open_interest_unit=(
-                    OpenInterestUnit.CONTRACTS if entry.get("open_interest_raw") is not None else None
+                    OpenInterestUnit.CONTRACTS
+                    if entry.get("open_interest_raw") is not None
+                    else None
                 ),
                 open_interest_base=entry.get("open_interest_base"),
                 open_interest_usd=entry.get("open_interest_usd"),

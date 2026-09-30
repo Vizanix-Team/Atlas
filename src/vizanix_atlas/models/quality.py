@@ -29,7 +29,9 @@ class QuoteConversion(AtlasModel):
 
     from_asset_id: str
     to_asset_id: str = Field(default="asset:fiat:usd")
-    rate: float | None = Field(default=None, gt=0, description="Units of USD per one unit of `from`.")
+    rate: float | None = Field(
+        default=None, gt=0, description="Units of USD per one unit of `from`."
+    )
     method: ConversionMethod
     observed_at: int | None = Field(
         default=None, description="Epoch milliseconds of the observation the rate came from."
@@ -115,7 +117,9 @@ class Provenance(AtlasModel):
         counts: dict[str, int] = {}
         for entry in self.excluded:
             if entry.exclusion_reason is not None:
-                counts[entry.exclusion_reason.value] = counts.get(entry.exclusion_reason.value, 0) + 1
+                counts[entry.exclusion_reason.value] = (
+                    counts.get(entry.exclusion_reason.value, 0) + 1
+                )
         return dict(sorted(counts.items()))
 
 

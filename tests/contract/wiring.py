@@ -23,10 +23,12 @@ def _okx(r: RouteRecorder) -> None:
         ("SPOT", "instruments_spot", "tickers_spot"),
         ("SWAP", "instruments_swap", "tickers_swap"),
     ):
-        r.on_path_param("/api/v5/public/instruments", "instType", inst_type,
-                        load_fixture("okx", instruments))
-        r.on_path_param("/api/v5/market/tickers", "instType", inst_type,
-                        load_fixture("okx", tickers))
+        r.on_path_param(
+            "/api/v5/public/instruments", "instType", inst_type, load_fixture("okx", instruments)
+        )
+        r.on_path_param(
+            "/api/v5/market/tickers", "instType", inst_type, load_fixture("okx", tickers)
+        )
     r.on_path_param("/api/v5/public/instruments", "instType", "FUTURES", empty)
     for inst_type in ("FUTURES", "OPTION"):
         r.on_path_param("/api/v5/market/tickers", "instType", inst_type, empty)
@@ -69,10 +71,18 @@ def _bitget(r: RouteRecorder) -> None:
     empty = {"code": "00000", "msg": "success", "data": []}
     r.on_path("/api/v2/spot/public/symbols", load_fixture("bitget", "spot_symbols"))
     r.on_path("/api/v2/spot/market/tickers", load_fixture("bitget", "spot_tickers"))
-    r.on_path_param("/api/v2/mix/market/contracts", "productType", "USDT-FUTURES",
-                    load_fixture("bitget", "mix_contracts_usdt"))
-    r.on_path_param("/api/v2/mix/market/tickers", "productType", "USDT-FUTURES",
-                    load_fixture("bitget", "mix_tickers_usdt"))
+    r.on_path_param(
+        "/api/v2/mix/market/contracts",
+        "productType",
+        "USDT-FUTURES",
+        load_fixture("bitget", "mix_contracts_usdt"),
+    )
+    r.on_path_param(
+        "/api/v2/mix/market/tickers",
+        "productType",
+        "USDT-FUTURES",
+        load_fixture("bitget", "mix_tickers_usdt"),
+    )
     for product in ("USDC-FUTURES", "COIN-FUTURES"):
         r.on_path_param("/api/v2/mix/market/contracts", "productType", product, empty)
         r.on_path_param("/api/v2/mix/market/tickers", "productType", product, empty)
@@ -117,11 +127,15 @@ def _deribit(r: RouteRecorder) -> None:
     # Discovery uses currency=any and returns the whole catalogue in one request. The
     # fixture is the BTC slice of it, which is enough to exercise every instrument kind.
     r.on_path_param(
-        "/api/v2/public/get_instruments", "currency", "any",
+        "/api/v2/public/get_instruments",
+        "currency",
+        "any",
         load_fixture("deribit", "instruments_btc"),
     )
     r.on_path_param(
-        "/api/v2/public/get_book_summary_by_currency", "currency", "BTC",
+        "/api/v2/public/get_book_summary_by_currency",
+        "currency",
+        "BTC",
         load_fixture("deribit", "book_summary_btc"),
     )
     # Currencies discovery found beyond BTC (settlement currencies such as USDC)

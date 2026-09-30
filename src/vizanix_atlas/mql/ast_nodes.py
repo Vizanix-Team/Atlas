@@ -22,7 +22,7 @@ class Identifier:
 
 
 @dataclass(frozen=True, slots=True)
-class Literal_:
+class Literal_:  # noqa: N801 - trailing underscore avoids shadowing typing.Literal
     """A literal value: a number, a string, a boolean, or ``NULL``."""
 
     value: float | str | bool | None
@@ -74,23 +74,23 @@ class Between:
 class Not:
     """``NOT <expr>``."""
 
-    operand: "BoolExpr"
+    operand: BoolExpr
 
 
 @dataclass(frozen=True, slots=True)
 class And:
     """``<left> AND <right>``."""
 
-    left: "BoolExpr"
-    right: "BoolExpr"
+    left: BoolExpr
+    right: BoolExpr
 
 
 @dataclass(frozen=True, slots=True)
 class Or:
     """``<left> OR <right>``."""
 
-    left: "BoolExpr"
-    right: "BoolExpr"
+    left: BoolExpr
+    right: BoolExpr
 
 
 BoolExpr = Comparison | IsNull | InList | Between | Not | And | Or

@@ -18,12 +18,15 @@ import pytest
 from vizanix_atlas.core.config import load_collection_config
 from vizanix_atlas.core.identifiers import shard_for
 from vizanix_atlas.models.asset import CanonicalAsset
-from vizanix_atlas.models.enums import ConversionMethod, PriceSource, ReferencePriceMethod, ResolutionState
+from vizanix_atlas.models.enums import (
+    ConversionMethod,
+    ReferencePriceMethod,
+)
 from vizanix_atlas.models.quality import QuoteConversion
 from vizanix_atlas.models.state import Dispersion, ReferencePrice
 from vizanix_atlas.storage.flatten import flatten_model, flatten_models
 from vizanix_atlas.storage.tables import _frame, build_asset_table, split_by_shard
-from vizanix_atlas.storage.writer import WrittenFile, sha256_file, write_json, write_parquet
+from vizanix_atlas.storage.writer import sha256_file, write_json, write_parquet
 
 
 def test_flatten_inlines_nested_models_with_prefixed_names() -> None:
@@ -68,10 +71,7 @@ def test_flatten_preserves_none_as_none_not_a_sentinel() -> None:
 
 
 def test_flatten_models_preserves_order() -> None:
-    assets = [
-        CanonicalAsset(asset_id=f"asset:x:{i}", symbol=f"X{i}")
-        for i in range(5)
-    ]
+    assets = [CanonicalAsset(asset_id=f"asset:x:{i}", symbol=f"X{i}") for i in range(5)]
     rows = flatten_models(assets)
     assert [r["asset_id"] for r in rows] == [a.asset_id for a in assets]
 
@@ -158,9 +158,7 @@ def test_write_parquet_reports_size_and_row_count(tmp_path) -> None:
 
 
 def test_write_parquet_refuses_a_file_over_its_size_budget(tmp_path) -> None:
-    config = load_collection_config().publishing.model_copy(
-        update={"max_single_asset_bytes": 16}
-    )
+    config = load_collection_config().publishing.model_copy(update={"max_single_asset_bytes": 16})
     frame = pl.DataFrame({"asset_id": [f"a{i}" for i in range(1000)]})
 
     from vizanix_atlas.core.errors import ValidationFailure

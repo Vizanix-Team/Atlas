@@ -21,6 +21,7 @@ from vizanix_atlas.models.enums import (
     GenomeStatus,
     InstrumentType,
     OpenInterestUnit,
+    PriceSource,
     ReferencePriceMethod,
     ResolutionState,
 )
@@ -34,7 +35,6 @@ from vizanix_atlas.models.observations import (
     RawOrderBook,
     RawTicker,
 )
-from vizanix_atlas.models.enums import PriceSource
 from vizanix_atlas.normalization.conversion import build_conversion_graph
 
 SNAPSHOT = 1790530200000
@@ -105,12 +105,8 @@ def book(venue: str, mid: float) -> RawOrderBook:
         venue_slug=venue,
         symbol_native="BTCUSDT",
         timing=timing(),
-        bids=tuple(
-            OrderBookLevel(price=mid - i, size=1.0) for i in range(1, 6)
-        ),
-        asks=tuple(
-            OrderBookLevel(price=mid + i, size=1.0) for i in range(1, 6)
-        ),
+        bids=tuple(OrderBookLevel(price=mid - i, size=1.0) for i in range(1, 6)),
+        asks=tuple(OrderBookLevel(price=mid + i, size=1.0) for i in range(1, 6)),
     )
 
 
@@ -124,20 +120,32 @@ def conversion():
     """A graph in which USDT converts to USD at an observed, slightly-off-parity rate."""
     raws = [
         RawInstrument(
-            venue_slug="coinbase", symbol_native="USDTUSD", instrument_class="spot",
-            instrument_type="spot", base_symbol_native="USDT", quote_symbol_native="USD",
+            venue_slug="coinbase",
+            symbol_native="USDTUSD",
+            instrument_class="spot",
+            instrument_type="spot",
+            base_symbol_native="USDT",
+            quote_symbol_native="USD",
         ),
         RawInstrument(
-            venue_slug="okx", symbol_native="BTCUSDT", instrument_class="spot",
-            instrument_type="spot", base_symbol_native="BTC", quote_symbol_native="USDT",
+            venue_slug="okx",
+            symbol_native="BTCUSDT",
+            instrument_class="spot",
+            instrument_type="spot",
+            base_symbol_native="BTC",
+            quote_symbol_native="USDT",
         ),
     ]
     resolver = build_resolver(raws)
     return build_conversion_graph(
         [
             RawFxObservation(
-                venue_slug="coinbase", symbol_native="USDT-USD", timing=timing(),
-                from_symbol_native="USDT", to_symbol_native="USD", rate=0.9997,
+                venue_slug="coinbase",
+                symbol_native="USDT-USD",
+                timing=timing(),
+                from_symbol_native="USDT",
+                to_symbol_native="USD",
+                rate=0.9997,
                 source_price=PriceSource.MID,
             )
         ],
@@ -249,9 +257,7 @@ def test_unconvertible_quote_currency_excludes_the_venue(config) -> None:
     assert state.reference_price.value is None
     assert state.reference_price.method is ReferencePriceMethod.UNAVAILABLE
     assert (
-        state.reference_price.excluded_reasons.get(
-            ExclusionReason.INVALID_QUOTE_CONVERSION.value
-        )
+        state.reference_price.excluded_reasons.get(ExclusionReason.INVALID_QUOTE_CONVERSION.value)
         == 1
     )
 
@@ -301,9 +307,7 @@ def test_derivatives_contribute_funding_open_interest_and_basis(config, conversi
     assert state.structure.spot_venue_count == 1
 
     # Spot was available, so the derivative was recorded as set aside rather than dropped.
-    assert (
-        state.reference_price.excluded_reasons.get(ExclusionReason.SPOT_PREFERRED.value) == 1
-    )
+    assert state.reference_price.excluded_reasons.get(ExclusionReason.SPOT_PREFERRED.value) == 1
 
 
 def test_order_books_produce_a_liquidity_surface(config, conversion) -> None:
@@ -408,8 +412,11 @@ def test_liquidations_are_declared_unavailable_rather_than_zero(config, conversi
         expected_venues={"okx"},
     )
     state = build_market_state(
-        observations, conversion=conversion, config=config,
-        generation_id="g", snapshot_effective_time=SNAPSHOT,
+        observations,
+        conversion=conversion,
+        config=config,
+        generation_id="g",
+        snapshot_effective_time=SNAPSHOT,
     ).state
 
     assert state.liquidations.aggregate_available is False
@@ -431,8 +438,11 @@ def test_reference_price_is_traceable_to_venue_rows(config, conversion) -> None:
         expected_venues={"okx", "bitget", "gateio"},
     )
     bundle = build_market_state(
-        observations, conversion=conversion, config=config,
-        generation_id="g", snapshot_effective_time=SNAPSHOT,
+        observations,
+        conversion=conversion,
+        config=config,
+        generation_id="g",
+        snapshot_effective_time=SNAPSHOT,
     )
 
     provenance = bundle.provenance_for("reference_price")
@@ -462,9 +472,7 @@ def test_reference_price_is_traceable_to_venue_rows(config, conversion) -> None:
     assert sum(v.volume_share for v in bundle.venues) == pytest.approx(1.0)
 
 
-def test_venue_publishing_no_quote_volume_is_excluded_from_usd_totals(
-    config, conversion
-) -> None:
+def test_venue_publishing_no_quote_volume_is_excluded_from_usd_totals(config, conversion) -> None:
     """Kraken and Coinbase publish base volume only; their volume is not invented."""
     observations = AssetObservations(
         asset=BTC,
@@ -476,8 +484,11 @@ def test_venue_publishing_no_quote_volume_is_excluded_from_usd_totals(
         expected_venues={"okx", "kraken"},
     )
     state = build_market_state(
-        observations, conversion=conversion, config=config,
-        generation_id="g", snapshot_effective_time=SNAPSHOT,
+        observations,
+        conversion=conversion,
+        config=config,
+        generation_id="g",
+        snapshot_effective_time=SNAPSHOT,
     ).state
 
     # Only the venue that published quote volume enters the total.
@@ -498,15 +509,21 @@ def test_state_building_is_deterministic(config, conversion) -> None:
     venues = {"okx", "bitget", "gateio"}
 
     first = build_market_state(
-        AssetObservations(asset=BTC, tickers=list(pairs), listing_venues=venues,
-                          expected_venues=venues),
-        conversion=conversion, config=config, generation_id="g",
+        AssetObservations(
+            asset=BTC, tickers=list(pairs), listing_venues=venues, expected_venues=venues
+        ),
+        conversion=conversion,
+        config=config,
+        generation_id="g",
         snapshot_effective_time=SNAPSHOT,
     )
     second = build_market_state(
-        AssetObservations(asset=BTC, tickers=list(reversed(pairs)), listing_venues=venues,
-                          expected_venues=venues),
-        conversion=conversion, config=config, generation_id="g",
+        AssetObservations(
+            asset=BTC, tickers=list(reversed(pairs)), listing_venues=venues, expected_venues=venues
+        ),
+        conversion=conversion,
+        config=config,
+        generation_id="g",
         snapshot_effective_time=SNAPSHOT,
     )
 

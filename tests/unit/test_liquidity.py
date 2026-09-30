@@ -131,12 +131,20 @@ def test_bands_are_measured_from_the_reference_price() -> None:
     # The whole book sits 60 bps below the reference price.
     levels = (OrderBookLevel(price=99.40, size=1000.0),)
     inside_50 = depth_within(
-        levels, reference_price=REFERENCE, distance_bps=50, side="bid",
-        instrument=spot_instrument(), quote_to_usd=1.0,
+        levels,
+        reference_price=REFERENCE,
+        distance_bps=50,
+        side="bid",
+        instrument=spot_instrument(),
+        quote_to_usd=1.0,
     )
     inside_100 = depth_within(
-        levels, reference_price=REFERENCE, distance_bps=100, side="bid",
-        instrument=spot_instrument(), quote_to_usd=1.0,
+        levels,
+        reference_price=REFERENCE,
+        distance_bps=100,
+        side="bid",
+        instrument=spot_instrument(),
+        quote_to_usd=1.0,
     )
     assert inside_50 == pytest.approx(0.0), "nothing lies within 50 bps"
     assert inside_100 is not None and inside_100 > 0, "the level lies within 100 bps"
@@ -145,8 +153,12 @@ def test_bands_are_measured_from_the_reference_price() -> None:
 def test_quote_conversion_is_applied_to_depth() -> None:
     levels = (OrderBookLevel(price=100.0, size=1.0),)
     depth = depth_within(
-        levels, reference_price=REFERENCE, distance_bps=50, side="bid",
-        instrument=spot_instrument(), quote_to_usd=0.9997,
+        levels,
+        reference_price=REFERENCE,
+        distance_bps=50,
+        side="bid",
+        instrument=spot_instrument(),
+        quote_to_usd=0.9997,
     )
     assert depth == pytest.approx(100.0 * 0.9997)
 
@@ -169,8 +181,8 @@ def test_impact_returns_none_when_visible_depth_is_insufficient() -> None:
 def test_impact_is_the_vwap_deviation_when_depth_suffices() -> None:
     """Consuming two levels gives the notional-weighted average of their prices."""
     levels = (
-        OrderBookLevel(price=100.0, size=5.0),   # 500 USD at 100.0
-        OrderBookLevel(price=101.0, size=5.0),   # 505 USD at 101.0
+        OrderBookLevel(price=100.0, size=5.0),  # 500 USD at 100.0
+        OrderBookLevel(price=101.0, size=5.0),  # 505 USD at 101.0
     )
     impact, sufficient = walk_book_impact(
         levels,

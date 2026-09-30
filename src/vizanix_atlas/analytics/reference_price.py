@@ -148,7 +148,7 @@ def _raw_weight(
     """Return a candidate's weight before capping and normalisation."""
     volume = candidate.reported_volume_usd
     volume_factor = (
-        volume ** config.volume_weight_exponent if volume is not None and volume > 0 else 0.0
+        volume**config.volume_weight_exponent if volume is not None and volume > 0 else 0.0
     )
     if volume_factor <= 0.0:
         # No usable volume figure. Still a price source, so it gets the floor rather
@@ -180,6 +180,7 @@ def compute_reference_price(
 
     Returns:
         The reference price, dispersion, provenance and the final weights.
+
     """
     entries: list[ProvenanceEntry] = [
         _entry(candidate, included=False, weight=None, reason=reason)
@@ -215,17 +216,15 @@ def compute_reference_price(
 
     # A provisional centre from the eligible observations, so outlier rejection compares
     # against the market rather than against any single venue.
-    provisional_weights = [
-        _raw_weight(c, quality=quality, config=config) for c in eligible
-    ]
-    provisional_centre = weighted_median(
-        [c.price_usd for c in eligible], provisional_weights
-    )
+    provisional_weights = [_raw_weight(c, quality=quality, config=config) for c in eligible]
+    provisional_centre = weighted_median([c.price_usd for c in eligible], provisional_weights)
 
     kept: list[PriceCandidate] = []
     for candidate in eligible:
         if provisional_centre is not None and provisional_centre > 0:
-            deviation = abs(candidate.price_usd - provisional_centre) / provisional_centre * 10_000.0
+            deviation = (
+                abs(candidate.price_usd - provisional_centre) / provisional_centre * 10_000.0
+            )
             if deviation > quality.max_deviation_bps:
                 entries.append(
                     _entry(
@@ -302,9 +301,7 @@ def _dispersion(
     mad_bps = None if mad is None else mad / centre * 10_000.0
     p10 = quantile(list(prices), 0.10)
     p90 = quantile(list(prices), 0.90)
-    spread_bps = (
-        (p90 - p10) / centre * 10_000.0 if p10 is not None and p90 is not None else None
-    )
+    spread_bps = (p90 - p10) / centre * 10_000.0 if p10 is not None and p90 is not None else None
     max_deviation = max(abs(relative_bps(p, centre) or 0.0) for p in prices)
 
     return Dispersion(
@@ -342,9 +339,7 @@ def _entry(
 
 def _sorted_entries(entries: Sequence[ProvenanceEntry]) -> list[ProvenanceEntry]:
     """Order provenance deterministically: included first, then by venue and instrument."""
-    return sorted(
-        entries, key=lambda e: (not e.included, e.venue_slug, e.instrument_id)
-    )
+    return sorted(entries, key=lambda e: (not e.included, e.venue_slug, e.instrument_id))
 
 
 def _reason_counts(entries: Sequence[ProvenanceEntry]) -> dict[str, int]:

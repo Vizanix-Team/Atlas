@@ -30,10 +30,16 @@ def schedule():
 
 def _manifest(generation_id: str, slot: str) -> GenerationManifest:
     return GenerationManifest(
-        dataset_format_version="1.0.0", schema_version="1.0.0", methodology_version="1.0.0",
-        software_version="0.1.0", generation_id=generation_id, slot_label=slot,
-        collection_started_at="2026-09-27T00:07:00Z", collection_finished_at="2026-09-27T00:08:00Z",
-        snapshot_effective_time="2026-09-27T00:07:00Z", venues=VenueOutcome(attempted=5, successful=5),
+        dataset_format_version="1.0.0",
+        schema_version="1.0.0",
+        methodology_version="1.0.0",
+        software_version="0.1.0",
+        generation_id=generation_id,
+        slot_label=slot,
+        collection_started_at="2026-09-27T00:07:00Z",
+        collection_finished_at="2026-09-27T00:08:00Z",
+        snapshot_effective_time="2026-09-27T00:07:00Z",
+        venues=VenueOutcome(attempted=5, successful=5),
         build=BuildProvenance(software_version="0.1.0"),
     )
 
@@ -42,15 +48,15 @@ def test_expected_slots_follow_the_configured_cron_minutes(schedule) -> None:
     slots = expected_slots_for_day(DAY, schedule)
     assert len(slots) == 24 * len(schedule.cron_minutes)
     assert slots == tuple(sorted(slots)), "slots must already be in chronological order"
-    assert slots[0] == "20260927T000700Z"
-    assert slots[-1] == "20260927T235200Z"
+    assert slots[0] == "20260927T000000Z"
+    assert slots[-1] == "20260927T234500Z"
 
 
 def test_discovery_filters_by_the_generations_own_slot_day() -> None:
     manifests = [
-        _manifest("g1", "20260927T000700Z"),
-        _manifest("g2", "20260928T000700Z"),  # the next day; must be excluded
-        _manifest("g3", "20260927T003700Z"),
+        _manifest("g1", "20260927T000000Z"),
+        _manifest("g2", "20260928T000000Z"),  # the next day; must be excluded
+        _manifest("g3", "20260927T003000Z"),
     ]
     found = discover_day_generations(manifests, DAY)
     assert {g.generation_id for g in found} == {"g1", "g3"}
@@ -60,7 +66,8 @@ def test_discovery_filters_by_the_generations_own_slot_day() -> None:
 
 def test_a_missing_window_is_reported_not_fabricated(schedule) -> None:
     """The central behaviour: a scheduled slot with zero generations is `missing`,
-    and never appears in `successful`."""
+    and never appears in `successful`.
+    """
     slots = expected_slots_for_day(DAY, schedule)
     # Every slot has a generation except the third one.
     present = [s for i, s in enumerate(slots) if i != 2]
@@ -80,7 +87,8 @@ def test_a_duplicate_window_is_flagged_and_still_counted_successful_if_one_is_va
     schedule,
 ) -> None:
     """Two generations claiming the same slot (a retried workflow run) are flagged as
-    a duplicate; if at least one of them is valid, the slot is still successful."""
+    a duplicate; if at least one of them is valid, the slot is still successful.
+    """
     slot = expected_slots_for_day(DAY, schedule)[0]
     generations = (
         DiscoveredGeneration(generation_id="a", slot_label=slot, manifest=_manifest("a", slot)),
@@ -109,7 +117,8 @@ def test_an_out_of_schedule_generation_is_noted_but_not_counted_as_a_scheduled_w
     schedule,
 ) -> None:
     """A manually triggered run at an odd minute exists, but is not one of the
-    scheduled windows, so it must not inflate the expected/successful accounting."""
+    scheduled windows, so it must not inflate the expected/successful accounting.
+    """
     odd_slot = "20260927T001234Z"
     generations = (
         DiscoveredGeneration(
@@ -127,13 +136,23 @@ def test_an_out_of_schedule_generation_is_noted_but_not_counted_as_a_scheduled_w
 
 def test_generations_to_compact_excludes_duplicates_and_invalid_slots(schedule) -> None:
     slots = expected_slots_for_day(DAY, schedule)[:3]
-    clean = DiscoveredGeneration(generation_id="clean", slot_label=slots[0], manifest=_manifest("clean", slots[0]))
-    dup_a = DiscoveredGeneration(generation_id="dup_a", slot_label=slots[1], manifest=_manifest("dup_a", slots[1]))
-    dup_b = DiscoveredGeneration(generation_id="dup_b", slot_label=slots[1], manifest=_manifest("dup_b", slots[1]))
-    invalid = DiscoveredGeneration(generation_id="bad", slot_label=slots[2], manifest=_manifest("bad", slots[2]))
+    clean = DiscoveredGeneration(
+        generation_id="clean", slot_label=slots[0], manifest=_manifest("clean", slots[0])
+    )
+    dup_a = DiscoveredGeneration(
+        generation_id="dup_a", slot_label=slots[1], manifest=_manifest("dup_a", slots[1])
+    )
+    dup_b = DiscoveredGeneration(
+        generation_id="dup_b", slot_label=slots[1], manifest=_manifest("dup_b", slots[1])
+    )
+    invalid = DiscoveredGeneration(
+        generation_id="bad", slot_label=slots[2], manifest=_manifest("bad", slots[2])
+    )
     generations = (clean, dup_a, dup_b, invalid)
 
-    report = build_daily_report(DAY, generations, schedule, invalid_generation_ids=frozenset({"bad"}))
+    report = build_daily_report(
+        DAY, generations, schedule, invalid_generation_ids=frozenset({"bad"})
+    )
     to_compact = generations_to_compact(generations, report)
 
     assert {g.generation_id for g in to_compact} == {"clean"}

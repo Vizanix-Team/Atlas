@@ -119,6 +119,7 @@ def tokenise(text: str) -> list[Token]:
     Raises:
         MqlSyntaxError: On any character the grammar does not recognise, with the
             character's position for caret rendering.
+
     """
     tokens: list[Token] = []
     position = 0
@@ -126,9 +127,7 @@ def tokenise(text: str) -> list[Token]:
     while position < length:
         match = _TOKEN_PATTERN.match(text, position)
         if match is None:
-            raise MqlSyntaxError(
-                f"unrecognised character {text[position]!r}", position=position
-            )
+            raise MqlSyntaxError(f"unrecognised character {text[position]!r}", position=position)
         position = match.end()
         kind = match.lastgroup
         value = match.group()
@@ -144,6 +143,6 @@ def tokenise(text: str) -> list[Token]:
             inner = value[1:-1].replace("\\'", "'").replace("\\\\", "\\")
             tokens.append(Token(TokenType.STRING, inner, match.start()))
         else:
-            tokens.append(Token(TokenType(kind.lower()), value, match.start()))
+            tokens.append(Token(TokenType((kind or "").lower()), value, match.start()))
     tokens.append(Token(TokenType.EOF, "", length))
     return tokens

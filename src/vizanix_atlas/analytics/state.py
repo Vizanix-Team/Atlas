@@ -21,7 +21,6 @@ number null" and "which venues is it based on".
 
 from __future__ import annotations
 
-import math
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Final
@@ -162,6 +161,7 @@ def build_market_state(
             the slot when not supplied.
         coverage_tier: The deepest tier reached for this asset.
         origin: How the observations were obtained.
+
     """
     age_reference = observed_through or snapshot_effective_time
     conversions = _conversions_for(observations, conversion)
@@ -393,9 +393,7 @@ def _price_candidates(
         raw_price, source = pick
         venue_time = ticker.timing.exchange_event_time or ticker.timing.exchange_server_time
         age = (
-            (
-                from_epoch_ms(snapshot_effective_time) - from_epoch_ms(venue_time)
-            ).total_seconds()
+            (from_epoch_ms(snapshot_effective_time) - from_epoch_ms(venue_time)).total_seconds()
             if venue_time is not None
             else None
         )
@@ -668,9 +666,7 @@ def _quality(
     )
 
 
-def _ages(
-    observations: AssetObservations, snapshot_effective_time: int
-) -> dict[str, list[float]]:
+def _ages(observations: AssetObservations, snapshot_effective_time: int) -> dict[str, list[float]]:
     """Collect observation ages per family.
 
     Only venue-supplied timestamps contribute. A venue publishing no timestamp is absent
@@ -789,9 +785,7 @@ def _venue_states(
                 mark_price_usd=mark_by_venue.get(venue),
                 open_interest_raw=oi_raw_by_venue.get(venue),
                 open_interest_usd=oi_by_venue.get(venue),
-                instrument_count=sum(
-                    1 for _, i in observations.tickers if i.venue_slug == venue
-                ),
+                instrument_count=sum(1 for _, i in observations.tickers if i.venue_slug == venue),
                 conversion=conversions.get(instrument.quote_asset_id),
                 included_in_reference_price=entry.included if entry is not None else False,
                 exclusion_reason=entry.exclusion_reason if entry is not None else None,

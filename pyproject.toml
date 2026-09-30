@@ -117,6 +117,9 @@ ignore = [
   "TRY003", # Atlas errors carry contextual messages by design
   "TRY400", # logger.error is intentional where a traceback would be noise
   "N818",   # Atlas error classes are named for the condition, not suffixed Error
+  "D205",   # summary-line style is left to reviewers
+  "D401",   # imperative-mood check misfires on noun-phrase property docstrings
+  "E501",   # ruff format owns line wrapping; long prose strings are tolerated
 ]
 
 [tool.ruff.lint.per-file-ignores]

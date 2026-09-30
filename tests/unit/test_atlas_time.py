@@ -26,7 +26,7 @@ REFERENCE_MS = to_epoch_ms(REFERENCE)
 def test_naive_datetimes_are_refused() -> None:
     """Atlas never guesses a timezone."""
     with pytest.raises(ValueError, match="naive"):
-        to_epoch_ms(datetime(2026, 9, 27, 17, 40))  # noqa: DTZ001 - deliberate
+        to_epoch_ms(datetime(2026, 9, 27, 17, 40))
 
 
 def test_iso_round_trip_preserves_the_instant() -> None:
@@ -84,21 +84,25 @@ def test_contract_dates_still_reject_nonsense() -> None:
     assert plausible_contract_time_ms(0, reference=REFERENCE) is None
     assert plausible_contract_time_ms(None, reference=REFERENCE) is None
     # A listing date far in the past is legitimate; the year 2200 is not.
-    assert plausible_contract_time_ms(
-        to_epoch_ms(datetime(2014, 11, 21, tzinfo=UTC)), reference=REFERENCE
-    ) is not None
-    assert plausible_contract_time_ms(
-        to_epoch_ms(datetime(2200, 1, 1, tzinfo=UTC)), reference=REFERENCE
-    ) is None
+    assert (
+        plausible_contract_time_ms(
+            to_epoch_ms(datetime(2014, 11, 21, tzinfo=UTC)), reference=REFERENCE
+        )
+        is not None
+    )
+    assert (
+        plausible_contract_time_ms(
+            to_epoch_ms(datetime(2200, 1, 1, tzinfo=UTC)), reference=REFERENCE
+        )
+        is None
+    )
 
 
 def test_slot_flooring_attributes_a_late_run_to_its_window() -> None:
     """GitHub Actions starts scheduled runs late, so the slot is derived, not assumed."""
     # A run scheduled for :37 that actually started at :41 belongs to the :30 slot.
     started = datetime(2026, 9, 27, 17, 41, 23, tzinfo=UTC)
-    assert floor_to_slot(started, slot_minutes=15) == datetime(
-        2026, 9, 27, 17, 30, tzinfo=UTC
-    )
+    assert floor_to_slot(started, slot_minutes=15) == datetime(2026, 9, 27, 17, 30, tzinfo=UTC)
     assert slot_label(floor_to_slot(started, slot_minutes=15)) == "20260927T173000Z"
     assert day_label(started) == "2026-09-27"
 

@@ -15,7 +15,7 @@ from pathlib import Path
 
 from vizanix_atlas.core.errors import ChecksumMismatch, DatasetUnavailable
 from vizanix_atlas.models.manifest import GenerationManifest
-from vizanix_atlas.sdk.remote import ReleaseDownloader
+from vizanix_atlas.sdk.remote import GenerationFileSource
 from vizanix_atlas.storage.writer import sha256_file
 
 
@@ -25,7 +25,7 @@ class Dataset:
 
     manifest: GenerationManifest
     root: Path
-    downloader: ReleaseDownloader | None = None
+    downloader: GenerationFileSource | None = None
 
     @property
     def generation_id(self) -> str:

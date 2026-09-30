@@ -142,9 +142,7 @@ def test_krakenfutures_inverse_absolute_funding_matches_the_venues_own_relative_
     funding is denominated in the base asset per unit of quote notional.
     """
     result = normalise_funding(
-        observation(
-            "krakenfutures", funding_rate_raw=2.40324183e-10, funding_interval_hours=1.0
-        ),
+        observation("krakenfutures", funding_rate_raw=2.40324183e-10, funding_interval_hours=1.0),
         perp(
             "krakenfutures",
             interval=1.0,
@@ -163,9 +161,7 @@ def test_absolute_funding_without_a_mark_price_is_refused() -> None:
     """The conversion needs the mark price; without it Atlas will not guess."""
     result = normalise_funding(
         observation("krakenfutures", funding_rate_raw=0.18, funding_interval_hours=1.0),
-        perp(
-            "krakenfutures", interval=1.0, semantics=FundingSemantics.ABSOLUTE_PER_INTERVAL
-        ),
+        perp("krakenfutures", interval=1.0, semantics=FundingSemantics.ABSOLUTE_PER_INTERVAL),
         mark_price=None,
     )
     assert result is ExclusionReason.UNDOCUMENTED_FUNDING_SEMANTICS
@@ -193,7 +189,8 @@ def test_missing_interval_is_excluded_rather_than_defaulted_to_eight_hours() -> 
 def test_funding_aggregate_uses_the_median_and_records_intervals() -> None:
     observations = [
         normalise_funding(
-            observation(v, funding_rate_raw=r, funding_interval_hours=i), perp(v, interval=i),
+            observation(v, funding_rate_raw=r, funding_interval_hours=i),
+            perp(v, interval=i),
             mark_price=100.0,
         )
         for v, r, i in [
@@ -311,9 +308,12 @@ def test_base_asset_unit_needs_no_multiplier() -> None:
 
 
 def test_no_raw_value_yields_nothing_at_all() -> None:
-    assert normalise_open_interest(
-        observation("v"), perp("v"), reference_price=84_400.0, quote_to_usd=1.0
-    ) is None
+    assert (
+        normalise_open_interest(
+            observation("v"), perp("v"), reference_price=84_400.0, quote_to_usd=1.0
+        )
+        is None
+    )
 
 
 def test_open_interest_aggregate_counts_exclusions() -> None:

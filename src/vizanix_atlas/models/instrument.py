@@ -142,6 +142,10 @@ class Instrument(AtlasModel):
                 raise ValueError("a spot instrument has no contract type or multiplier")
             if self.funding_interval_hours is not None:
                 raise ValueError("a spot instrument has no funding interval")
-        if self.expiry is not None and self.listing_time is not None and self.expiry <= self.listing_time:
+        if (
+            self.expiry is not None
+            and self.listing_time is not None
+            and self.expiry <= self.listing_time
+        ):
             raise ValueError("expiry must be after listing_time")
         return self

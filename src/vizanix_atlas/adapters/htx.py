@@ -54,6 +54,7 @@ class HtxAdapter(ExchangeAdapter):
 
         Raises:
             ExchangeApplicationError: If ``status`` is not ``"ok"``.
+
         """
         body = self.require_mapping(payload, path=path)
         status = str(body.get("status", ""))
@@ -72,9 +73,7 @@ class HtxAdapter(ExchangeAdapter):
     async def discover_instruments(self) -> list[RawInstrument]:
         """Enumerate every online symbol from the common settings endpoint."""
         self.refresh_receive_time()
-        payload = await self.client.get_json(
-            "/v2/settings/common/symbols", operation="symbols"
-        )
+        payload = await self.client.get_json("/v2/settings/common/symbols", operation="symbols")
         rows = self.require_list(
             self._unwrap(payload, path="/v2/settings/common/symbols"), path="symbols"
         )
@@ -165,8 +164,9 @@ class HtxAdapter(ExchangeAdapter):
             params={"symbol": symbol_native, "type": "step0", "depth": 20},
             operation="depth",
         )
-        book = self.require_mapping(self._unwrap(payload, path="/market/depth", key="tick"),
-                                    path="depth")
+        book = self.require_mapping(
+            self._unwrap(payload, path="/market/depth", key="tick"), path="depth"
+        )
         bids, bids_truncated = self.build_levels(
             self.require_list(book, path="depth", key="bids"), depth=depth, descending=True
         )
@@ -176,9 +176,7 @@ class HtxAdapter(ExchangeAdapter):
         return RawOrderBook(
             venue_slug=self.slug,
             symbol_native=symbol_native,
-            timing=self.timing(
-                exchange_event_time=plausible_epoch_ms(parse_float(book.get("ts")))
-            ),
+            timing=self.timing(exchange_event_time=plausible_epoch_ms(parse_float(book.get("ts")))),
             bids=bids,
             asks=asks,
             truncated=bids_truncated or asks_truncated or depth > 20,

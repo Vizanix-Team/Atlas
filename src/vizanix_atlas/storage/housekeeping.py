@@ -41,6 +41,7 @@ class DeletionCandidate:
             covers this file's observations.
         checksum_verified: Whether the file's current bytes have been re-hashed and
             matched against its manifest entry in this run.
+
     """
 
     generation_id: str
@@ -88,9 +89,7 @@ def plan_cleanup(
             )
             continue
         if any(candidate.tag.startswith(prefix) for prefix in config.never_delete_tag_prefix):
-            plan.skipped.append(
-                SkippedCandidate(candidate, "tag matches a protected prefix")
-            )
+            plan.skipped.append(SkippedCandidate(candidate, "tag matches a protected prefix"))
             continue
         if candidate.age_hours < config.min_age_hours_before_delete:
             plan.skipped.append(
@@ -114,7 +113,8 @@ def plan_cleanup(
         if len(plan.to_delete) >= config.max_deletions_per_run:
             plan.skipped.append(
                 SkippedCandidate(
-                    candidate, f"run already reached max_deletions_per_run ({config.max_deletions_per_run})"
+                    candidate,
+                    f"run already reached max_deletions_per_run ({config.max_deletions_per_run})",
                 )
             )
             continue
@@ -132,7 +132,11 @@ class ExecutionReport:
 
 
 async def execute_cleanup(
-    plan: CleanupPlan, publisher: Publisher, *, dry_run: bool = True, log_every_deletion: bool = True
+    plan: CleanupPlan,
+    publisher: Publisher,
+    *,
+    dry_run: bool = True,
+    log_every_deletion: bool = True,
 ) -> ExecutionReport:
     """Carry out (or simulate) a cleanup plan.
 
@@ -146,6 +150,7 @@ async def execute_cleanup(
             plan is only logged.
         log_every_deletion: Whether each deletion is logged individually, as
             ``config/retention.yaml`` requires for a real run.
+
     """
     deleted: list[DeletionCandidate] = []
     for candidate in plan.to_delete:
@@ -189,6 +194,7 @@ def select_generations_to_retain(
 
     Raises:
         ValueError: If ``keep_recent_generations`` is not positive.
+
     """
     if keep_recent_generations < 1:
         raise ValueError("keep_recent_generations must be at least 1")

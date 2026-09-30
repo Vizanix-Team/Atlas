@@ -11,7 +11,7 @@ are applied here, and the criteria text travels with the published figures.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import Final
 
 from vizanix_atlas.core.config import CollectionConfig, UniverseConfig
@@ -20,11 +20,9 @@ from vizanix_atlas.models.enums import Universe
 from vizanix_atlas.models.state import MarketState
 
 #: Ranking metrics a universe may order by, mapped to a reader on ``MarketState``.
-_RANKERS: Final = {
+_RANKERS: Final[dict[str, Callable[[MarketState], float | None]]] = {
     "observable_depth_50bps_usd": lambda state: (
-        band.total_depth_usd
-        if (band := state.liquidity.band(50)) is not None
-        else None
+        band.total_depth_usd if (band := state.liquidity.band(50)) is not None else None
     ),
     "reported_volume_24h_usd": lambda state: state.volume.reported_volume_24h_usd,
 }
@@ -51,6 +49,7 @@ def select_universe(
 
     Raises:
         ConfigurationError: If the universe is not declared in configuration.
+
     """
     declared = config.universes.get(universe.value)
     if declared is None:
@@ -96,6 +95,7 @@ def _rank(states: Sequence[MarketState], config: UniverseConfig) -> list[MarketS
 
     Raises:
         ConfigurationError: If the ranking metric is not one Atlas can read.
+
     """
     if config.rank_by is None or config.limit is None:
         raise ConfigurationError(

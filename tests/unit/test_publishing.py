@@ -53,7 +53,12 @@ def _health(venue: str, *, tickers: int, instruments: int) -> AdapterHealth:
     )
 
 
-def build_sample_generation(*, price_multiplier: float = 1.0, extra_asset: bool = False) -> Generation:
+def build_sample_generation(
+    *,
+    price_multiplier: float = 1.0,
+    extra_asset: bool = False,
+    effective_time: int | None = None,
+) -> Generation:
     """Build a small, real Generation from hand-constructed collection results.
 
     Runs the actual identity, normalisation and analytics pipeline end to end, just
@@ -63,65 +68,103 @@ def build_sample_generation(*, price_multiplier: float = 1.0, extra_asset: bool 
     config = load_collection_config()
     instruments = [
         RawInstrument(
-            venue_slug="okx", symbol_native="BTC-USDT", instrument_class="spot",
-            instrument_type="spot", base_symbol_native="BTC", quote_symbol_native="USDT",
+            venue_slug="okx",
+            symbol_native="BTC-USDT",
+            instrument_class="spot",
+            instrument_type="spot",
+            base_symbol_native="BTC",
+            quote_symbol_native="USDT",
         ),
         RawInstrument(
-            venue_slug="coinbase", symbol_native="BTC-USD", instrument_class="spot",
-            instrument_type="spot", base_symbol_native="BTC", quote_symbol_native="USD",
+            venue_slug="coinbase",
+            symbol_native="BTC-USD",
+            instrument_class="spot",
+            instrument_type="spot",
+            base_symbol_native="BTC",
+            quote_symbol_native="USD",
         ),
     ]
     price = 84_400.0 * price_multiplier
     okx_tickers = [
         RawTicker(
-            venue_slug="okx", symbol_native="BTC-USDT", timing=_timing(),
-            last_price=price, bid_price=price - 0.5, ask_price=price + 0.5,
-            base_volume_24h=1_000.0, quote_volume_24h=8.44e7,
+            venue_slug="okx",
+            symbol_native="BTC-USDT",
+            timing=_timing(),
+            last_price=price,
+            bid_price=price - 0.5,
+            ask_price=price + 0.5,
+            base_volume_24h=1_000.0,
+            quote_volume_24h=8.44e7,
         )
     ]
     coinbase_tickers = [
         RawTicker(
-            venue_slug="coinbase", symbol_native="BTC-USD", timing=_timing(),
-            last_price=price + 20.0, base_volume_24h=500.0,
+            venue_slug="coinbase",
+            symbol_native="BTC-USD",
+            timing=_timing(),
+            last_price=price + 20.0,
+            base_volume_24h=500.0,
         )
     ]
     fx = [
         RawFxObservation(
-            venue_slug="coinbase", symbol_native="USDT-USD", timing=_timing(),
-            from_symbol_native="USDT", to_symbol_native="USD", rate=0.9997,
+            venue_slug="coinbase",
+            symbol_native="USDT-USD",
+            timing=_timing(),
+            from_symbol_native="USDT",
+            to_symbol_native="USD",
+            rate=0.9997,
             source_price=PriceSource.MID,
         )
     ]
     if extra_asset:
         instruments.append(
             RawInstrument(
-                venue_slug="okx", symbol_native="ETH-USDT", instrument_class="spot",
-                instrument_type="spot", base_symbol_native="ETH", quote_symbol_native="USDT",
+                venue_slug="okx",
+                symbol_native="ETH-USDT",
+                instrument_class="spot",
+                instrument_type="spot",
+                base_symbol_native="ETH",
+                quote_symbol_native="USDT",
             )
         )
         okx_tickers.append(
             RawTicker(
-                venue_slug="okx", symbol_native="ETH-USDT", timing=_timing(),
-                last_price=2_700.0, base_volume_24h=5_000.0, quote_volume_24h=1.35e7,
+                venue_slug="okx",
+                symbol_native="ETH-USDT",
+                timing=_timing(),
+                last_price=2_700.0,
+                base_volume_24h=5_000.0,
+                quote_volume_24h=1.35e7,
             )
         )
 
     results = [
         CollectionResult(
-            venue_slug="okx", run_id="test", collection_started_at=T0, collection_finished_at=T0,
-            health=_health("okx", tickers=len(okx_tickers), instruments=len([i for i in instruments if i.venue_slug == "okx"])),
+            venue_slug="okx",
+            run_id="test",
+            collection_started_at=T0,
+            collection_finished_at=T0,
+            health=_health(
+                "okx",
+                tickers=len(okx_tickers),
+                instruments=len([i for i in instruments if i.venue_slug == "okx"]),
+            ),
             instruments=tuple(i for i in instruments if i.venue_slug == "okx"),
             tickers=tuple(okx_tickers),
         ),
         CollectionResult(
-            venue_slug="coinbase", run_id="test", collection_started_at=T0, collection_finished_at=T0,
+            venue_slug="coinbase",
+            run_id="test",
+            collection_started_at=T0,
+            collection_finished_at=T0,
             health=_health("coinbase", tickers=len(coinbase_tickers), instruments=1),
             instruments=tuple(i for i in instruments if i.venue_slug == "coinbase"),
             tickers=tuple(coinbase_tickers),
             fx_observations=tuple(fx),
         ),
     ]
-    return build_generation(results, config=config)
+    return build_generation(results, config=config, snapshot_effective_time=effective_time)
 
 
 def write_generation_files(generation: Generation, out_dir: Path, *, config) -> list[WrittenFile]:
@@ -185,15 +228,22 @@ async def test_manifest_and_pointer_round_trip_through_json(tmp_path: Path) -> N
     publisher = FilesystemPublisher(tmp_path / "releases")
 
     outcome = await publish_generation(
-        generation, dataset_dir=dataset_dir, written_files=written, publisher=publisher,
-        config=config, release_tag="atlas-data-test", shard_indices=shard_indices,
+        generation,
+        dataset_dir=dataset_dir,
+        written_files=written,
+        publisher=publisher,
+        config=config,
+        release_tag="atlas-data-test",
+        shard_indices=shard_indices,
     )
     assert outcome.published
 
     # Read the raw JSON directly, bypassing the publisher, to prove the file on disk
     # is genuinely well-formed JSON matching the schema, not just round-trippable
     # through the same Pydantic model that wrote it.
-    manifest_path = tmp_path / "releases" / f"atlas-data-{generation.generation_id}" / "manifest.json"
+    manifest_path = (
+        tmp_path / "releases" / f"atlas-data-{generation.generation_id}" / "manifest.json"
+    )
     raw = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert raw["generation_id"] == generation.generation_id
     assert raw["venues"]["successful"] == 2
@@ -216,8 +266,13 @@ async def test_second_generation_advances_latest_and_records_the_predecessor(
     first_dir.mkdir()
     written1, shards1 = write_generation_files(first, first_dir, config=config)
     outcome1 = await publish_generation(
-        first, dataset_dir=first_dir, written_files=written1, publisher=publisher,
-        config=config, release_tag="atlas-data-1", shard_indices=shards1,
+        first,
+        dataset_dir=first_dir,
+        written_files=written1,
+        publisher=publisher,
+        config=config,
+        release_tag="atlas-data-1",
+        shard_indices=shards1,
     )
     assert outcome1.published
 
@@ -226,8 +281,13 @@ async def test_second_generation_advances_latest_and_records_the_predecessor(
     second_dir.mkdir()
     written2, shards2 = write_generation_files(second, second_dir, config=config)
     outcome2 = await publish_generation(
-        second, dataset_dir=second_dir, written_files=written2, publisher=publisher,
-        config=config, release_tag="atlas-data-2", shard_indices=shards2,
+        second,
+        dataset_dir=second_dir,
+        written_files=written2,
+        publisher=publisher,
+        config=config,
+        release_tag="atlas-data-2",
+        shard_indices=shards2,
     )
     assert outcome2.published
     assert outcome2.manifest.previous_generation_id == first.generation_id
@@ -260,8 +320,13 @@ async def test_a_generation_with_too_few_successful_venues_never_becomes_latest(
     publisher = FilesystemPublisher(tmp_path / "releases")
 
     outcome = await publish_generation(
-        generation, dataset_dir=dataset_dir, written_files=written, publisher=publisher,
-        config=config, release_tag="atlas-data-test", shard_indices=shard_indices,
+        generation,
+        dataset_dir=dataset_dir,
+        written_files=written,
+        publisher=publisher,
+        config=config,
+        release_tag="atlas-data-test",
+        shard_indices=shard_indices,
     )
 
     assert not outcome.published
@@ -282,8 +347,13 @@ async def test_a_severe_asset_count_drop_is_refused_and_the_previous_generation_
     first_dir.mkdir()
     written1, shards1 = write_generation_files(first, first_dir, config=config)
     outcome1 = await publish_generation(
-        first, dataset_dir=first_dir, written_files=written1, publisher=publisher,
-        config=config, release_tag="atlas-data-1", shard_indices=shards1,
+        first,
+        dataset_dir=first_dir,
+        written_files=written1,
+        publisher=publisher,
+        config=config,
+        release_tag="atlas-data-1",
+        shard_indices=shards1,
     )
     assert outcome1.published
     assert first.asset_count == 2
@@ -306,8 +376,13 @@ async def test_a_severe_asset_count_drop_is_refused_and_the_previous_generation_
     second_dir.mkdir()
     written2, shards2 = write_generation_files(second, second_dir, config=strict)
     outcome2 = await publish_generation(
-        second, dataset_dir=second_dir, written_files=written2, publisher=publisher,
-        config=strict, release_tag="atlas-data-2", shard_indices=shards2,
+        second,
+        dataset_dir=second_dir,
+        written_files=written2,
+        publisher=publisher,
+        config=strict,
+        release_tag="atlas-data-2",
+        shard_indices=shards2,
     )
 
     assert not outcome2.published
@@ -340,8 +415,13 @@ async def test_a_corrupted_file_on_disk_fails_the_checksum_gate_before_publishin
     corrupted.write_bytes(b"not the parquet file the manifest describes")
 
     outcome = await publish_generation(
-        generation, dataset_dir=dataset_dir, written_files=written, publisher=publisher,
-        config=config, release_tag="atlas-data-test", shard_indices=shard_indices,
+        generation,
+        dataset_dir=dataset_dir,
+        written_files=written,
+        publisher=publisher,
+        config=config,
+        release_tag="atlas-data-test",
+        shard_indices=shard_indices,
     )
 
     assert not outcome.published
@@ -371,7 +451,9 @@ async def test_atlas_verify_style_checksum_check_catches_post_publish_tampering(
 
     manifest = build_manifest(
         generation,
-        build_file_entries(written, generation_id=generation.generation_id, shard_indices=shard_indices),
+        build_file_entries(
+            written, generation_id=generation.generation_id, shard_indices=shard_indices
+        ),
         shard_count=config.publishing.shard_count,
     )
 
@@ -385,15 +467,30 @@ async def test_atlas_verify_style_checksum_check_catches_post_publish_tampering(
 
 
 async def test_a_missing_file_fails_checksum_validation() -> None:
-    from vizanix_atlas.models.manifest import BuildProvenance, FileEntry, GenerationManifest, VenueOutcome
+    from vizanix_atlas.models.manifest import (
+        BuildProvenance,
+        FileEntry,
+        GenerationManifest,
+        VenueOutcome,
+    )
     from vizanix_atlas.publishing.validator import validate_checksums
 
     manifest = GenerationManifest(
-        dataset_format_version="1.0.0", schema_version="1.0.0", methodology_version="1.0.0",
-        software_version="0.1.0", generation_id="g", slot_label="20260101T000000Z",
-        collection_started_at="2026-01-01T00:00:00Z", collection_finished_at="2026-01-01T00:00:00Z",
-        snapshot_effective_time="2026-01-01T00:00:00Z", venues=VenueOutcome(),
-        files=(FileEntry(filename="missing.parquet", size_bytes=10, sha256="a" * 64, generation_id="g"),),
+        dataset_format_version="1.0.0",
+        schema_version="1.0.0",
+        methodology_version="1.0.0",
+        software_version="0.1.0",
+        generation_id="g",
+        slot_label="20260101T000000Z",
+        collection_started_at="2026-01-01T00:00:00Z",
+        collection_finished_at="2026-01-01T00:00:00Z",
+        snapshot_effective_time="2026-01-01T00:00:00Z",
+        venues=VenueOutcome(),
+        files=(
+            FileEntry(
+                filename="missing.parquet", size_bytes=10, sha256="a" * 64, generation_id="g"
+            ),
+        ),
         build=BuildProvenance(software_version="0.1.0"),
     )
     import tempfile

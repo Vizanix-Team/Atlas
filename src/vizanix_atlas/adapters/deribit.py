@@ -84,6 +84,7 @@ class DeribitAdapter(ExchangeAdapter):
 
         Raises:
             ExchangeApplicationError: If the response carries an ``error``.
+
         """
         body = self.require_mapping(payload, path=path)
         error = body.get("error")
@@ -222,15 +223,13 @@ class DeribitAdapter(ExchangeAdapter):
             funding_interval_hours=(
                 _FUNDING_INTERVAL_HOURS if instrument_type == "perpetual" else None
             ),
-            funding_semantics=(
-                "relative_per_interval" if instrument_type == "perpetual" else None
-            ),
+            funding_semantics=("relative_per_interval" if instrument_type == "perpetual" else None),
             open_interest_unit=(
                 None
                 if is_spot
+                # Inverse contracts report notional USD; linear ones report the
+                # base asset.
                 else (
-                    # Inverse contracts report notional USD; linear ones report the
-                    # base asset.
                     OpenInterestUnit.USD.value if is_inverse else OpenInterestUnit.BASE_ASSET.value
                 )
             ),
@@ -382,4 +381,6 @@ class DeribitAdapter(ExchangeAdapter):
     async def server_time_ms(self) -> int | None:
         """Fetch Deribit's server clock for skew measurement."""
         payload = await self.client.get_json("/api/v2/public/get_time", operation="time")
-        return plausible_epoch_ms(parse_float(self._unwrap(payload, path="/api/v2/public/get_time")))
+        return plausible_epoch_ms(
+            parse_float(self._unwrap(payload, path="/api/v2/public/get_time"))
+        )

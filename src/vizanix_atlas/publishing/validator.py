@@ -10,12 +10,12 @@ ever refuses silently.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from vizanix_atlas.core.config import AnomalyGuards
 from vizanix_atlas.discovery.pipeline import Generation
-from vizanix_atlas.models.manifest import FileEntry, GenerationManifest
+from vizanix_atlas.models.manifest import GenerationManifest
 from vizanix_atlas.storage.writer import sha256_file
 
 
@@ -36,7 +36,8 @@ class ValidationReport:
     def fail(self, check: str, detail: str) -> None:
         """Record a failed check. Does not raise; callers decide what to do with a
         report that has issues, so a caller inspecting several candidates in sequence
-        is not forced into exception handling to do it."""
+        is not forced into exception handling to do it.
+        """
         self.issues.append(ValidationIssue(check=check, detail=detail))
 
     @property
@@ -85,7 +86,7 @@ def validate_schema(manifest: GenerationManifest) -> ValidationReport:
     return report
 
 
-def validate_checksums(manifest: GenerationManifest, dataset_dir) -> ValidationReport:  # noqa: ANN001
+def validate_checksums(manifest: GenerationManifest, dataset_dir: Path) -> ValidationReport:
     """Recompute every file's hash from disk and compare it to the manifest.
 
     This is what ``atlas verify`` runs, and what a client should run before trusting a
@@ -95,7 +96,9 @@ def validate_checksums(manifest: GenerationManifest, dataset_dir) -> ValidationR
     for entry in manifest.files:
         path = dataset_dir / entry.filename
         if not path.is_file():
-            report.fail("checksum", f"{entry.filename} is listed in the manifest but missing on disk")
+            report.fail(
+                "checksum", f"{entry.filename} is listed in the manifest but missing on disk"
+            )
             continue
         actual = sha256_file(path)
         if actual != entry.sha256:
@@ -146,11 +149,7 @@ def validate_anomalies(
     """
     report = ValidationReport()
 
-    successful_venues = sum(
-        1
-        for h in generation.health
-        if h.status in ("success", "degraded")
-    )
+    successful_venues = sum(1 for h in generation.health if h.status in ("success", "degraded"))
     attempted = len(generation.health) or 1
     if successful_venues < guards.min_successful_venues:
         report.fail(
@@ -205,7 +204,7 @@ def validate_anomalies(
 def run_validity_gate(
     generation: Generation,
     manifest: GenerationManifest,
-    dataset_dir,  # noqa: ANN001
+    dataset_dir: Path,
     *,
     guards: AnomalyGuards,
     previous: GenerationManifest | None,

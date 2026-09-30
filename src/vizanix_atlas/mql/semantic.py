@@ -26,7 +26,6 @@ from vizanix_atlas.mql.ast_nodes import (
     Operand,
     Or,
     Query,
-    SelectItem,
 )
 from vizanix_atlas.mql.columns import ColumnInfo, market_table_columns, star_columns
 
@@ -67,6 +66,7 @@ def _resolve(identifier: Identifier, known: dict[str, ColumnInfo]) -> ColumnInfo
 
     Raises:
         MqlSemanticError: If ``identifier`` is not a metric MQL exposes.
+
     """
     column = known.get(identifier.name)
     if column is None:
@@ -116,11 +116,11 @@ def validate(query: Query) -> ValidatedQuery:
         MqlSemanticError: If the source is not ``market``, a metric name is unknown,
             a non-filterable metric is used in ``WHERE`` or ``ORDER BY``, or
             ``SELECT *`` is combined with an explicit column list.
+
     """
     if query.source.name != _SOURCE_NAME:
         raise MqlSemanticError(
-            f"unknown source {query.source.name!r}; MQL currently exposes only "
-            f"{_SOURCE_NAME!r}",
+            f"unknown source {query.source.name!r}; MQL currently exposes only {_SOURCE_NAME!r}",
             position=query.source.position,
         )
 
@@ -143,9 +143,7 @@ def validate(query: Query) -> ValidatedQuery:
     if query.where is not None:
         _check_bool_expr(query.where, known)
 
-    order_by = tuple(
-        (_resolve(item.name, known), item.descending) for item in query.order_by
-    )
+    order_by = tuple((_resolve(item.name, known), item.descending) for item in query.order_by)
     for column, _ in order_by:
         if column.metric is not None and not column.metric.filterable:
             raise MqlSemanticError(
@@ -161,6 +159,7 @@ def _check_no_duplicate_aliases(select: tuple[ResolvedSelectItem, ...]) -> None:
     Raises:
         MqlSemanticError: If two selected columns share an output name, which would
             otherwise silently produce a result table with an ambiguous column.
+
     """
     seen: dict[str, int] = {}
     for item in select:

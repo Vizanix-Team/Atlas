@@ -22,7 +22,7 @@ from typing import Any, Final
 from vizanix_atlas.adapters.base import DEFAULT_BOOK_DEPTH, ExchangeAdapter
 from vizanix_atlas.core.atlas_time import plausible_epoch_ms
 from vizanix_atlas.core.errors import SchemaMismatch
-from vizanix_atlas.core.numeric import parse_float, parse_non_negative, parse_int, parse_positive
+from vizanix_atlas.core.numeric import parse_float, parse_int, parse_non_negative, parse_positive
 from vizanix_atlas.models.enums import PriceSource
 from vizanix_atlas.models.observations import (
     RawFxObservation,
@@ -83,8 +83,9 @@ class BinanceSpotAdapter(ExchangeAdapter):
             base = row.get("baseAsset")
             quote = row.get("quoteAsset")
             if not (isinstance(symbol, str) and isinstance(base, str) and isinstance(quote, str)):
-                raise SchemaMismatch("symbol row lacked symbol, baseAsset or quoteAsset",
-                                     venue=self.slug)
+                raise SchemaMismatch(
+                    "symbol row lacked symbol, baseAsset or quoteAsset", venue=self.slug
+                )
 
             status = str(row.get("status", ""))
             if status != "TRADING":
@@ -106,9 +107,7 @@ class BinanceSpotAdapter(ExchangeAdapter):
                     tick_size=self._filter_value(filters, "PRICE_FILTER", "tickSize"),
                     quantity_step=self._filter_value(filters, "LOT_SIZE", "stepSize"),
                     minimum_quantity=self._filter_value(filters, "LOT_SIZE", "minQty"),
-                    minimum_notional=self._filter_value(
-                        filters, "NOTIONAL", "minNotional"
-                    ),
+                    minimum_notional=self._filter_value(filters, "NOTIONAL", "minNotional"),
                     active=True,
                 )
             )

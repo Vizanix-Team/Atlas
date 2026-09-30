@@ -56,9 +56,7 @@ class CollectionRequest:
     transport: object | None = None
 
 
-async def collect_venue(
-    request: CollectionRequest, config: CollectionConfig
-) -> CollectionResult:
+async def collect_venue(request: CollectionRequest, config: CollectionConfig) -> CollectionResult:
     """Collect everything Atlas wants from one venue.
 
     Never raises for a venue-side problem. A failure becomes a ``failed`` or
@@ -91,7 +89,7 @@ async def collect_venue(
             notes=(venue.disabled_reason or "adapter disabled",),
         )
 
-    adapter = build_adapter(venue, transport=request.transport)  # type: ignore[arg-type]
+    adapter = build_adapter(venue, transport=request.transport)
     try:
         # Discovery first: everything else is keyed by instrument.
         operations += 1
@@ -188,6 +186,7 @@ async def _collect_books(
     Bounded by the venue's own concurrency limit, which the HTTP client already enforces,
     so the gather here cannot exceed it. One symbol failing costs that symbol only.
     """
+
     async def one(symbol: str) -> RawOrderBook | None:
         try:
             return await adapter.fetch_order_book(symbol, depth=request.order_book_depth)

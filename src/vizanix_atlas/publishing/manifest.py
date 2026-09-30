@@ -51,7 +51,10 @@ def _venue_outcome(generation: Generation) -> VenueOutcome:
 
 
 def build_file_entries(
-    written: Sequence[WrittenFile], *, generation_id: str, shard_indices: dict[str, int] | None = None
+    written: Sequence[WrittenFile],
+    *,
+    generation_id: str,
+    shard_indices: dict[str, int] | None = None,
 ) -> tuple[FileEntry, ...]:
     """Turn written files into manifest entries.
 
@@ -61,6 +64,7 @@ def build_file_entries(
             file belongs to the generation its manifest claims to describe.
         shard_indices: Maps a shard file's name to its shard index, for the sharded
             asset-state files. Files not present in this mapping get no shard index.
+
     """
     shard_indices = shard_indices or {}
     return tuple(

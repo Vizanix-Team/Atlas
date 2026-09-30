@@ -21,7 +21,7 @@ from vizanix_atlas.adapters.base import DEFAULT_BOOK_DEPTH, ExchangeAdapter
 from vizanix_atlas.core.atlas_time import plausible_contract_time_ms, plausible_epoch_ms
 from vizanix_atlas.core.errors import ExchangeApplicationError, SchemaMismatch
 from vizanix_atlas.core.numeric import parse_float, parse_non_negative, parse_positive
-from vizanix_atlas.models.enums import OpenInterestUnit, PriceSource
+from vizanix_atlas.models.enums import OpenInterestUnit
 from vizanix_atlas.models.observations import (
     RawDerivativeObservation,
     RawFxObservation,
@@ -58,6 +58,7 @@ class BitgetAdapter(ExchangeAdapter):
 
         Raises:
             ExchangeApplicationError: If ``code`` is not the success value.
+
         """
         body = self.require_mapping(payload, path=path)
         code = str(body.get("code", ""))
@@ -105,8 +106,9 @@ class BitgetAdapter(ExchangeAdapter):
         base = row.get("baseCoin")
         quote = row.get("quoteCoin")
         if not (isinstance(symbol, str) and isinstance(base, str) and isinstance(quote, str)):
-            raise SchemaMismatch("spot symbol row lacked symbol, baseCoin or quoteCoin",
-                                 venue=self.slug)
+            raise SchemaMismatch(
+                "spot symbol row lacked symbol, baseCoin or quoteCoin", venue=self.slug
+            )
         if str(row.get("status", "")) != "online":
             return None
 
@@ -137,8 +139,9 @@ class BitgetAdapter(ExchangeAdapter):
         base = row.get("baseCoin")
         quote = row.get("quoteCoin")
         if not (isinstance(symbol, str) and isinstance(base, str) and isinstance(quote, str)):
-            raise SchemaMismatch("mix contract row lacked symbol, baseCoin or quoteCoin",
-                                 venue=self.slug)
+            raise SchemaMismatch(
+                "mix contract row lacked symbol, baseCoin or quoteCoin", venue=self.slug
+            )
         if str(row.get("symbolStatus", "")) != "normal":
             return None
 
@@ -180,9 +183,7 @@ class BitgetAdapter(ExchangeAdapter):
             funding_interval_hours=(
                 parse_positive(row.get("fundInterval")) if instrument_type == "perpetual" else None
             ),
-            funding_semantics=(
-                "relative_per_interval" if instrument_type == "perpetual" else None
-            ),
+            funding_semantics=("relative_per_interval" if instrument_type == "perpetual" else None),
             # holdingAmount is reported in base-asset units, so no contract
             # multiplier is involved in normalising it.
             open_interest_unit=OpenInterestUnit.BASE_ASSET.value,
@@ -232,9 +233,7 @@ class BitgetAdapter(ExchangeAdapter):
             venue_slug=self.slug,
             symbol_native=symbol,
             instrument_class=instrument_class,
-            timing=self.timing(
-                exchange_event_time=plausible_epoch_ms(parse_float(row.get("ts")))
-            ),
+            timing=self.timing(exchange_event_time=plausible_epoch_ms(parse_float(row.get("ts")))),
             last_price=parse_positive(row.get("lastPr")),
             bid_price=parse_positive(row.get("bidPr")),
             ask_price=parse_positive(row.get("askPr")),
@@ -296,7 +295,7 @@ class BitgetAdapter(ExchangeAdapter):
             params={"symbol": symbol_native, "type": "step0", "limit": min(depth, 150)},
             operation="orderbook",
         )
-        rows = self._unwrap(payload, path="/api/v2/spot/market/orderbook")
+        rows: object = self._unwrap(payload, path="/api/v2/spot/market/orderbook")
         book = rows if isinstance(rows, dict) else None
         if book is None:
             # Bitget returns an object under `data` for this endpoint; `_unwrap`
@@ -315,9 +314,7 @@ class BitgetAdapter(ExchangeAdapter):
             # This endpoint only ever returns a spot book; declared explicitly so a
             # symbol shared with a mix contract still resolves to the spot instrument.
             instrument_class="spot",
-            timing=self.timing(
-                exchange_event_time=plausible_epoch_ms(parse_float(book.get("ts")))
-            ),
+            timing=self.timing(exchange_event_time=plausible_epoch_ms(parse_float(book.get("ts")))),
             bids=bids,
             asks=asks,
             truncated=bids_truncated or asks_truncated,

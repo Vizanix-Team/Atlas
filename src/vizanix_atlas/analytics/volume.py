@@ -88,7 +88,9 @@ def aggregate_volume(contributions: Sequence[VolumeContribution]) -> VolumeState
         values = [
             c.reported_volume_usd
             for c in contributions
-            if c.instrument.instrument_type is kind and c.counts_toward_usd_total
+            if c.instrument.instrument_type is kind
+            and c.counts_toward_usd_total
+            and c.reported_volume_usd is not None
         ]
         return math.fsum(values) if values else None
 

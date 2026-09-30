@@ -73,6 +73,7 @@ class CryptocomAdapter(ExchangeAdapter):
 
         Raises:
             ExchangeApplicationError: If ``code`` is non-zero.
+
         """
         body = self.require_mapping(payload, path=path)
         code = body.get("code")
@@ -202,9 +203,7 @@ class CryptocomAdapter(ExchangeAdapter):
     async def _ticker_rows(self) -> list[tuple[dict[str, Any], str, int | None]]:
         """Fetch and normalise the bulk ticker array."""
         self.refresh_receive_time()
-        payload = await self.client.get_json(
-            "/exchange/v1/public/get-tickers", operation="tickers"
-        )
+        payload = await self.client.get_json("/exchange/v1/public/get-tickers", operation="tickers")
         rows = self._unwrap(payload, path="/exchange/v1/public/get-tickers")
         out: list[tuple[dict[str, Any], str, int | None]] = []
         for row in rows:
@@ -241,9 +240,7 @@ class CryptocomAdapter(ExchangeAdapter):
         return RawOrderBook(
             venue_slug=self.slug,
             symbol_native=symbol_native,
-            timing=self.timing(
-                exchange_event_time=plausible_epoch_ms(parse_float(book.get("t")))
-            ),
+            timing=self.timing(exchange_event_time=plausible_epoch_ms(parse_float(book.get("t")))),
             bids=bids,
             asks=asks,
             truncated=bids_truncated or asks_truncated,

@@ -75,6 +75,10 @@ class Parser:
     def _current(self) -> Token:
         return self._tokens[self._index]
 
+    def _at(self, token_type: TokenType) -> bool:
+        """Return whether the current token has ``token_type``."""
+        return self._current.type is token_type
+
     def _advance(self) -> Token:
         token = self._tokens[self._index]
         self._index += 1
@@ -85,6 +89,7 @@ class Parser:
 
         Raises:
             MqlSyntaxError: If the current token is not of the expected type.
+
         """
         if self._current.type is not token_type:
             found = repr(self._current.text) if self._current.text else "<end of query>"
@@ -100,9 +105,10 @@ class Parser:
         Raises:
             MqlSyntaxError: On any grammar violation, or on trailing input after a
                 complete query (other than an optional final ``;``).
+
         """
         query = self._parse_query()
-        if self._current.type is TokenType.SEMICOLON:
+        if self._at(TokenType.SEMICOLON):
             self._advance()
         if self._current.type is not TokenType.EOF:
             raise MqlSyntaxError(
@@ -118,22 +124,22 @@ class Parser:
         source = self._parse_identifier()
 
         where: BoolExpr | None = None
-        if self._current.type is TokenType.WHERE:
+        if self._at(TokenType.WHERE):
             self._advance()
             where = self._parse_or_expr()
 
         order_by: tuple[OrderItem, ...] = ()
-        if self._current.type is TokenType.ORDER:
+        if self._at(TokenType.ORDER):
             self._advance()
             self._expect(TokenType.BY)
             order_by = self._parse_order_list()
 
         limit: int | None = None
-        if self._current.type is TokenType.LIMIT:
+        if self._at(TokenType.LIMIT):
             self._advance()
             limit_position = self._current.position
             negated = False
-            if self._current.type is TokenType.MINUS:
+            if self._at(TokenType.MINUS):
                 self._advance()
                 negated = True
             limit_token = self._expect(TokenType.NUMBER)
@@ -153,11 +159,11 @@ class Parser:
         )
 
     def _parse_select_list(self) -> tuple[bool, tuple[SelectItem, ...]]:
-        if self._current.type is TokenType.STAR:
+        if self._at(TokenType.STAR):
             self._advance()
             return True, ()
         items = [self._parse_select_item()]
-        while self._current.type is TokenType.COMMA:
+        while self._at(TokenType.COMMA):
             self._advance()
             items.append(self._parse_select_item())
         return False, tuple(items)
@@ -165,14 +171,14 @@ class Parser:
     def _parse_select_item(self) -> SelectItem:
         name = self._parse_identifier()
         alias: str | None = None
-        if self._current.type is TokenType.AS:
+        if self._at(TokenType.AS):
             self._advance()
             alias = self._expect(TokenType.IDENT).text
         return SelectItem(name=name, alias=alias)
 
     def _parse_order_list(self) -> tuple[OrderItem, ...]:
         items = [self._parse_order_item()]
-        while self._current.type is TokenType.COMMA:
+        while self._at(TokenType.COMMA):
             self._advance()
             items.append(self._parse_order_item())
         return tuple(items)
@@ -180,35 +186,35 @@ class Parser:
     def _parse_order_item(self) -> OrderItem:
         name = self._parse_identifier()
         descending = False
-        if self._current.type is TokenType.ASC:
+        if self._at(TokenType.ASC):
             self._advance()
-        elif self._current.type is TokenType.DESC:
+        elif self._at(TokenType.DESC):
             self._advance()
             descending = True
         return OrderItem(name=name, descending=descending)
 
     def _parse_or_expr(self) -> BoolExpr:
         left = self._parse_and_expr()
-        while self._current.type is TokenType.OR:
+        while self._at(TokenType.OR):
             self._advance()
             left = Or(left=left, right=self._parse_and_expr())
         return left
 
     def _parse_and_expr(self) -> BoolExpr:
         left = self._parse_not_expr()
-        while self._current.type is TokenType.AND:
+        while self._at(TokenType.AND):
             self._advance()
             left = And(left=left, right=self._parse_not_expr())
         return left
 
     def _parse_not_expr(self) -> BoolExpr:
-        if self._current.type is TokenType.NOT:
+        if self._at(TokenType.NOT):
             self._advance()
             return Not(operand=self._parse_not_expr())
         return self._parse_predicate()
 
     def _parse_predicate(self) -> BoolExpr:
-        if self._current.type is TokenType.LPAREN:
+        if self._at(TokenType.LPAREN):
             self._advance()
             inner = self._parse_or_expr()
             self._expect(TokenType.RPAREN)
@@ -216,31 +222,31 @@ class Parser:
 
         left = self._parse_operand()
 
-        if self._current.type is TokenType.IS:
+        if self._at(TokenType.IS):
             self._advance()
             negated = False
-            if self._current.type is TokenType.NOT:
+            if self._at(TokenType.NOT):
                 self._advance()
                 negated = True
             self._expect(TokenType.NULL)
             return IsNull(operand=left, negated=negated)
 
         negated = False
-        if self._current.type is TokenType.NOT:
+        if self._at(TokenType.NOT):
             self._advance()
             negated = True
 
-        if self._current.type is TokenType.IN:
+        if self._at(TokenType.IN):
             self._advance()
             self._expect(TokenType.LPAREN)
             values = [self._parse_literal()]
-            while self._current.type is TokenType.COMMA:
+            while self._at(TokenType.COMMA):
                 self._advance()
                 values.append(self._parse_literal())
             self._expect(TokenType.RPAREN)
             return InList(operand=left, values=tuple(values), negated=negated)
 
-        if self._current.type is TokenType.BETWEEN:
+        if self._at(TokenType.BETWEEN):
             self._advance()
             low = self._parse_operand()
             self._expect(TokenType.AND)
@@ -265,7 +271,7 @@ class Parser:
         return Comparison(left=left, operator=operator, right=right)
 
     def _parse_operand(self) -> Operand:
-        if self._current.type is TokenType.IDENT:
+        if self._at(TokenType.IDENT):
             return self._parse_identifier()
         return self._parse_literal()
 
@@ -306,5 +312,6 @@ def parse_query(text: str) -> Query:
 
     Raises:
         MqlSyntaxError: On any lexical or grammatical error.
+
     """
     return Parser(tokenise(text)).parse()

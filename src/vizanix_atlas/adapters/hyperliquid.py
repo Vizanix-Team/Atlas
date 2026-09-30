@@ -63,6 +63,7 @@ class HyperliquidAdapter(ExchangeAdapter):
             SchemaMismatch: If the response is not the documented two-element array,
                 or if the two arrays have different lengths. A length mismatch would
                 silently misattribute every field past the divergence.
+
         """
         self.refresh_receive_time()
         payload = await self.client.post_json(
@@ -201,9 +202,7 @@ class HyperliquidAdapter(ExchangeAdapter):
             raise SchemaMismatch(
                 "l2Book levels was not a two-element array", venue=self.slug, length=len(levels)
             )
-        bids, bids_truncated = self.build_levels(
-            _as_pairs(levels[0]), depth=depth, descending=True
-        )
+        bids, bids_truncated = self.build_levels(_as_pairs(levels[0]), depth=depth, descending=True)
         asks, asks_truncated = self.build_levels(
             _as_pairs(levels[1]), depth=depth, descending=False
         )

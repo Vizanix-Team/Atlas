@@ -41,6 +41,7 @@ def load_fixture(venue: str, name: str) -> Any:
     Raises:
         FileNotFoundError: With the available names listed, because a typo here is
             otherwise a confusing failure.
+
     """
     path = EXCHANGE_FIXTURES / venue / f"{name}.json"
     if not path.is_file():

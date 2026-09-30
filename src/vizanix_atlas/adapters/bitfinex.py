@@ -31,7 +31,6 @@ from typing import Any, Final
 from vizanix_atlas.adapters.base import DEFAULT_BOOK_DEPTH, ExchangeAdapter
 from vizanix_atlas.core.errors import SchemaMismatch
 from vizanix_atlas.core.numeric import parse_non_negative, parse_positive
-from vizanix_atlas.models.enums import PriceSource
 from vizanix_atlas.models.observations import (
     RawFxObservation,
     RawInstrument,

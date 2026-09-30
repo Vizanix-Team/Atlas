@@ -10,6 +10,8 @@ needs credentials (see ``docs/GITHUB_ARCHITECTURE.md``, "no secret requirement")
 
 from __future__ import annotations
 
+from typing import Protocol
+
 import httpx
 
 from vizanix_atlas.core.errors import DatasetUnavailable
@@ -25,6 +27,14 @@ _RELEASE_DOWNLOAD_BASE = "https://github.com/{owner}/{repo}/releases/download/{t
 def release_asset_url(owner: str, repo: str, tag: str, filename: str) -> str:
     """Return the stable public download URL for one release asset."""
     return _RELEASE_DOWNLOAD_BASE.format(owner=owner, repo=repo, tag=tag, filename=filename)
+
+
+class GenerationFileSource(Protocol):
+    """Anything that can return the bytes of a published generation file."""
+
+    def fetch_generation_file(self, generation_id: str, filename: str) -> bytes:
+        """Return one published file's bytes."""
+        ...
 
 
 class ReleaseDownloader:

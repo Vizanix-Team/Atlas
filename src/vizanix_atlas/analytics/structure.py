@@ -16,7 +16,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Final
 
-from vizanix_atlas.analytics.robust import effective_count, herfindahl, median, percentile_rank
+from vizanix_atlas.analytics.robust import effective_count, herfindahl, percentile_rank
 from vizanix_atlas.core.config import GenomeConfig
 from vizanix_atlas.core.numeric import safe_divide
 from vizanix_atlas.models.enums import GenomeStatus
@@ -27,7 +27,6 @@ from vizanix_atlas.models.state import (
     GenomeState,
     LiquidityState,
     PressureComponents,
-    VolumeState,
 )
 
 #: Price dispersion at which the dispersion component of the fragmentation index
@@ -149,9 +148,7 @@ def compute_pressure(inputs: PressureInputs) -> PressureComponents:
         and inputs.open_interest_usd_previous is not None
         and inputs.open_interest_usd_previous > 0
     ):
-        oi_change = (
-            inputs.open_interest_usd_current / inputs.open_interest_usd_previous - 1.0
-        )
+        oi_change = inputs.open_interest_usd_current / inputs.open_interest_usd_previous - 1.0
 
     acceleration = safe_divide(inputs.volume_usd_current, inputs.volume_usd_baseline)
 
@@ -222,9 +219,7 @@ def compute_crowding(inputs: CrowdingInputs) -> CrowdingComponents:
         and inputs.open_interest_usd_24h_ago is not None
         and inputs.open_interest_usd_24h_ago > 0
     ):
-        oi_change_24h = (
-            inputs.open_interest_usd_current / inputs.open_interest_usd_24h_ago - 1.0
-        )
+        oi_change_24h = inputs.open_interest_usd_current / inputs.open_interest_usd_24h_ago - 1.0
 
     components = CrowdingComponents(
         funding_percentile_30d=funding_percentile,

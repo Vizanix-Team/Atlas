@@ -154,6 +154,7 @@ def walk_book_impact(
         The impact in basis points and whether the visible book held enough depth. When
         it did not, the impact is ``None`` rather than the cost of the partial fill,
         because a partial fill's average price understates the true cost.
+
     """
     if reference_price <= 0 or target_notional_usd <= 0:
         return None, False
@@ -325,9 +326,7 @@ def aggregate_liquidity(
     )
 
     spreads = [m.spread_bps for m in measured if m.spread_bps is not None]
-    share_band = next(
-        (b for b in aggregate_bands if b.distance_bps == _SHARE_BAND_BPS), None
-    )
+    share_band = next((b for b in aggregate_bands if b.distance_bps == _SHARE_BAND_BPS), None)
     imbalance = None
     if share_band is not None:
         bid, ask = share_band.bid_depth_usd, share_band.ask_depth_usd
@@ -379,9 +378,7 @@ def _combine_books(
             continue
         for side, target in (("bids", bids), ("asks", asks)):
             for level in getattr(sample.book, side):
-                notional = _level_notional_usd(
-                    level, sample.instrument, sample.quote_to_usd
-                )
+                notional = _level_notional_usd(level, sample.instrument, sample.quote_to_usd)
                 if notional is not None and notional > 0:
                     target.append((level.price, notional))
     bids.sort(key=lambda pair: pair[0], reverse=True)
