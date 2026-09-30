@@ -195,6 +195,9 @@ def market(
     top: Annotated[
         int, typer.Option(help="How many assets to show, ranked by reported volume.")
     ] = 20,
+    min_venues: Annotated[
+        int, typer.Option(help="Only rank assets seen on at least this many venues.")
+    ] = 2,
     as_json: JsonOption = False,
 ) -> None:
     """Show a market-wide summary: asset counts and top assets by reported volume."""
@@ -203,7 +206,7 @@ def market(
         view = atlas.market()
     except AtlasError as error:
         raise _fail(error) from error
-    top_frame = view.top_by_volume(top)
+    top_frame = view.top_by_volume(top, min_venues=min_venues)
     if as_json:
         console.print_json(
             json.dumps(
@@ -220,7 +223,7 @@ def market(
     console.print(
         f"assets: {view.asset_count}   multi-venue: {view.qualified_asset_count(min_venue_count=2)}"
     )
-    table = Table(title=f"Top {top} by reported 24h volume")
+    table = Table(title=f"Top {top} by reported 24h volume (assets on {min_venues}+ venues)")
     table.add_column("asset")
     table.add_column("reported_volume_24h_usd", justify="right")
     table.add_column("venue_count", justify="right")

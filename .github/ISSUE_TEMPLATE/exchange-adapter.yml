@@ -1,0 +1,37 @@
+name: Exchange adapter
+description: Propose a new venue or report an adapter problem.
+labels:
+- adapter
+body:
+- type: input
+  id: venue
+  attributes:
+    label: Venue
+  validations:
+    required: true
+- type: input
+  id: docs
+  attributes:
+    label: Official API documentation URL
+  validations:
+    required: true
+- type: textarea
+  id: public
+  attributes:
+    label: Public endpoints
+    description: Which bulk public endpoints provide instruments, tickers and derivatives? No authenticated
+      endpoints.
+  validations:
+    required: true
+- type: textarea
+  id: terms
+  attributes:
+    label: Data terms
+    description: Link the terms and note anything on redistribution or attribution.
+- type: checkboxes
+  id: rules
+  attributes:
+    label: Confirmations
+    options:
+    - label: Public, unauthenticated endpoints only (no keys, no bypassing blocks)
+      required: true

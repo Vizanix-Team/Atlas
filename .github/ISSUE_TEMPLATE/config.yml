@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a vulnerability (private)
+    url: https://github.com/Vizanix/Atlas/security/advisories/new
+    about: Please do not open a public issue for security problems.

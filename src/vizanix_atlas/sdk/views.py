@@ -101,9 +101,14 @@ class MarketView:
         """Assets observed on at least ``min_venue_count`` venues."""
         return int(self._frame.filter(self._frame["venue_count"] >= min_venue_count).height)
 
-    def top_by_volume(self, n: int = 10) -> pl.DataFrame:
-        """Return the ``n`` assets with the highest reported 24h USD volume."""
-        return self._frame.sort("reported_volume_24h_usd", descending=True, nulls_last=True).head(n)
+    def top_by_volume(self, n: int = 10, *, min_venues: int = 1) -> pl.DataFrame:
+        """Return the ``n`` assets with the highest reported 24h USD volume.
+
+        ``min_venues`` keeps a single venue's self-reported volume from defining the top
+        of the list; the website and CLI default to 2.
+        """
+        eligible = self._frame.filter(pl.col("venue_count") >= min_venues)
+        return eligible.sort("reported_volume_24h_usd", descending=True, nulls_last=True).head(n)
 
     def frame(self) -> pl.DataFrame:
         """Return the underlying Polars frame, for anything this view does not wrap."""

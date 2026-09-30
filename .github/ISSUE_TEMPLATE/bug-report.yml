@@ -1,0 +1,24 @@
+name: Bug report
+description: Something in Atlas does not work as documented.
+labels:
+- bug
+body:
+- type: textarea
+  id: what
+  attributes:
+    label: What happened
+    description: What did you expect instead?
+  validations:
+    required: true
+- type: textarea
+  id: repro
+  attributes:
+    label: How to reproduce
+    description: Commands, dataset generation ID, and versions (run `atlas methodology`).
+  validations:
+    required: true
+- type: textarea
+  id: logs
+  attributes:
+    label: Output or logs
+    render: shell

@@ -1,0 +1,23 @@
+name: Asset resolution
+description: Two assets merged wrongly, or one asset left unresolved.
+labels:
+- identity
+body:
+- type: input
+  id: ticker
+  attributes:
+    label: Ticker
+  validations:
+    required: true
+- type: textarea
+  id: evidence
+  attributes:
+    label: Evidence
+    description: Contract address and chain, venue metadata, or an official source. Atlas prefers unresolved
+      to a guess.
+  validations:
+    required: true
+- type: textarea
+  id: ids
+  attributes:
+    label: Asset IDs involved

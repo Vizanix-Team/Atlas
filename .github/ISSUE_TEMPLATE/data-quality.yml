@@ -1,0 +1,24 @@
+name: Data quality
+description: A published value looks wrong.
+labels:
+- data-quality
+body:
+- type: input
+  id: gen
+  attributes:
+    label: Generation ID
+  validations:
+    required: true
+- type: input
+  id: asset
+  attributes:
+    label: Asset and venue(s)
+  validations:
+    required: true
+- type: textarea
+  id: why
+  attributes:
+    label: Why it looks wrong
+    description: Compare with the venue's own public page if you can.
+  validations:
+    required: true

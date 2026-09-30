@@ -1,0 +1,30 @@
+name: Metric proposal
+description: Propose a new published metric.
+labels:
+- metric
+body:
+- type: input
+  id: name
+  attributes:
+    label: Name
+    description: Include the unit and scope in the name.
+  validations:
+    required: true
+- type: textarea
+  id: formula
+  attributes:
+    label: Definition and formula
+  validations:
+    required: true
+- type: textarea
+  id: inputs
+  attributes:
+    label: Inputs
+    description: Which observations feed it, minimum venues or history, and what null means.
+  validations:
+    required: true
+- type: textarea
+  id: caveats
+  attributes:
+    label: Caveats
+    description: How it can mislead. Avoid signal language.
