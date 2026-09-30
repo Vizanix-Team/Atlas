@@ -49,6 +49,7 @@ from vizanix_atlas.publishing.validator import (
     validate_row_counts,
     validate_schema,
 )
+from vizanix_atlas.publishing.webexport import export_web_data
 from vizanix_atlas.sdk.client import Atlas
 from vizanix_atlas.sdk.remote import ReleaseDownloader
 from vizanix_atlas.storage.dataset_builder import build_dataset_files
@@ -526,6 +527,21 @@ def housekeeping(
     outcome = asyncio.run(run())
     mode = "dry run" if outcome.dry_run else "deleted"
     console.print(f"{mode}: {len(outcome.deleted)} file(s); {len(outcome.skipped)} skipped")
+
+
+@app.command(name="export-web")
+def export_web(
+    output: Annotated[Path, typer.Option(help="Directory to write the website JSON into.")],
+    source: SourceOption = None,
+    detail_assets: Annotated[int, typer.Option(help="How many assets get a detail page.")] = 200,
+) -> None:
+    """Export the compact JSON the static website bundles (used by the Pages workflow)."""
+    try:
+        atlas = _open(source)
+        sizes = export_web_data(atlas.dataset, output, detail_assets=detail_assets)
+    except AtlasError as error:
+        raise _fail(error) from error
+    console.print(f"exported {len(sizes)} files, {sum(sizes.values()) / 1024:.0f} KiB -> {output}")
 
 
 def _read_collection_results(input_dir: Path) -> list[CollectionResult]:

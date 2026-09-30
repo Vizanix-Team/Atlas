@@ -26,7 +26,6 @@ observations/
 web/node_modules/
 web/dist/
 web/.vite/
-web/public/data/
 
 # Editors and operating systems
 .idea/

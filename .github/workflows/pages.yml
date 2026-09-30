@@ -1,0 +1,71 @@
+# Builds and deploys the static website. Deployment problems can never corrupt the
+# dataset: this workflow only reads published releases and writes to Pages.
+name: Pages
+
+on:
+  schedule:
+    - cron: "13 * * * *"
+  push:
+    branches: [main]
+    paths: ["web/**", "src/vizanix_atlas/publishing/webexport.py", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ATLAS_REPOSITORY: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Export the latest published dataset
+        # Exported to a scratch directory first: if no dataset has been published yet
+        # (a fresh repository), the committed fixture stays in place and the site shows
+        # its "fixture data" banner instead of pretending to have market data.
+        run: |
+          if atlas export-web --output "$RUNNER_TEMP/web-data"; then
+            rm -rf web/public/data
+            mv "$RUNNER_TEMP/web-data" web/public/data
+          else
+            echo "::warning::No published dataset available; deploying the fixture."
+          fi
+      - run: npm ci
+        working-directory: web
+      - run: npm run build
+        working-directory: web
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

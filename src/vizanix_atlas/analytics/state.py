@@ -81,6 +81,7 @@ from vizanix_atlas.models.quality import (
     DataQuality,
     Freshness,
     Provenance,
+    ProvenanceEntry,
     QuoteConversion,
 )
 from vizanix_atlas.models.state import (
@@ -702,6 +703,36 @@ def _ages(observations: AssetObservations, snapshot_effective_time: int) -> dict
     return ages
 
 
+def _representative_ticker(
+    venue_tickers: Sequence[tuple[RawTicker, Instrument]],
+    by_instrument: dict[str, ProvenanceEntry],
+    conversions: dict[str, QuoteConversion | None],
+) -> tuple[RawTicker, Instrument]:
+    """Pick the one ticker that summarises a venue in the per-venue decomposition.
+
+    Preference, in order: a price source that actually entered the reference price;
+    a non-option instrument (an option's price is a premium, never the underlying's
+    price); spot over derivatives; an instrument whose quote converts to USD; the heaviest
+    reference weight; the largest weighting volume; and finally the instrument id, so the
+    choice is stable across runs.
+    """
+
+    def key(item: tuple[RawTicker, Instrument]) -> tuple[object, ...]:
+        ticker, instrument = item
+        entry = by_instrument.get(instrument.instrument_id)
+        return (
+            not (entry is not None and entry.included),
+            instrument.instrument_type is InstrumentType.OPTION,
+            instrument.instrument_type is not InstrumentType.SPOT,
+            _rate(conversions, instrument) is None,
+            -(entry.weight if entry is not None and entry.weight is not None else 0.0),
+            -(_weighting_volume_usd(ticker, instrument, conversions) or 0.0),
+            instrument.instrument_id,
+        )
+
+    return min(venue_tickers, key=key)
+
+
 def _venue_states(
     observations: AssetObservations,
     conversions: dict[str, QuoteConversion | None],
@@ -748,18 +779,23 @@ def _venue_states(
     mark_by_venue = {m.venue_slug: m.mark_price_usd for m in marks}
 
     states: list[VenueAssetState] = []
-    seen: set[str] = set()
 
+    tickers_by_venue: dict[str, list[tuple[RawTicker, Instrument]]] = {}
     for ticker, instrument in observations.tickers:
-        venue = ticker.venue_slug
-        if venue in seen:
-            # One row per venue. The instrument-level detail lives in the provenance and
-            # instrument tables; this row is the venue's summary view of the asset.
-            continue
-        seen.add(venue)
+        tickers_by_venue.setdefault(ticker.venue_slug, []).append((ticker, instrument))
+
+    for venue in sorted(tickers_by_venue):
+        # One row per venue, summarising the instrument that best represents it. The
+        # choice must be deterministic and must not depend on the order a venue happened
+        # to list its instruments in, or the row would show (for example) a EUR pair that
+        # cannot be converted while the same venue's USD pair sits in the reference price.
+        ticker, instrument = _representative_ticker(
+            tickers_by_venue[venue], by_instrument, conversions
+        )
         entry = by_instrument.get(instrument.instrument_id)
         rate = _rate(conversions, instrument)
-        pick = ticker.reference_candidate
+        is_option = instrument.instrument_type is InstrumentType.OPTION
+        pick = None if is_option else ticker.reference_candidate
         price_usd = pick[0] * rate if pick is not None and rate is not None else None
         funding = funding_by_venue.get(venue)
 

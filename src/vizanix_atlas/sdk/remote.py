@@ -10,6 +10,7 @@ needs credentials (see ``docs/GITHUB_ARCHITECTURE.md``, "no secret requirement")
 
 from __future__ import annotations
 
+import os
 from typing import Protocol
 
 import httpx
@@ -17,9 +18,20 @@ import httpx
 from vizanix_atlas.core.errors import DatasetUnavailable
 from vizanix_atlas.publishing.publisher import DATA_LATEST_TAG, LATEST_FILENAME, MANIFEST_FILENAME
 
-#: Default upstream repository the SDK downloads published datasets from.
+#: Default upstream repository the SDK downloads published datasets from. Override with
+#: ``ATLAS_REPOSITORY=owner/name`` (forks, mirrors, or a workflow reading its own repo).
 DEFAULT_OWNER = "Vizanix-Team"
 DEFAULT_REPO = "Atlas"
+
+
+def default_repository() -> tuple[str, str]:
+    """Return the ``(owner, repo)`` datasets are downloaded from."""
+    configured = os.environ.get("ATLAS_REPOSITORY", "")
+    owner, _, repo = configured.partition("/")
+    if owner and repo:
+        return owner, repo
+    return DEFAULT_OWNER, DEFAULT_REPO
+
 
 _RELEASE_DOWNLOAD_BASE = "https://github.com/{owner}/{repo}/releases/download/{tag}/{filename}"
 
@@ -41,10 +53,11 @@ class ReleaseDownloader:
     """Fetches published files over plain HTTPS, with no authentication."""
 
     def __init__(
-        self, *, owner: str = DEFAULT_OWNER, repo: str = DEFAULT_REPO, timeout: float = 60.0
+        self, *, owner: str | None = None, repo: str | None = None, timeout: float = 60.0
     ) -> None:
-        self.owner = owner
-        self.repo = repo
+        default_owner, default_repo = default_repository()
+        self.owner = owner or default_owner
+        self.repo = repo or default_repo
         self._client = httpx.Client(follow_redirects=True, timeout=timeout)
 
     def close(self) -> None:

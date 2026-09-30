@@ -530,3 +530,40 @@ def test_state_building_is_deterministic(config, conversion) -> None:
     assert first.state.reference_price.value == second.state.reference_price.value
     assert first.state.model_dump_json() == second.state.model_dump_json()
     assert first.venues == second.venues
+
+
+def _spot_with(venue: str, symbol: str, quote_asset_id: str) -> Instrument:
+    return spot(venue, quote_asset_id).model_copy(
+        update={"instrument_id": f"instrument:{venue}:spot:{symbol}", "symbol_native": symbol}
+    )
+
+
+def test_venue_row_uses_the_instrument_that_entered_the_reference_price(config, conversion) -> None:
+    """A venue that lists an unconvertible EUR pair first must still be summarised by its
+    USD pair; the row must not depend on the order a venue lists its instruments.
+    """
+    eur = _spot_with("kraken", "XBTEUR", "asset:fiat:eur")
+    usd = _spot_with("kraken", "XBTUSD", "asset:fiat:usd")
+    observations = AssetObservations(
+        asset=BTC,
+        tickers=[
+            (ticker("kraken", 77000.0).model_copy(update={"symbol_native": "XBTEUR"}), eur),
+            (ticker("kraken", 84400.0).model_copy(update={"symbol_native": "XBTUSD"}), usd),
+            (ticker("okx", 84410.0), spot("okx", USDT_ID)),
+            (ticker("bitget", 84405.0), spot("bitget", USDT_ID)),
+            (ticker("gateio", 84395.0), spot("gateio", USDT_ID)),
+        ],
+        listing_venues={"kraken", "okx", "bitget", "gateio"},
+        expected_venues={"kraken", "okx", "bitget", "gateio"},
+    )
+    bundle = build_market_state(
+        observations,
+        conversion=conversion,
+        config=config,
+        generation_id="20260927T173000Z-test",
+        snapshot_effective_time=SNAPSHOT,
+    )
+    row = next(v for v in bundle.venues if v.venue_slug == "kraken")
+    assert row.price_usd == pytest.approx(84400.0)
+    assert row.included_in_reference_price
+    assert row.exclusion_reason is None

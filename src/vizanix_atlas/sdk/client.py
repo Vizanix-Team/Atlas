@@ -20,7 +20,7 @@ from vizanix_atlas.mql.engine import run_query
 from vizanix_atlas.publishing.publisher import MANIFEST_FILENAME
 from vizanix_atlas.sdk.cache import DatasetCache, default_cache_dir
 from vizanix_atlas.sdk.dataset import Dataset
-from vizanix_atlas.sdk.remote import DEFAULT_OWNER, DEFAULT_REPO, ReleaseDownloader
+from vizanix_atlas.sdk.remote import ReleaseDownloader
 from vizanix_atlas.sdk.views import AssetView, MarketView
 
 _ASSETS_TABLE_FILENAME = "assets.parquet"
@@ -73,8 +73,8 @@ class Atlas:
         *,
         cache: bool = True,
         cache_dir: Path | None = None,
-        owner: str = DEFAULT_OWNER,
-        repo: str = DEFAULT_REPO,
+        owner: str | None = None,
+        repo: str | None = None,
     ) -> Atlas:
         """Open the current published generation, downloading it as needed.
 
@@ -105,8 +105,8 @@ class Atlas:
         *,
         cache: bool = True,
         cache_dir: Path | None = None,
-        owner: str = DEFAULT_OWNER,
-        repo: str = DEFAULT_REPO,
+        owner: str | None = None,
+        repo: str | None = None,
         _downloader: ReleaseDownloader | None = None,
     ) -> Atlas:
         """Open a specific, named generation by ID, downloading it as needed."""
@@ -120,6 +120,11 @@ class Atlas:
         return cls(Dataset(manifest=manifest, root=root, downloader=downloader))
 
     # -- manifest -------------------------------------------------------------
+
+    @property
+    def dataset(self) -> Dataset:
+        """The underlying lazily-resolved dataset."""
+        return self._dataset
 
     @property
     def manifest(self) -> GenerationManifest:

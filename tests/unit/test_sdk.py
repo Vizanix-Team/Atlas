@@ -103,3 +103,23 @@ def test_query_runs_mql_against_the_downloaded_shards(published_releases_dir: Pa
     atlas = Atlas.from_local(published_releases_dir)
     result = atlas.query("SELECT asset, venue_count FROM market ORDER BY asset")
     assert result["asset"].to_list() == ["BTC", "ETH"]
+
+
+def test_export_web_writes_strict_json_within_budget(
+    published_releases_dir: Path, tmp_path: Path
+) -> None:
+    import json
+
+    from vizanix_atlas.publishing.webexport import export_web_data
+
+    atlas = Atlas.from_local(published_releases_dir)
+    out = tmp_path / "web"
+    sizes = export_web_data(atlas.dataset, out)
+
+    assert {"market-overview.json", "assets.json", "venues.json", "dataset.json"} <= set(sizes)
+    overview = json.loads((out / "market-overview.json").read_text())
+    assert overview["counts"]["assets"] == 2
+    assets = json.loads((out / "assets.json").read_text())["assets"]
+    assert {a["symbol"] for a in assets} >= {"BTC"}
+    btc = next(a for a in assets if a["symbol"] == "BTC")
+    assert btc["file"] and (out / "asset" / btc["file"]).is_file()
