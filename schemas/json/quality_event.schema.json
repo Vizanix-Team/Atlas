@@ -1,0 +1,66 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "additionalProperties": false,
+  "description": "A recorded data-quality incident.\n\nWritten to the ``quality_events`` table so that quarantined observations remain\ninspectable after a generation is published.",
+  "properties": {
+    "asset_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Asset Id"
+    },
+    "detail": {
+      "title": "Detail",
+      "type": "string"
+    },
+    "event_type": {
+      "title": "Event Type",
+      "type": "string"
+    },
+    "generation_id": {
+      "title": "Generation Id",
+      "type": "string"
+    },
+    "instrument_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Instrument Id"
+    },
+    "observed_at": {
+      "title": "Observed At",
+      "type": "integer"
+    },
+    "severity": {
+      "description": "info, warning or error.",
+      "title": "Severity",
+      "type": "string"
+    },
+    "venue_slug": {
+      "title": "Venue Slug",
+      "type": "string"
+    }
+  },
+  "required": [
+    "generation_id",
+    "venue_slug",
+    "event_type",
+    "severity",
+    "detail",
+    "observed_at"
+  ],
+  "title": "QualityEvent",
+  "type": "object"
+}

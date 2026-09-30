@@ -1,0 +1,78 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "additionalProperties": false,
+  "description": "The canonical pointer to the current generation.\n\nWritten last in the publication sequence and kept deliberately small, because\nthe window during which it is being replaced is the only window in which a\nclient can see an inconsistent dataset.",
+  "properties": {
+    "generated_at": {
+      "title": "Generated At",
+      "type": "string"
+    },
+    "generation_id": {
+      "title": "Generation Id",
+      "type": "string"
+    },
+    "latest_attempt_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "When Atlas last tried to publish. Differs from generated_at when the most recent attempt failed its validity gate and the previous generation stands.",
+      "title": "Latest Attempt At"
+    },
+    "latest_success_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Success At"
+    },
+    "manifest_filename": {
+      "title": "Manifest Filename",
+      "type": "string"
+    },
+    "manifest_sha256": {
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "previous_generation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Previous Generation Id"
+    },
+    "release_tag": {
+      "title": "Release Tag",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "generation_id",
+    "generated_at",
+    "manifest_filename",
+    "manifest_sha256",
+    "release_tag"
+  ],
+  "title": "LatestPointer",
+  "type": "object"
+}

@@ -1,0 +1,391 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "BuildProvenance": {
+      "additionalProperties": false,
+      "description": "What produced a generation, recorded for reproducibility.",
+      "properties": {
+        "commit_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Commit Sha"
+        },
+        "dependency_lock_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hash of the resolved dependency set, when one was recorded.",
+          "title": "Dependency Lock Sha256"
+        },
+        "python_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Python Version"
+        },
+        "runner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Where the generation was built, for example 'github-actions'.",
+          "title": "Runner"
+        },
+        "software_version": {
+          "title": "Software Version",
+          "type": "string"
+        },
+        "workflow_run_attempt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workflow Run Attempt"
+        },
+        "workflow_run_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workflow Run Id"
+        }
+      },
+      "required": [
+        "software_version"
+      ],
+      "title": "BuildProvenance",
+      "type": "object"
+    },
+    "FileEntry": {
+      "additionalProperties": false,
+      "description": "One published file, described well enough to verify without downloading.",
+      "properties": {
+        "compression": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Compression"
+        },
+        "content_type": {
+          "default": "application/octet-stream",
+          "title": "Content Type",
+          "type": "string"
+        },
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "generation_id": {
+          "title": "Generation Id",
+          "type": "string"
+        },
+        "row_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Rows in the table; null for non-tabular files.",
+          "title": "Row Count"
+        },
+        "sha256": {
+          "description": "Lowercase hex digest of the file's bytes.",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "shard_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shard index, for sharded asset-state files.",
+          "title": "Shard Index"
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        },
+        "table": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Logical table name, for tabular files.",
+          "title": "Table"
+        }
+      },
+      "required": [
+        "filename",
+        "size_bytes",
+        "sha256",
+        "generation_id"
+      ],
+      "title": "FileEntry",
+      "type": "object"
+    },
+    "VenueOutcome": {
+      "additionalProperties": false,
+      "description": "Per-venue collection outcome, summarised for the manifest.",
+      "properties": {
+        "attempted": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Attempted",
+          "type": "integer"
+        },
+        "degraded": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Degraded",
+          "type": "integer"
+        },
+        "degraded_slugs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Degraded Slugs",
+          "type": "array"
+        },
+        "disabled": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Disabled",
+          "type": "integer"
+        },
+        "failed": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "failed_slugs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Failed Slugs",
+          "type": "array"
+        },
+        "successful": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Successful",
+          "type": "integer"
+        },
+        "successful_slugs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Successful Slugs",
+          "type": "array"
+        },
+        "unavailable_from_collector_network": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Unavailable From Collector Network",
+          "type": "integer"
+        }
+      },
+      "title": "VenueOutcome",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The complete description of one dataset generation.\n\n``generation_id`` is immutable and is what the ``latest`` pointer references, so\nthat advancing ``latest`` is a single small write rather than a bulk copy.",
+  "properties": {
+    "asset_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Asset Count",
+      "type": "integer"
+    },
+    "atlas": {
+      "default": "Vizanix Atlas",
+      "title": "Atlas",
+      "type": "string"
+    },
+    "build": {
+      "$ref": "#/$defs/BuildProvenance"
+    },
+    "collection_finished_at": {
+      "title": "Collection Finished At",
+      "type": "string"
+    },
+    "collection_started_at": {
+      "title": "Collection Started At",
+      "type": "string"
+    },
+    "dataset_format_version": {
+      "title": "Dataset Format Version",
+      "type": "string"
+    },
+    "files": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/FileEntry"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "generation_id": {
+      "description": "Immutable identifier, for example 20260927T184500Z-2c7af12.",
+      "title": "Generation Id",
+      "type": "string"
+    },
+    "instrument_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Instrument Count",
+      "type": "integer"
+    },
+    "methodology_version": {
+      "title": "Methodology Version",
+      "type": "string"
+    },
+    "notes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "observation_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Observation Count",
+      "type": "integer"
+    },
+    "previous_generation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The generation this one supersedes. Lets a client detect that it has skipped a generation, and lets housekeeping find collectable ancestors.",
+      "title": "Previous Generation Id"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Published At"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "shard_count": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Shard Count",
+      "type": "integer"
+    },
+    "slot_label": {
+      "description": "The scheduled observation slot this generation covers.",
+      "title": "Slot Label",
+      "type": "string"
+    },
+    "snapshot_effective_time": {
+      "title": "Snapshot Effective Time",
+      "type": "string"
+    },
+    "software_version": {
+      "title": "Software Version",
+      "type": "string"
+    },
+    "venue_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Venue Count",
+      "type": "integer"
+    },
+    "venues": {
+      "$ref": "#/$defs/VenueOutcome"
+    }
+  },
+  "required": [
+    "dataset_format_version",
+    "schema_version",
+    "methodology_version",
+    "software_version",
+    "generation_id",
+    "slot_label",
+    "collection_started_at",
+    "collection_finished_at",
+    "snapshot_effective_time",
+    "venues",
+    "build"
+  ],
+  "title": "GenerationManifest",
+  "type": "object"
+}

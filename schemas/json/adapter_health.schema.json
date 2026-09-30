@@ -1,0 +1,141 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "additionalProperties": false,
+  "description": "What happened during one venue's collection attempt.\n\nPublished per generation so that partial coverage is visible and attributable\n(see ``docs/QUALITY.md``).",
+  "properties": {
+    "application_errors": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Application Errors",
+      "type": "integer"
+    },
+    "bytes_received": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Bytes Received",
+      "type": "integer"
+    },
+    "circuit_opened": {
+      "default": false,
+      "title": "Circuit Opened",
+      "type": "boolean"
+    },
+    "clock_skew_ms": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Venue server time minus collector time, where the venue publishes a clock.",
+      "title": "Clock Skew Ms"
+    },
+    "derivative_observation_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Derivative Observation Count",
+      "type": "integer"
+    },
+    "duration_ms": {
+      "minimum": 0,
+      "title": "Duration Ms",
+      "type": "integer"
+    },
+    "error_types": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "description": "Counts keyed by error_type, for run triage.",
+      "title": "Error Types",
+      "type": "object"
+    },
+    "http_errors": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Http Errors",
+      "type": "integer"
+    },
+    "instrument_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Instrument Count",
+      "type": "integer"
+    },
+    "notes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "order_book_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Order Book Count",
+      "type": "integer"
+    },
+    "parse_failures": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Parse Failures",
+      "type": "integer"
+    },
+    "rate_limit_responses": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Rate Limit Responses",
+      "type": "integer"
+    },
+    "requests_attempted": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Requests Attempted",
+      "type": "integer"
+    },
+    "requests_successful": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Requests Successful",
+      "type": "integer"
+    },
+    "status": {
+      "title": "Status",
+      "type": "string"
+    },
+    "ticker_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Ticker Count",
+      "type": "integer"
+    },
+    "timeouts": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Timeouts",
+      "type": "integer"
+    },
+    "unknown_enum_values": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "description": "Unrecognised values seen in enumerated venue fields. A schema-drift early-warning signal.",
+      "title": "Unknown Enum Values",
+      "type": "object"
+    },
+    "venue_slug": {
+      "title": "Venue Slug",
+      "type": "string"
+    }
+  },
+  "required": [
+    "venue_slug",
+    "status",
+    "duration_ms"
+  ],
+  "title": "AdapterHealth",
+  "type": "object"
+}

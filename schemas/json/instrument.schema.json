@@ -1,0 +1,371 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "ContractType": {
+      "description": "How a derivative contract is denominated and settled.\n\nThe distinction drives open-interest and volume conversion, so it is modelled\nexplicitly rather than inferred from the symbol.",
+      "enum": [
+        "linear",
+        "inverse",
+        "quanto"
+      ],
+      "title": "ContractType",
+      "type": "string"
+    },
+    "FundingSemantics": {
+      "description": "How a venue's published funding number must be interpreted.\n\n:attr:`RELATIVE_PER_INTERVAL` is the common case: a dimensionless rate applying\nover the venue's funding interval. :attr:`ABSOLUTE_PER_INTERVAL` is a currency\namount per contract and requires the instrument's mark price to become a rate.\n:attr:`UNDOCUMENTED` means Atlas will not convert it at all.",
+      "enum": [
+        "relative_per_interval",
+        "absolute_per_interval",
+        "undocumented"
+      ],
+      "title": "FundingSemantics",
+      "type": "string"
+    },
+    "InstrumentType": {
+      "description": "The kind of market an instrument represents.\n\nKept deliberately small. Venue-specific product names (OKX's ``SWAP``,\nKraken's ``flexible_futures``) are mapped onto these by their adapter, so that\nno venue vocabulary reaches analytics.",
+      "enum": [
+        "spot",
+        "perpetual",
+        "future",
+        "option"
+      ],
+      "title": "InstrumentType",
+      "type": "string"
+    },
+    "OpenInterestUnit": {
+      "description": "The unit a venue's open-interest figure is expressed in.\n\n:attr:`UNKNOWN` excludes the observation from aggregation rather than causing\na guess.",
+      "enum": [
+        "contracts",
+        "base_asset",
+        "quote_currency",
+        "usd",
+        "unknown"
+      ],
+      "title": "OpenInterestUnit",
+      "type": "string"
+    },
+    "OptionType": {
+      "description": "Option exercise direction.",
+      "enum": [
+        "call",
+        "put"
+      ],
+      "title": "OptionType",
+      "type": "string"
+    },
+    "SettlementPeriod": {
+      "description": "Whether a derivative ever settles.",
+      "enum": [
+        "perpetual",
+        "dated"
+      ],
+      "title": "SettlementPeriod",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A normalised instrument.\n\nOne model covers all four instrument types rather than a class hierarchy,\nbecause the published Parquet table is a single table and a hierarchy would\nonly be flattened again on write. Fields that do not apply to a type are null,\nand :meth:`_check_type_consistency` enforces which combinations are coherent.",
+  "properties": {
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "base_asset_id": {
+      "title": "Base Asset Id",
+      "type": "string"
+    },
+    "contract_multiplier": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Units of contract_value_asset per contract. Never inferred: a null here excludes the instrument from open-interest normalisation.",
+      "title": "Contract Multiplier"
+    },
+    "contract_type": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ContractType"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "contract_value_asset_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Which asset contract_multiplier is denominated in.",
+      "title": "Contract Value Asset Id"
+    },
+    "delisting_time": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Delisting Time"
+    },
+    "expiry": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Epoch milliseconds; null if perpetual.",
+      "title": "Expiry"
+    },
+    "first_seen_at": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "First Seen At"
+    },
+    "funding_interval_hours": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The venue's native funding interval. Observed values across supported venues range from 1 to 8 hours.",
+      "title": "Funding Interval Hours"
+    },
+    "funding_semantics": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FundingSemantics"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "How the venue's funding number must be interpreted."
+    },
+    "instrument_class": {
+      "description": "The adapter's sub-namespace, for example 'spot' or 'linear-perp'. Part of instrument_id, so that two venue products under one symbol never collide.",
+      "title": "Instrument Class",
+      "type": "string"
+    },
+    "instrument_id": {
+      "title": "Instrument Id",
+      "type": "string"
+    },
+    "instrument_type": {
+      "$ref": "#/$defs/InstrumentType"
+    },
+    "last_seen_at": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Seen At"
+    },
+    "listing_time": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Listing Time"
+    },
+    "minimum_notional": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Minimum Notional"
+    },
+    "minimum_quantity": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Minimum Quantity"
+    },
+    "open_interest_unit": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OpenInterestUnit"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The unit the venue reports open interest in."
+    },
+    "option_type": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OptionType"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "quantity_step": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Quantity Step"
+    },
+    "quote_asset_id": {
+      "title": "Quote Asset Id",
+      "type": "string"
+    },
+    "settlement_asset_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What the contract settles in. Null for spot.",
+      "title": "Settlement Asset Id"
+    },
+    "settlement_period": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SettlementPeriod"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "strike": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Strike"
+    },
+    "symbol_native": {
+      "description": "The venue's symbol, preserved verbatim.",
+      "title": "Symbol Native",
+      "type": "string"
+    },
+    "symbol_normalized": {
+      "description": "Atlas's readable form, for example 'BTC/USDT'. For display, not for joining.",
+      "title": "Symbol Normalized",
+      "type": "string"
+    },
+    "tick_size": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tick Size"
+    },
+    "underlying_asset_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "For options and dated futures, the asset the contract is on.",
+      "title": "Underlying Asset Id"
+    },
+    "venue_slug": {
+      "title": "Venue Slug",
+      "type": "string"
+    }
+  },
+  "required": [
+    "instrument_id",
+    "venue_slug",
+    "instrument_type",
+    "instrument_class",
+    "symbol_native",
+    "symbol_normalized",
+    "base_asset_id",
+    "quote_asset_id"
+  ],
+  "title": "Instrument",
+  "type": "object"
+}

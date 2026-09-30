@@ -1,0 +1,646 @@
+{
+  "schema_version": "1.0.0",
+  "table": "asset_market_state",
+  "columns": [
+    {
+      "name": "asset_id",
+      "type": "String"
+    },
+    {
+      "name": "symbol",
+      "type": "String"
+    },
+    {
+      "name": "name",
+      "type": "String"
+    },
+    {
+      "name": "resolution_state",
+      "type": "String"
+    },
+    {
+      "name": "observed_at",
+      "type": "Int64"
+    },
+    {
+      "name": "coverage_tier",
+      "type": "String"
+    },
+    {
+      "name": "reference_price__value",
+      "type": "Float64"
+    },
+    {
+      "name": "reference_price__method",
+      "type": "String"
+    },
+    {
+      "name": "reference_price__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "reference_price__included_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "reference_price__excluded_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "reference_price__excluded_reasons",
+      "type": "String"
+    },
+    {
+      "name": "reference_price__min_qualified_price",
+      "type": "Float64"
+    },
+    {
+      "name": "reference_price__max_qualified_price",
+      "type": "Float64"
+    },
+    {
+      "name": "reference_price__provenance_ref",
+      "type": "String"
+    },
+    {
+      "name": "returns__change_1h",
+      "type": "Null"
+    },
+    {
+      "name": "returns__change_24h",
+      "type": "Null"
+    },
+    {
+      "name": "returns__change_7d",
+      "type": "Null"
+    },
+    {
+      "name": "returns__windows",
+      "type": "String"
+    },
+    {
+      "name": "dispersion__price_dispersion_bps",
+      "type": "Null"
+    },
+    {
+      "name": "dispersion__weighted_mad_bps",
+      "type": "Null"
+    },
+    {
+      "name": "dispersion__p10_p90_spread_bps",
+      "type": "Null"
+    },
+    {
+      "name": "dispersion__max_absolute_deviation_bps",
+      "type": "Null"
+    },
+    {
+      "name": "dispersion__contributing_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "volume__reported_spot_volume_24h_usd",
+      "type": "Null"
+    },
+    {
+      "name": "volume__reported_perp_volume_24h_usd",
+      "type": "Null"
+    },
+    {
+      "name": "volume__reported_futures_volume_24h_usd",
+      "type": "Null"
+    },
+    {
+      "name": "volume__reported_option_volume_24h_usd",
+      "type": "Null"
+    },
+    {
+      "name": "volume__reported_base_volume_24h",
+      "type": "Float64"
+    },
+    {
+      "name": "volume__instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "volume__venues_reporting_quote_volume",
+      "type": "Int64"
+    },
+    {
+      "name": "volatility__realised_1h",
+      "type": "Null"
+    },
+    {
+      "name": "volatility__realised_4h",
+      "type": "Null"
+    },
+    {
+      "name": "volatility__realised_24h",
+      "type": "Null"
+    },
+    {
+      "name": "volatility__realised_7d",
+      "type": "Null"
+    },
+    {
+      "name": "volatility__atr_14_bps",
+      "type": "Null"
+    },
+    {
+      "name": "volatility__sampling_interval_minutes",
+      "type": "Int64"
+    },
+    {
+      "name": "volatility__annualisation",
+      "type": "String"
+    },
+    {
+      "name": "volatility__windows",
+      "type": "String"
+    },
+    {
+      "name": "liquidity__best_spread_bps",
+      "type": "Null"
+    },
+    {
+      "name": "liquidity__median_spread_bps",
+      "type": "Null"
+    },
+    {
+      "name": "liquidity__bands",
+      "type": "String"
+    },
+    {
+      "name": "liquidity__impacts",
+      "type": "String"
+    },
+    {
+      "name": "liquidity__by_venue",
+      "type": "String"
+    },
+    {
+      "name": "liquidity__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "liquidity__largest_venue_share",
+      "type": "Null"
+    },
+    {
+      "name": "liquidity__concentration_hhi",
+      "type": "Null"
+    },
+    {
+      "name": "liquidity__book_imbalance_50bps",
+      "type": "Null"
+    },
+    {
+      "name": "structure__spot_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__perp_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__futures_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__option_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__spot_instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__perp_instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__futures_instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__option_instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "structure__quote_currencies",
+      "type": "String"
+    },
+    {
+      "name": "structure__settlement_currencies",
+      "type": "String"
+    },
+    {
+      "name": "funding__rate_8h_median",
+      "type": "Null"
+    },
+    {
+      "name": "funding__rate_8h_min",
+      "type": "Null"
+    },
+    {
+      "name": "funding__rate_8h_max",
+      "type": "Null"
+    },
+    {
+      "name": "funding__annualised_simple",
+      "type": "Null"
+    },
+    {
+      "name": "funding__dispersion_bps",
+      "type": "Null"
+    },
+    {
+      "name": "funding__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "funding__excluded_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "funding__intervals_observed_hours",
+      "type": "String"
+    },
+    {
+      "name": "funding__provenance_ref",
+      "type": "String"
+    },
+    {
+      "name": "open_interest__total_usd",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest__total_base",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest__perp_usd",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest__futures_usd",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest__option_usd",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "open_interest__instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "open_interest__excluded_instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "open_interest__provenance_ref",
+      "type": "String"
+    },
+    {
+      "name": "basis__perp_basis_bps_median",
+      "type": "Null"
+    },
+    {
+      "name": "basis__perp_basis_bps_min",
+      "type": "Null"
+    },
+    {
+      "name": "basis__perp_basis_bps_max",
+      "type": "Null"
+    },
+    {
+      "name": "basis__futures_basis_bps_median",
+      "type": "Null"
+    },
+    {
+      "name": "basis__price_source",
+      "type": "String"
+    },
+    {
+      "name": "basis__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "liquidations__aggregate_available",
+      "type": "Boolean"
+    },
+    {
+      "name": "liquidations__aggregate_long_usd",
+      "type": "Null"
+    },
+    {
+      "name": "liquidations__aggregate_short_usd",
+      "type": "Null"
+    },
+    {
+      "name": "liquidations__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "liquidations__incompatible_semantics_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "liquidations__note",
+      "type": "String"
+    },
+    {
+      "name": "fragmentation__venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "fragmentation__effective_venue_count",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__volume_concentration_hhi",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__liquidity_concentration_hhi",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__largest_venue_volume_share",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__price_dispersion_bps",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__funding_dispersion_bps",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__spot_derivative_fragmentation",
+      "type": "Null"
+    },
+    {
+      "name": "fragmentation__fragmentation_index",
+      "type": "Null"
+    },
+    {
+      "name": "technical__rsi_14",
+      "type": "Null"
+    },
+    {
+      "name": "technical__ema_12",
+      "type": "Null"
+    },
+    {
+      "name": "technical__ema_26",
+      "type": "Null"
+    },
+    {
+      "name": "technical__macd",
+      "type": "Null"
+    },
+    {
+      "name": "technical__macd_signal",
+      "type": "Null"
+    },
+    {
+      "name": "technical__bollinger_width_bps",
+      "type": "Null"
+    },
+    {
+      "name": "technical__observations_used",
+      "type": "Int64"
+    },
+    {
+      "name": "technical__note",
+      "type": "String"
+    },
+    {
+      "name": "pressure__book_imbalance",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__funding_deviation_z",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__basis_deviation_z",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__oi_change",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__volume_acceleration",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__spot_flow_proxy",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__derivative_flow_proxy",
+      "type": "Null"
+    },
+    {
+      "name": "pressure__components_available",
+      "type": "Int64"
+    },
+    {
+      "name": "pressure__baseline_window",
+      "type": "String"
+    },
+    {
+      "name": "pressure__baseline_coverage__window",
+      "type": "String"
+    },
+    {
+      "name": "pressure__baseline_coverage__observations_present",
+      "type": "Int64"
+    },
+    {
+      "name": "pressure__baseline_coverage__observations_expected",
+      "type": "Int64"
+    },
+    {
+      "name": "pressure__baseline_coverage__observations_required",
+      "type": "Int64"
+    },
+    {
+      "name": "crowding__funding_percentile_30d",
+      "type": "Null"
+    },
+    {
+      "name": "crowding__oi_to_volume",
+      "type": "Null"
+    },
+    {
+      "name": "crowding__perp_dominance",
+      "type": "Null"
+    },
+    {
+      "name": "crowding__oi_change_24h",
+      "type": "Null"
+    },
+    {
+      "name": "crowding__basis_percentile_30d",
+      "type": "Null"
+    },
+    {
+      "name": "crowding__components_available",
+      "type": "Int64"
+    },
+    {
+      "name": "crowding__baseline_coverage__window",
+      "type": "String"
+    },
+    {
+      "name": "crowding__baseline_coverage__observations_present",
+      "type": "Int64"
+    },
+    {
+      "name": "crowding__baseline_coverage__observations_expected",
+      "type": "Int64"
+    },
+    {
+      "name": "crowding__baseline_coverage__observations_required",
+      "type": "Int64"
+    },
+    {
+      "name": "genome__status",
+      "type": "String"
+    },
+    {
+      "name": "genome__observations_available",
+      "type": "Int64"
+    },
+    {
+      "name": "genome__observations_required",
+      "type": "Int64"
+    },
+    {
+      "name": "genome__features",
+      "type": "String"
+    },
+    {
+      "name": "genome__feature_version",
+      "type": "Null"
+    },
+    {
+      "name": "quality__coverage__price_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__coverage__liquidity_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__coverage__funding_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__coverage__open_interest_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__coverage__listing_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__coverage__expected_venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__coverage__coverage_ratio",
+      "type": "Float64"
+    },
+    {
+      "name": "quality__coverage__partial_data",
+      "type": "Boolean"
+    },
+    {
+      "name": "quality__coverage__ambiguous_identity_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__freshness__snapshot_effective_time",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__freshness__freshest_observation_age_seconds",
+      "type": "Float64"
+    },
+    {
+      "name": "quality__freshness__oldest_observation_age_seconds",
+      "type": "Float64"
+    },
+    {
+      "name": "quality__freshness__ticker_age_seconds",
+      "type": "Float64"
+    },
+    {
+      "name": "quality__freshness__funding_age_seconds",
+      "type": "Null"
+    },
+    {
+      "name": "quality__freshness__open_interest_age_seconds",
+      "type": "Null"
+    },
+    {
+      "name": "quality__freshness__order_book_age_seconds",
+      "type": "Null"
+    },
+    {
+      "name": "quality__generation_id",
+      "type": "String"
+    },
+    {
+      "name": "quality__schema_version",
+      "type": "String"
+    },
+    {
+      "name": "quality__methodology_version",
+      "type": "String"
+    },
+    {
+      "name": "quality__origin",
+      "type": "String"
+    },
+    {
+      "name": "quality__excluded_observation_count",
+      "type": "Int64"
+    },
+    {
+      "name": "quality__exclusion_reasons",
+      "type": "String"
+    },
+    {
+      "name": "quality__validation_warnings",
+      "type": "String"
+    },
+    {
+      "name": "reported_volume_24h_usd",
+      "type": "Null"
+    },
+    {
+      "name": "venue_count",
+      "type": "Int64"
+    },
+    {
+      "name": "is_partial",
+      "type": "Boolean"
+    },
+    {
+      "name": "shard_index",
+      "type": "Int32"
+    }
+  ]
+}

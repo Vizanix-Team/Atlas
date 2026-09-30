@@ -1,0 +1,59 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "RelationshipType": {
+      "description": "An edge in the asset graph.\n\nA wrapped or bridged representation is never collapsed into its reference\nasset. The relationship is recorded instead, so a consumer can decide whether\nto treat them together.",
+      "enum": [
+        "wrapped_of",
+        "bridged_representation_of",
+        "tracks",
+        "settles_in",
+        "quoted_in",
+        "underlying",
+        "same_asset_alias"
+      ],
+      "title": "RelationshipType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A typed edge between two canonical assets.\n\nDirected: ``from_asset_id`` stands in the stated relationship to\n``to_asset_id``. ``wrapped_of`` means the source is a wrapped representation of\nthe target, and never that the two are interchangeable.",
+  "properties": {
+    "from_asset_id": {
+      "title": "From Asset Id",
+      "type": "string"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "relationship": {
+      "$ref": "#/$defs/RelationshipType"
+    },
+    "source": {
+      "description": "Where the relationship came from: a config override or a venue field.",
+      "title": "Source",
+      "type": "string"
+    },
+    "to_asset_id": {
+      "title": "To Asset Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "from_asset_id",
+    "to_asset_id",
+    "relationship",
+    "source"
+  ],
+  "title": "AssetRelationship",
+  "type": "object"
+}

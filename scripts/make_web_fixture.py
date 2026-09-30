@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from tests.unit.test_publishing import _permissive_config, build_sample_generation  # noqa: E402
+from tests.unit.test_publishing import _permissive_config  # noqa: E402
 
 from vizanix_atlas.models.manifest import GenerationManifest  # noqa: E402
 from vizanix_atlas.publishing.publish import publish_generation  # noqa: E402
@@ -25,6 +25,7 @@ from vizanix_atlas.publishing.publisher import FilesystemPublisher  # noqa: E402
 from vizanix_atlas.publishing.webexport import export_web_data  # noqa: E402
 from vizanix_atlas.sdk.dataset import Dataset  # noqa: E402
 from vizanix_atlas.storage.dataset_builder import build_dataset_files  # noqa: E402
+from vizanix_atlas.util.sample import build_sample_generation  # noqa: E402
 
 OUT = ROOT / "web" / "public" / "data"
 

@@ -1,0 +1,141 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "ResolutionState": {
+      "description": "Confidence in an asset identity.\n\nOnly :attr:`RESOLVED` and :attr:`MANUAL_OVERRIDE` identities are aggregated\nacross venues. The others exist so that an uncertain identity can be recorded\nwithout being merged (see ``docs/ASSET_RESOLUTION.md``).",
+      "enum": [
+        "resolved",
+        "probable",
+        "ambiguous",
+        "unresolved",
+        "manual_override"
+      ],
+      "title": "ResolutionState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "An asset in Atlas's own namespace.\n\nAttributes:\n    asset_id: Canonical identifier. The only field safe to join on.\n    symbol: A display ticker. Convenient, and deliberately not an identity: two\n        canonical assets may share one.\n    chain_slug: The chain the asset is native to, where it has one.\n    contract_address: Token contract, when the asset is a token.\n    chain_id: EVM chain ID, when applicable.\n    resolution_state: How confidently this identity was established.\n    is_stablecoin: Whether the asset is issued as a value-tracking instrument.\n        Used to build the quote-conversion graph, never to assume a price.\n    is_fiat: Whether the asset is a government-issued currency.",
+  "properties": {
+    "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "chain_id": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Chain Id"
+    },
+    "chain_slug": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Chain Slug"
+    },
+    "contract_address": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Contract Address"
+    },
+    "first_seen_at": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Epoch milliseconds of the first discovery run that saw it.",
+      "title": "First Seen At"
+    },
+    "is_fiat": {
+      "default": false,
+      "title": "Is Fiat",
+      "type": "boolean"
+    },
+    "is_stablecoin": {
+      "default": false,
+      "title": "Is Stablecoin",
+      "type": "boolean"
+    },
+    "last_seen_at": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Seen At"
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Name"
+    },
+    "resolution_state": {
+      "$ref": "#/$defs/ResolutionState",
+      "default": "resolved"
+    },
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "tracks_asset_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "What a stablecoin is designed to track. A design intention, not an observed price: Atlas still measures the rate.",
+      "title": "Tracks Asset Id"
+    },
+    "venue_count": {
+      "default": 0,
+      "description": "Venues with at least one alias pointing at this asset.",
+      "title": "Venue Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "asset_id",
+    "symbol"
+  ],
+  "title": "CanonicalAsset",
+  "type": "object"
+}

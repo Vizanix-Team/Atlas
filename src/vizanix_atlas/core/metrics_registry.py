@@ -3,7 +3,7 @@
 Every metric Atlas publishes is declared exactly once, here. Three consumers read
 these declarations, which is why duplicating them would drift:
 
-- ``docs/METRICS.md`` is generated from the registry (``atlas docs metrics``), and
+- ``docs/METRICS.md`` is generated from the registry (``scripts/generate.py``), and
   CI fails if the committed file no longer matches.
 - MQL validates identifiers against the registry, so an unknown metric is a
   semantic error with a suggestion rather than a confusing SQL failure.

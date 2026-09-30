@@ -1,0 +1,421 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "ConversionMethod": {
+      "description": "How a quote currency was converted to USD.\n\nPublished alongside every USD-normalised figure. ``UNIT_ASSUMED`` is used only\nfor a currency that *is* USD; it never means \"assumed equal to USD\".",
+      "enum": [
+        "unit_assumed",
+        "direct_observed",
+        "derived_via_intermediary",
+        "unavailable"
+      ],
+      "title": "ConversionMethod",
+      "type": "string"
+    },
+    "ExclusionReason": {
+      "description": "Why a venue observation was excluded from a derived value.\n\nEvery exclusion is recorded. An observation is never silently dropped, so that\n``included + excluded`` always equals what was considered.",
+      "enum": [
+        "stale",
+        "extreme_deviation",
+        "invalid_quote_conversion",
+        "unresolved_instrument",
+        "ambiguous_identity",
+        "crossed_book",
+        "schema_failure",
+        "missing_timestamp",
+        "non_positive_price",
+        "missing_price",
+        "inactive_instrument",
+        "unknown_contract_multiplier",
+        "undocumented_funding_semantics",
+        "duplicate_instrument",
+        "spot_preferred"
+      ],
+      "title": "ExclusionReason",
+      "type": "string"
+    },
+    "PriceSource": {
+      "description": "Which venue-published price a value was taken from.\n\nRecorded so that basis and dispersion are never computed from a mixture of\nmark, mid and last prices without that being visible.",
+      "enum": [
+        "mid",
+        "last",
+        "mark",
+        "index"
+      ],
+      "title": "PriceSource",
+      "type": "string"
+    },
+    "QuoteConversion": {
+      "additionalProperties": false,
+      "description": "How one quote currency was converted to USD.\n\nAttached to every USD-normalised figure. Atlas refuses to publish a\nUSD-normalised value whose ``method`` is :attr:`ConversionMethod.UNAVAILABLE`.",
+      "properties": {
+        "deviation_from_parity_bps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How far a stablecoin's observed rate sits from 1.0, in basis points. Published so that a depeg is visible instead of silently rescaling every metric.",
+          "title": "Deviation From Parity Bps"
+        },
+        "from_asset_id": {
+          "title": "From Asset Id",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/$defs/ConversionMethod"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Epoch milliseconds of the observation the rate came from.",
+          "title": "Observed At"
+        },
+        "path": {
+          "default": [],
+          "description": "The conversion path taken, for example ('USDT', 'USDC', 'USD'). Length above two means the rate was derived, not directly observed.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Path",
+          "type": "array"
+        },
+        "rate": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Units of USD per one unit of `from`.",
+          "title": "Rate"
+        },
+        "source_venue_slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Venue Slug"
+        },
+        "to_asset_id": {
+          "default": "asset:fiat:usd",
+          "title": "To Asset Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_asset_id",
+        "method"
+      ],
+      "title": "QuoteConversion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One venue's view of one asset.\n\nThe row that makes venue decomposition visible: what this venue quoted, how far\nit sat from the reference price, what weight it received and whether it was\nincluded.",
+  "properties": {
+    "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "conversion": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/QuoteConversion"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "depth_50bps_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Depth 50Bps Usd"
+    },
+    "deviation_bps": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Deviation Bps"
+    },
+    "exclusion_reason": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExclusionReason"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "funding_interval_hours": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Funding Interval Hours"
+    },
+    "funding_rate_8h": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Funding Rate 8H"
+    },
+    "funding_rate_raw": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Funding Rate Raw"
+    },
+    "included_in_reference_price": {
+      "default": false,
+      "title": "Included In Reference Price",
+      "type": "boolean"
+    },
+    "index_price_usd": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Index Price Usd"
+    },
+    "instrument_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Instrument Count",
+      "type": "integer"
+    },
+    "liquidity_share": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Liquidity Share"
+    },
+    "mark_price_usd": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mark Price Usd"
+    },
+    "observed_at": {
+      "title": "Observed At",
+      "type": "integer"
+    },
+    "open_interest_raw": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Open Interest Raw"
+    },
+    "open_interest_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Open Interest Usd"
+    },
+    "price_source": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PriceSource"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "price_usd": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Price Usd"
+    },
+    "reference_weight": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reference Weight"
+    },
+    "reported_base_volume_24h": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reported Base Volume 24H"
+    },
+    "reported_quote_volume_24h": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reported Quote Volume 24H"
+    },
+    "reported_volume_24h_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reported Volume 24H Usd"
+    },
+    "spread_bps": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Spread Bps"
+    },
+    "venue_slug": {
+      "title": "Venue Slug",
+      "type": "string"
+    },
+    "volume_share": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Volume Share"
+    }
+  },
+  "required": [
+    "asset_id",
+    "venue_slug",
+    "observed_at"
+  ],
+  "title": "VenueAssetState",
+  "type": "object"
+}

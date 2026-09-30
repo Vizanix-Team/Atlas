@@ -1,0 +1,67 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "ResolutionState": {
+      "description": "Confidence in an asset identity.\n\nOnly :attr:`RESOLVED` and :attr:`MANUAL_OVERRIDE` identities are aggregated\nacross venues. The others exist so that an uncertain identity can be recorded\nwithout being merged (see ``docs/ASSET_RESOLUTION.md``).",
+      "enum": [
+        "resolved",
+        "probable",
+        "ambiguous",
+        "unresolved",
+        "manual_override"
+      ],
+      "title": "ResolutionState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A venue's symbol for an asset, with the evidence that linked it.\n\nAtlas keeps the evidence rather than only the conclusion, because a mapping\nthat cannot be justified cannot be reviewed.",
+  "properties": {
+    "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "confidence_note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "A short human note for probable or ambiguous mappings.",
+      "title": "Confidence Note"
+    },
+    "evidence": {
+      "default": [],
+      "description": "Ordered evidence keys that produced this mapping, for example 'venue_contract_address' or 'override:config/asset_overrides.yaml'.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "resolution_state": {
+      "$ref": "#/$defs/ResolutionState"
+    },
+    "venue_slug": {
+      "title": "Venue Slug",
+      "type": "string"
+    },
+    "venue_symbol": {
+      "description": "The venue's own code, preserved verbatim.",
+      "title": "Venue Symbol",
+      "type": "string"
+    }
+  },
+  "required": [
+    "asset_id",
+    "venue_slug",
+    "venue_symbol",
+    "resolution_state"
+  ],
+  "title": "AssetAlias",
+  "type": "object"
+}

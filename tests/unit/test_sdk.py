@@ -12,12 +12,13 @@ from pathlib import Path
 
 import pytest
 
-from tests.unit.test_publishing import _permissive_config, build_sample_generation
+from tests.unit.test_publishing import _permissive_config
 from vizanix_atlas.core.errors import AssetNotFound, DatasetUnavailable
 from vizanix_atlas.publishing.publish import publish_generation
 from vizanix_atlas.publishing.publisher import FilesystemPublisher
 from vizanix_atlas.sdk.client import Atlas
 from vizanix_atlas.storage.dataset_builder import build_dataset_files
+from vizanix_atlas.util.sample import build_sample_generation
 
 
 @pytest.fixture

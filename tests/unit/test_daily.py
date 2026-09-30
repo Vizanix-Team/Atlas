@@ -7,12 +7,13 @@ from pathlib import Path
 
 import polars as pl
 
-from tests.unit.test_publishing import _permissive_config, build_sample_generation
+from tests.unit.test_publishing import _permissive_config
 from vizanix_atlas.core.atlas_time import to_epoch_ms
 from vizanix_atlas.publishing.daily import REPORT_FILENAME, compact_day
 from vizanix_atlas.publishing.publish import publish_generation
 from vizanix_atlas.publishing.publisher import FilesystemPublisher
 from vizanix_atlas.storage.dataset_builder import build_dataset_files
+from vizanix_atlas.util.sample import build_sample_generation
 
 
 class LocalSource:

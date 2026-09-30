@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "table": "venue_asset_state",
+  "columns": [
+    {
+      "name": "asset_id",
+      "type": "String"
+    },
+    {
+      "name": "venue_slug",
+      "type": "String"
+    },
+    {
+      "name": "observed_at",
+      "type": "Int64"
+    },
+    {
+      "name": "price_usd",
+      "type": "Float64"
+    },
+    {
+      "name": "price_source",
+      "type": "String"
+    },
+    {
+      "name": "deviation_bps",
+      "type": "Float64"
+    },
+    {
+      "name": "reference_weight",
+      "type": "Float64"
+    },
+    {
+      "name": "spread_bps",
+      "type": "Float64"
+    },
+    {
+      "name": "reported_base_volume_24h",
+      "type": "Float64"
+    },
+    {
+      "name": "reported_quote_volume_24h",
+      "type": "Float64"
+    },
+    {
+      "name": "reported_volume_24h_usd",
+      "type": "Null"
+    },
+    {
+      "name": "volume_share",
+      "type": "Null"
+    },
+    {
+      "name": "liquidity_share",
+      "type": "Null"
+    },
+    {
+      "name": "depth_50bps_usd",
+      "type": "Null"
+    },
+    {
+      "name": "funding_rate_raw",
+      "type": "Null"
+    },
+    {
+      "name": "funding_interval_hours",
+      "type": "Null"
+    },
+    {
+      "name": "funding_rate_8h",
+      "type": "Null"
+    },
+    {
+      "name": "mark_price_usd",
+      "type": "Null"
+    },
+    {
+      "name": "index_price_usd",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest_raw",
+      "type": "Null"
+    },
+    {
+      "name": "open_interest_usd",
+      "type": "Null"
+    },
+    {
+      "name": "instrument_count",
+      "type": "Int64"
+    },
+    {
+      "name": "conversion__from_asset_id",
+      "type": "String"
+    },
+    {
+      "name": "conversion__to_asset_id",
+      "type": "String"
+    },
+    {
+      "name": "conversion__rate",
+      "type": "Float64"
+    },
+    {
+      "name": "conversion__method",
+      "type": "String"
+    },
+    {
+      "name": "conversion__observed_at",
+      "type": "Int64"
+    },
+    {
+      "name": "conversion__source_venue_slug",
+      "type": "Null"
+    },
+    {
+      "name": "conversion__path",
+      "type": "String"
+    },
+    {
+      "name": "conversion__deviation_from_parity_bps",
+      "type": "Float64"
+    },
+    {
+      "name": "included_in_reference_price",
+      "type": "Boolean"
+    },
+    {
+      "name": "exclusion_reason",
+      "type": "String"
+    }
+  ]
+}

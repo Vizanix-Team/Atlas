@@ -39,6 +39,8 @@ jobs:
         run: ruff format --check src tests
       - name: Type check
         run: mypy src
+      - name: Generated files are current
+        run: python scripts/generate.py --check
       - name: Tests
         run: pytest -q --cov --cov-report=term-missing:skip-covered
       - name: CLI smoke

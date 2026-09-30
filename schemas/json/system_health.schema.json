@@ -1,0 +1,173 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "additionalProperties": false,
+  "description": "Operational health of the Atlas pipeline itself.\n\nPublished as ``system-health.json`` and rendered by the website, so that a stale\ndataset is visibly stale rather than silently old.",
+  "properties": {
+    "asset_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Asset Count",
+      "type": "integer"
+    },
+    "collection_duration_ms": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Collection Duration Ms"
+    },
+    "dataset_bytes": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dataset Bytes"
+    },
+    "generated_at": {
+      "title": "Generated At",
+      "type": "string"
+    },
+    "instrument_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Instrument Count",
+      "type": "integer"
+    },
+    "latest_attempt_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Attempt At"
+    },
+    "latest_generation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Generation Id"
+    },
+    "latest_success_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Success At"
+    },
+    "methodology_version": {
+      "title": "Methodology Version",
+      "type": "string"
+    },
+    "missing_windows_today": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Windows Today",
+      "type": "array"
+    },
+    "notes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_age_seconds": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Snapshot Age Seconds"
+    },
+    "software_version": {
+      "title": "Software Version",
+      "type": "string"
+    },
+    "venues_degraded": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Venues Degraded",
+      "type": "array"
+    },
+    "venues_disabled": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Venues Disabled",
+      "type": "array"
+    },
+    "venues_failed": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Venues Failed",
+      "type": "array"
+    },
+    "venues_successful": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Venues Successful",
+      "type": "array"
+    },
+    "venues_unavailable_from_collector_network": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Venues Unavailable From Collector Network",
+      "type": "array"
+    }
+  },
+  "required": [
+    "generated_at",
+    "schema_version",
+    "software_version",
+    "methodology_version"
+  ],
+  "title": "SystemHealth",
+  "type": "object"
+}

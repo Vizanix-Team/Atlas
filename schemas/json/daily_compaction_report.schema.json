@@ -1,0 +1,101 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "additionalProperties": false,
+  "description": "What daily compaction found and produced.\n\nMissing windows are recorded explicitly. Atlas never fabricates a snapshot for a\nscheduled run that GitHub did not execute (see ``docs/OPERATIONS.md``).",
+  "properties": {
+    "compacted": {
+      "default": false,
+      "title": "Compacted",
+      "type": "boolean"
+    },
+    "compacted_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Compacted At"
+    },
+    "day": {
+      "description": "UTC calendar day, as YYYY-MM-DD.",
+      "title": "Day",
+      "type": "string"
+    },
+    "duplicate_windows": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Duplicate Windows",
+      "type": "array"
+    },
+    "expected_windows": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Expected Windows",
+      "type": "array"
+    },
+    "invalid_windows": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Invalid Windows",
+      "type": "array"
+    },
+    "missing_windows": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Windows",
+      "type": "array"
+    },
+    "notes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "output_row_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Output Row Counts",
+      "type": "object"
+    },
+    "source_assets_deleted": {
+      "default": false,
+      "description": "Whether intra-day snapshots were removed after compacted output was verified.",
+      "title": "Source Assets Deleted",
+      "type": "boolean"
+    },
+    "source_snapshot_count": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Source Snapshot Count",
+      "type": "integer"
+    },
+    "successful_windows": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Successful Windows",
+      "type": "array"
+    }
+  },
+  "required": [
+    "day"
+  ],
+  "title": "DailyCompactionReport",
+  "type": "object"
+}

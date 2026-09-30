@@ -1,0 +1,2129 @@
+{
+  "$comment": "Atlas schema_version 1.0.0; generated, do not edit.",
+  "$defs": {
+    "BasisState": {
+      "additionalProperties": false,
+      "description": "Derivative premium over the reference price.\n\nAlways computed from venue mark prices, because last traded prices on thin\ncontracts produce a basis that reflects one stale trade rather than the market.",
+      "properties": {
+        "futures_basis_bps_median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Futures Basis Bps Median"
+        },
+        "perp_basis_bps_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Perp Basis Bps Max"
+        },
+        "perp_basis_bps_median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Perp Basis Bps Median"
+        },
+        "perp_basis_bps_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Perp Basis Bps Min"
+        },
+        "price_source": {
+          "$ref": "#/$defs/PriceSource",
+          "default": "mark",
+          "description": "Which derivative price the basis was computed from."
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "BasisState",
+      "type": "object"
+    },
+    "CollectionTier": {
+      "description": "How deeply an instrument or asset was collected in a generation.\n\nPublished on every state row so that a consumer never mistakes the absence of\na tier B metric for a zero (see ``docs/ARCHITECTURE.md``).",
+      "enum": [
+        "A",
+        "B",
+        "C"
+      ],
+      "title": "CollectionTier",
+      "type": "string"
+    },
+    "Coverage": {
+      "additionalProperties": false,
+      "description": "How much of the observable market a state row rests on.\n\nEach family of metrics has its own coverage, because a state may have seven\nprice sources, five funding sources and three liquidity sources. One number\nwould hide that.",
+      "properties": {
+        "ambiguous_identity_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ambiguous Identity Count",
+          "type": "integer"
+        },
+        "coverage_ratio": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coverage Ratio"
+        },
+        "expected_venue_count": {
+          "default": 0,
+          "description": "Venues that listed the asset and were expected to report this generation.",
+          "minimum": 0,
+          "title": "Expected Venue Count",
+          "type": "integer"
+        },
+        "funding_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Funding Venue Count",
+          "type": "integer"
+        },
+        "liquidity_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Liquidity Venue Count",
+          "type": "integer"
+        },
+        "listing_venue_count": {
+          "default": 0,
+          "description": "Venues whose catalogue lists this asset at all.",
+          "minimum": 0,
+          "title": "Listing Venue Count",
+          "type": "integer"
+        },
+        "open_interest_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Open Interest Venue Count",
+          "type": "integer"
+        },
+        "partial_data": {
+          "default": false,
+          "title": "Partial Data",
+          "type": "boolean"
+        },
+        "price_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Price Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "Coverage",
+      "type": "object"
+    },
+    "CrowdingComponents": {
+      "additionalProperties": false,
+      "description": "A vector of observable positioning-crowding components.\n\nAs with pressure, these are components rather than a ``Crowding: HIGH`` label.",
+      "properties": {
+        "baseline_coverage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WindowCoverage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "basis_percentile_30d": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis Percentile 30D"
+        },
+        "components_available": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Components Available",
+          "type": "integer"
+        },
+        "funding_percentile_30d": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Funding Percentile 30D"
+        },
+        "oi_change_24h": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Oi Change 24H"
+        },
+        "oi_to_volume": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Oi To Volume"
+        },
+        "perp_dominance": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Perp Dominance"
+        }
+      },
+      "title": "CrowdingComponents",
+      "type": "object"
+    },
+    "DataQuality": {
+      "additionalProperties": false,
+      "description": "The complete quality record attached to a state row.",
+      "properties": {
+        "coverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "excluded_observation_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Excluded Observation Count",
+          "type": "integer"
+        },
+        "exclusion_reasons": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Exclusion Reasons",
+          "type": "object"
+        },
+        "freshness": {
+          "$ref": "#/$defs/Freshness"
+        },
+        "generation_id": {
+          "title": "Generation Id",
+          "type": "string"
+        },
+        "methodology_version": {
+          "title": "Methodology Version",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/ObservationOrigin",
+          "default": "scheduled_snapshot"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "validation_warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Validation Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "coverage",
+        "freshness",
+        "generation_id",
+        "schema_version",
+        "methodology_version"
+      ],
+      "title": "DataQuality",
+      "type": "object"
+    },
+    "DepthBand": {
+      "additionalProperties": false,
+      "description": "Visible resting liquidity within one distance band of the reference price.",
+      "properties": {
+        "ask_depth_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ask Depth Usd"
+        },
+        "bid_depth_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bid Depth Usd"
+        },
+        "distance_bps": {
+          "exclusiveMinimum": 0,
+          "title": "Distance Bps",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "distance_bps"
+      ],
+      "title": "DepthBand",
+      "type": "object"
+    },
+    "Dispersion": {
+      "additionalProperties": false,
+      "description": "How far venue prices sit from each other.\n\nUses robust statistics throughout, so that one malfunctioning venue widens the\nmeasurement without destroying it.",
+      "properties": {
+        "contributing_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Contributing Venue Count",
+          "type": "integer"
+        },
+        "max_absolute_deviation_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Absolute Deviation Bps"
+        },
+        "p10_p90_spread_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P10 P90 Spread Bps"
+        },
+        "price_dispersion_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price Dispersion Bps"
+        },
+        "weighted_mad_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weighted Mad Bps"
+        }
+      },
+      "title": "Dispersion",
+      "type": "object"
+    },
+    "FragmentationState": {
+      "additionalProperties": false,
+      "description": "How fragmented an asset's market is across venues.",
+      "properties": {
+        "effective_venue_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Venue Count"
+        },
+        "fragmentation_index": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Composite of venue breadth, volume concentration and price dispersion.",
+          "title": "Fragmentation Index"
+        },
+        "funding_dispersion_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Funding Dispersion Bps"
+        },
+        "largest_venue_volume_share": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Largest Venue Volume Share"
+        },
+        "liquidity_concentration_hhi": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Liquidity Concentration Hhi"
+        },
+        "price_dispersion_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price Dispersion Bps"
+        },
+        "spot_derivative_fragmentation": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spot Derivative Fragmentation"
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        },
+        "volume_concentration_hhi": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Volume Concentration Hhi"
+        }
+      },
+      "title": "FragmentationState",
+      "type": "object"
+    },
+    "Freshness": {
+      "additionalProperties": false,
+      "description": "Per-family observation ages.\n\nPublished separately because a state's ticker data may be four minutes old\nwhile its order books are fifty. Reporting one timestamp for all of it would be\na fabrication.",
+      "properties": {
+        "freshest_observation_age_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Freshest Observation Age Seconds"
+        },
+        "funding_age_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Funding Age Seconds"
+        },
+        "oldest_observation_age_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Oldest Observation Age Seconds"
+        },
+        "open_interest_age_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Open Interest Age Seconds"
+        },
+        "order_book_age_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order Book Age Seconds"
+        },
+        "snapshot_effective_time": {
+          "title": "Snapshot Effective Time",
+          "type": "integer"
+        },
+        "ticker_age_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ticker Age Seconds"
+        }
+      },
+      "required": [
+        "snapshot_effective_time"
+      ],
+      "title": "Freshness",
+      "type": "object"
+    },
+    "FundingState": {
+      "additionalProperties": false,
+      "description": "Perpetual funding across venues.\n\nNative intervals are preserved and the 8-hour equivalent is a linear rescaling,\nnever a compounded one. Venues whose funding semantics Atlas cannot document are\nexcluded rather than assumed.",
+      "properties": {
+        "annualised_simple": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "rate_8h_median * 3 * 365. Simple, deliberately not compounded.",
+          "title": "Annualised Simple"
+        },
+        "dispersion_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dispersion Bps"
+        },
+        "excluded_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Excluded Venue Count",
+          "type": "integer"
+        },
+        "intervals_observed_hours": {
+          "default": [],
+          "description": "Distinct native funding intervals among contributing venues, sorted.",
+          "items": {
+            "type": "number"
+          },
+          "title": "Intervals Observed Hours",
+          "type": "array"
+        },
+        "provenance_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provenance Ref"
+        },
+        "rate_8h_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rate 8H Max"
+        },
+        "rate_8h_median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rate 8H Median"
+        },
+        "rate_8h_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rate 8H Min"
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "FundingState",
+      "type": "object"
+    },
+    "GenomeState": {
+      "additionalProperties": false,
+      "description": "Market Genome lifecycle and, once available, its feature vector.\n\nFeatures stay ``None`` until the minimum history exists. Atlas reports\n``warming_up`` rather than emitting a fingerprint from insufficient data.",
+      "properties": {
+        "feature_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Feature Version"
+        },
+        "features": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Normalised behavioural features. Empty unless status is available.",
+          "title": "Features",
+          "type": "object"
+        },
+        "observations_available": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Observations Available",
+          "type": "integer"
+        },
+        "observations_required": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Observations Required",
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/$defs/GenomeStatus",
+          "default": "insufficient_history"
+        }
+      },
+      "title": "GenomeState",
+      "type": "object"
+    },
+    "GenomeStatus": {
+      "description": "Market Genome lifecycle state.\n\nAtlas will not emit genome features before the minimum history exists, and\nsays which state an asset is in rather than emitting approximate features.",
+      "enum": [
+        "insufficient_history",
+        "warming_up",
+        "available"
+      ],
+      "title": "GenomeStatus",
+      "type": "string"
+    },
+    "ImpactEstimate": {
+      "additionalProperties": false,
+      "description": "The cost of consuming a given notional of visible liquidity.\n\nCalled an *observable order-book impact estimate* rather than slippage, because\nit models only the visible book at one instant: no fees, no latency, no hidden\nliquidity, no market response, no cancellation.",
+      "properties": {
+        "buy_depth_sufficient": {
+          "default": false,
+          "description": "Whether the sampled book held enough visible ask liquidity to fill.",
+          "title": "Buy Depth Sufficient",
+          "type": "boolean"
+        },
+        "buy_impact_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Buy Impact Bps"
+        },
+        "notional_usd": {
+          "exclusiveMinimum": 0,
+          "title": "Notional Usd",
+          "type": "number"
+        },
+        "sell_depth_sufficient": {
+          "default": false,
+          "title": "Sell Depth Sufficient",
+          "type": "boolean"
+        },
+        "sell_impact_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sell Impact Bps"
+        }
+      },
+      "required": [
+        "notional_usd"
+      ],
+      "title": "ImpactEstimate",
+      "type": "object"
+    },
+    "InstrumentType": {
+      "description": "The kind of market an instrument represents.\n\nKept deliberately small. Venue-specific product names (OKX's ``SWAP``,\nKraken's ``flexible_futures``) are mapped onto these by their adapter, so that\nno venue vocabulary reaches analytics.",
+      "enum": [
+        "spot",
+        "perpetual",
+        "future",
+        "option"
+      ],
+      "title": "InstrumentType",
+      "type": "string"
+    },
+    "LiquidationState": {
+      "additionalProperties": false,
+      "description": "Liquidation observations, kept venue-scoped by default.\n\nLiquidation semantics differ so much between venues that an aggregate is only\npublished when the contributing venues' semantics are compatible. Otherwise the\nper-venue observations stand alone.",
+      "properties": {
+        "aggregate_available": {
+          "default": false,
+          "title": "Aggregate Available",
+          "type": "boolean"
+        },
+        "aggregate_long_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Aggregate Long Usd"
+        },
+        "aggregate_short_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Aggregate Short Usd"
+        },
+        "incompatible_semantics_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Incompatible Semantics Venue Count",
+          "type": "integer"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why an aggregate was or was not published.",
+          "title": "Note"
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "LiquidationState",
+      "type": "object"
+    },
+    "LiquidityState": {
+      "additionalProperties": false,
+      "description": "An asset's liquidity across venues.\n\nThe surface preserves venue contributions rather than only the aggregate, so a\nconsumer can see whether depth is one venue or ten.",
+      "properties": {
+        "bands": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DepthBand"
+          },
+          "title": "Bands",
+          "type": "array"
+        },
+        "best_spread_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Best Spread Bps"
+        },
+        "book_imbalance_50bps": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "(bid depth - ask depth) / (bid depth + ask depth) at 50 bps. A structural measurement of the visible book, not a directional signal.",
+          "title": "Book Imbalance 50Bps"
+        },
+        "by_venue": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VenueLiquidity"
+          },
+          "title": "By Venue",
+          "type": "array"
+        },
+        "concentration_hhi": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Concentration Hhi"
+        },
+        "impacts": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ImpactEstimate"
+          },
+          "title": "Impacts",
+          "type": "array"
+        },
+        "largest_venue_share": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Largest Venue Share"
+        },
+        "median_spread_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Median Spread Bps"
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "LiquidityState",
+      "type": "object"
+    },
+    "MarketStructure": {
+      "additionalProperties": false,
+      "description": "Which market segments exist for an asset and on how many venues.",
+      "properties": {
+        "futures_instrument_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Futures Instrument Count",
+          "type": "integer"
+        },
+        "futures_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Futures Venue Count",
+          "type": "integer"
+        },
+        "option_instrument_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Option Instrument Count",
+          "type": "integer"
+        },
+        "option_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Option Venue Count",
+          "type": "integer"
+        },
+        "perp_instrument_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Perp Instrument Count",
+          "type": "integer"
+        },
+        "perp_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Perp Venue Count",
+          "type": "integer"
+        },
+        "quote_currencies": {
+          "default": [],
+          "description": "Distinct quote asset IDs observed, sorted.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Quote Currencies",
+          "type": "array"
+        },
+        "settlement_currencies": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Settlement Currencies",
+          "type": "array"
+        },
+        "spot_instrument_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Spot Instrument Count",
+          "type": "integer"
+        },
+        "spot_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Spot Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "MarketStructure",
+      "type": "object"
+    },
+    "ObservationOrigin": {
+      "description": "How an observation entered the dataset.\n\nA backfilled record is always distinguishable from one captured live, because\nthe two have different reliability and different timestamp semantics.",
+      "enum": [
+        "scheduled_snapshot",
+        "manual_run",
+        "historical_backfill"
+      ],
+      "title": "ObservationOrigin",
+      "type": "string"
+    },
+    "OpenInterestState": {
+      "additionalProperties": false,
+      "description": "Aggregate derivative open interest.\n\nOnly instruments whose open-interest unit is known, and whose contract\nmultiplier is published when the unit is contracts, are converted. The rest are\ncounted in ``excluded_instrument_count`` and their raw values remain available.",
+      "properties": {
+        "excluded_instrument_count": {
+          "default": 0,
+          "description": "Instruments whose open interest could not be converted.",
+          "minimum": 0,
+          "title": "Excluded Instrument Count",
+          "type": "integer"
+        },
+        "futures_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Futures Usd"
+        },
+        "instrument_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Instrument Count",
+          "type": "integer"
+        },
+        "option_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Option Usd"
+        },
+        "perp_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Perp Usd"
+        },
+        "provenance_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provenance Ref"
+        },
+        "total_base": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total Base"
+        },
+        "total_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total Usd"
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        }
+      },
+      "title": "OpenInterestState",
+      "type": "object"
+    },
+    "PressureComponents": {
+      "additionalProperties": false,
+      "description": "A vector of observable market-pressure components.\n\nDeliberately not collapsed into a score. Components absent for an asset are\n``None``, and ``components_available`` says how many were computed, so that two\nassets are only compared on the same basis.",
+      "properties": {
+        "baseline_coverage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WindowCoverage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "baseline_window": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Window the standardised components were measured against.",
+          "title": "Baseline Window"
+        },
+        "basis_deviation_z": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis Deviation Z"
+        },
+        "book_imbalance": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Book Imbalance"
+        },
+        "components_available": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Components Available",
+          "type": "integer"
+        },
+        "derivative_flow_proxy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reserved for aggressive derivative flow. Null in this release.",
+          "title": "Derivative Flow Proxy"
+        },
+        "funding_deviation_z": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Funding Deviation Z"
+        },
+        "oi_change": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Oi Change"
+        },
+        "spot_flow_proxy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reserved for aggressive spot flow. Null in this release: Atlas does not collect a public trade tape, so there is no honest way to populate it.",
+          "title": "Spot Flow Proxy"
+        },
+        "volume_acceleration": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Volume Acceleration"
+        }
+      },
+      "title": "PressureComponents",
+      "type": "object"
+    },
+    "PriceSource": {
+      "description": "Which venue-published price a value was taken from.\n\nRecorded so that basis and dispersion are never computed from a mixture of\nmark, mid and last prices without that being visible.",
+      "enum": [
+        "mid",
+        "last",
+        "mark",
+        "index"
+      ],
+      "title": "PriceSource",
+      "type": "string"
+    },
+    "ReferencePrice": {
+      "additionalProperties": false,
+      "description": "The global reference price and how it was formed.\n\nNamed ``reference_price`` rather than ``price`` because no single true price\nexists across a fragmented market, and because this value is not executable.",
+      "properties": {
+        "excluded_reasons": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Excluded Reasons",
+          "type": "object"
+        },
+        "excluded_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Excluded Venue Count",
+          "type": "integer"
+        },
+        "included_venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Included Venue Count",
+          "type": "integer"
+        },
+        "max_qualified_price": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Qualified Price"
+        },
+        "method": {
+          "$ref": "#/$defs/ReferencePriceMethod"
+        },
+        "min_qualified_price": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Qualified Price"
+        },
+        "provenance_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Key into the evidence table. Provenance is referenced rather than inlined so a state row does not carry a large array (see docs/STORAGE.md).",
+          "title": "Provenance Ref"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "venue_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Venue Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "method"
+      ],
+      "title": "ReferencePrice",
+      "type": "object"
+    },
+    "ReferencePriceMethod": {
+      "description": "How a global reference price was produced.",
+      "enum": [
+        "spot_weighted_median",
+        "single_venue_spot",
+        "derivative_fallback",
+        "unavailable"
+      ],
+      "title": "ReferencePriceMethod",
+      "type": "string"
+    },
+    "ResolutionState": {
+      "description": "Confidence in an asset identity.\n\nOnly :attr:`RESOLVED` and :attr:`MANUAL_OVERRIDE` identities are aggregated\nacross venues. The others exist so that an uncertain identity can be recorded\nwithout being merged (see ``docs/ASSET_RESOLUTION.md``).",
+      "enum": [
+        "resolved",
+        "probable",
+        "ambiguous",
+        "unresolved",
+        "manual_override"
+      ],
+      "title": "ResolutionState",
+      "type": "string"
+    },
+    "ReturnsState": {
+      "additionalProperties": false,
+      "description": "Fractional change in the reference price over several windows.",
+      "properties": {
+        "change_1h": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Change 1H"
+        },
+        "change_24h": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Change 24H"
+        },
+        "change_7d": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Change 7D"
+        },
+        "windows": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/WindowCoverage"
+          },
+          "title": "Windows",
+          "type": "array"
+        }
+      },
+      "title": "ReturnsState",
+      "type": "object"
+    },
+    "TechnicalState": {
+      "additionalProperties": false,
+      "description": "Technical indicators over the reference-price series.\n\nDeliberately a small part of Atlas. These are measurements of the input series,\nnot recommendations, and Atlas does not emit buy or sell labels.",
+      "properties": {
+        "bollinger_width_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bollinger Width Bps"
+        },
+        "ema_12": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ema 12"
+        },
+        "ema_26": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ema 26"
+        },
+        "macd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Macd"
+        },
+        "macd_signal": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Macd Signal"
+        },
+        "note": {
+          "default": "Computed on Atlas snapshot-cadence reference prices, so values are not comparable to indicators computed on a venue's own candles.",
+          "title": "Note",
+          "type": "string"
+        },
+        "observations_used": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Observations Used",
+          "type": "integer"
+        },
+        "rsi_14": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rsi 14"
+        }
+      },
+      "title": "TechnicalState",
+      "type": "object"
+    },
+    "VenueLiquidity": {
+      "additionalProperties": false,
+      "description": "One venue's contribution to an asset's liquidity surface.",
+      "properties": {
+        "bands": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DepthBand"
+          },
+          "title": "Bands",
+          "type": "array"
+        },
+        "book_truncated": {
+          "default": false,
+          "title": "Book Truncated",
+          "type": "boolean"
+        },
+        "depth_share": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "This venue's share of 50 bps depth.",
+          "title": "Depth Share"
+        },
+        "instrument_id": {
+          "title": "Instrument Id",
+          "type": "string"
+        },
+        "instrument_type": {
+          "$ref": "#/$defs/InstrumentType"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "spread_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spread Bps"
+        },
+        "venue_slug": {
+          "title": "Venue Slug",
+          "type": "string"
+        }
+      },
+      "required": [
+        "venue_slug",
+        "instrument_id",
+        "instrument_type"
+      ],
+      "title": "VenueLiquidity",
+      "type": "object"
+    },
+    "VolatilityState": {
+      "additionalProperties": false,
+      "description": "Realised volatility over several windows, with window coverage attached.",
+      "properties": {
+        "annualisation": {
+          "default": "sqrt_time",
+          "description": "How volatility was annualised. Stated so it is never ambiguous.",
+          "title": "Annualisation",
+          "type": "string"
+        },
+        "atr_14_bps": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Atr 14 Bps"
+        },
+        "realised_1h": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Realised 1H"
+        },
+        "realised_24h": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Realised 24H"
+        },
+        "realised_4h": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Realised 4H"
+        },
+        "realised_7d": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Realised 7D"
+        },
+        "sampling_interval_minutes": {
+          "default": 15,
+          "description": "The snapshot cadence the series was sampled at.",
+          "exclusiveMinimum": 0,
+          "title": "Sampling Interval Minutes",
+          "type": "integer"
+        },
+        "windows": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/WindowCoverage"
+          },
+          "title": "Windows",
+          "type": "array"
+        }
+      },
+      "title": "VolatilityState",
+      "type": "object"
+    },
+    "VolumeState": {
+      "additionalProperties": false,
+      "description": "Venue-reported trading volume, segmented by market type.\n\nEvery field is described as *reported*: Atlas relays what venues publish and\ndoes not independently verify it.",
+      "properties": {
+        "instrument_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Instrument Count",
+          "type": "integer"
+        },
+        "reported_base_volume_24h": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported Base Volume 24H"
+        },
+        "reported_futures_volume_24h_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported Futures Volume 24H Usd"
+        },
+        "reported_option_volume_24h_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported Option Volume 24H Usd"
+        },
+        "reported_perp_volume_24h_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported Perp Volume 24H Usd"
+        },
+        "reported_spot_volume_24h_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported Spot Volume 24H Usd"
+        },
+        "venues_reporting_quote_volume": {
+          "default": 0,
+          "description": "Venues that published quote-currency volume directly. Venues publishing only base volume are excluded from the USD totals rather than converted with a price they did not quote against.",
+          "minimum": 0,
+          "title": "Venues Reporting Quote Volume",
+          "type": "integer"
+        }
+      },
+      "title": "VolumeState",
+      "type": "object"
+    },
+    "WindowCoverage": {
+      "additionalProperties": false,
+      "description": "How complete a rolling window's inputs are.\n\nA 30-day percentile computed from two days of data is not a 30-day percentile.\nAtlas publishes this so that a consumer can tell the difference, and returns\nnull for the metric itself when the window is too sparse.",
+      "properties": {
+        "observations_expected": {
+          "minimum": 0,
+          "title": "Observations Expected",
+          "type": "integer"
+        },
+        "observations_present": {
+          "minimum": 0,
+          "title": "Observations Present",
+          "type": "integer"
+        },
+        "observations_required": {
+          "minimum": 0,
+          "title": "Observations Required",
+          "type": "integer"
+        },
+        "window": {
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "required": [
+        "window",
+        "observations_present",
+        "observations_expected",
+        "observations_required"
+      ],
+      "title": "WindowCoverage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One asset's observable global market state at one snapshot time.\n\nThe object Atlas exists to produce. Sections are nested models; a section whose\ninputs were unavailable is present with null fields rather than absent, so that\na consumer never has to guess whether a key is missing or the data was.",
+  "properties": {
+    "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "basis": {
+      "$ref": "#/$defs/BasisState",
+      "default": {
+        "futures_basis_bps_median": null,
+        "perp_basis_bps_max": null,
+        "perp_basis_bps_median": null,
+        "perp_basis_bps_min": null,
+        "price_source": "mark",
+        "venue_count": 0
+      }
+    },
+    "coverage_tier": {
+      "$ref": "#/$defs/CollectionTier"
+    },
+    "crowding": {
+      "$ref": "#/$defs/CrowdingComponents",
+      "default": {
+        "baseline_coverage": null,
+        "basis_percentile_30d": null,
+        "components_available": 0,
+        "funding_percentile_30d": null,
+        "oi_change_24h": null,
+        "oi_to_volume": null,
+        "perp_dominance": null
+      }
+    },
+    "dispersion": {
+      "$ref": "#/$defs/Dispersion",
+      "default": {
+        "contributing_venue_count": 0,
+        "max_absolute_deviation_bps": null,
+        "p10_p90_spread_bps": null,
+        "price_dispersion_bps": null,
+        "weighted_mad_bps": null
+      }
+    },
+    "fragmentation": {
+      "$ref": "#/$defs/FragmentationState",
+      "default": {
+        "effective_venue_count": null,
+        "fragmentation_index": null,
+        "funding_dispersion_bps": null,
+        "largest_venue_volume_share": null,
+        "liquidity_concentration_hhi": null,
+        "price_dispersion_bps": null,
+        "spot_derivative_fragmentation": null,
+        "venue_count": 0,
+        "volume_concentration_hhi": null
+      }
+    },
+    "funding": {
+      "$ref": "#/$defs/FundingState",
+      "default": {
+        "annualised_simple": null,
+        "dispersion_bps": null,
+        "excluded_venue_count": 0,
+        "intervals_observed_hours": [],
+        "provenance_ref": null,
+        "rate_8h_max": null,
+        "rate_8h_median": null,
+        "rate_8h_min": null,
+        "venue_count": 0
+      }
+    },
+    "genome": {
+      "$ref": "#/$defs/GenomeState",
+      "default": {
+        "feature_version": null,
+        "features": {},
+        "observations_available": 0,
+        "observations_required": 0,
+        "status": "insufficient_history"
+      }
+    },
+    "liquidations": {
+      "$ref": "#/$defs/LiquidationState",
+      "default": {
+        "aggregate_available": false,
+        "aggregate_long_usd": null,
+        "aggregate_short_usd": null,
+        "incompatible_semantics_venue_count": 0,
+        "note": null,
+        "venue_count": 0
+      }
+    },
+    "liquidity": {
+      "$ref": "#/$defs/LiquidityState",
+      "default": {
+        "bands": [],
+        "best_spread_bps": null,
+        "book_imbalance_50bps": null,
+        "by_venue": [],
+        "concentration_hhi": null,
+        "impacts": [],
+        "largest_venue_share": null,
+        "median_spread_bps": null,
+        "venue_count": 0
+      }
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Name"
+    },
+    "observed_at": {
+      "description": "Snapshot effective time in epoch milliseconds.",
+      "title": "Observed At",
+      "type": "integer"
+    },
+    "open_interest": {
+      "$ref": "#/$defs/OpenInterestState",
+      "default": {
+        "excluded_instrument_count": 0,
+        "futures_usd": null,
+        "instrument_count": 0,
+        "option_usd": null,
+        "perp_usd": null,
+        "provenance_ref": null,
+        "total_base": null,
+        "total_usd": null,
+        "venue_count": 0
+      }
+    },
+    "pressure": {
+      "$ref": "#/$defs/PressureComponents",
+      "default": {
+        "baseline_coverage": null,
+        "baseline_window": null,
+        "basis_deviation_z": null,
+        "book_imbalance": null,
+        "components_available": 0,
+        "derivative_flow_proxy": null,
+        "funding_deviation_z": null,
+        "oi_change": null,
+        "spot_flow_proxy": null,
+        "volume_acceleration": null
+      }
+    },
+    "quality": {
+      "$ref": "#/$defs/DataQuality"
+    },
+    "reference_price": {
+      "$ref": "#/$defs/ReferencePrice"
+    },
+    "resolution_state": {
+      "$ref": "#/$defs/ResolutionState"
+    },
+    "returns": {
+      "$ref": "#/$defs/ReturnsState",
+      "default": {
+        "change_1h": null,
+        "change_24h": null,
+        "change_7d": null,
+        "windows": []
+      }
+    },
+    "structure": {
+      "$ref": "#/$defs/MarketStructure",
+      "default": {
+        "futures_instrument_count": 0,
+        "futures_venue_count": 0,
+        "option_instrument_count": 0,
+        "option_venue_count": 0,
+        "perp_instrument_count": 0,
+        "perp_venue_count": 0,
+        "quote_currencies": [],
+        "settlement_currencies": [],
+        "spot_instrument_count": 0,
+        "spot_venue_count": 0
+      }
+    },
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "technical": {
+      "$ref": "#/$defs/TechnicalState",
+      "default": {
+        "bollinger_width_bps": null,
+        "ema_12": null,
+        "ema_26": null,
+        "macd": null,
+        "macd_signal": null,
+        "note": "Computed on Atlas snapshot-cadence reference prices, so values are not comparable to indicators computed on a venue's own candles.",
+        "observations_used": 0,
+        "rsi_14": null
+      }
+    },
+    "volatility": {
+      "$ref": "#/$defs/VolatilityState",
+      "default": {
+        "annualisation": "sqrt_time",
+        "atr_14_bps": null,
+        "realised_1h": null,
+        "realised_24h": null,
+        "realised_4h": null,
+        "realised_7d": null,
+        "sampling_interval_minutes": 15,
+        "windows": []
+      }
+    },
+    "volume": {
+      "$ref": "#/$defs/VolumeState",
+      "default": {
+        "instrument_count": 0,
+        "reported_base_volume_24h": null,
+        "reported_futures_volume_24h_usd": null,
+        "reported_option_volume_24h_usd": null,
+        "reported_perp_volume_24h_usd": null,
+        "reported_spot_volume_24h_usd": null,
+        "venues_reporting_quote_volume": 0
+      }
+    }
+  },
+  "required": [
+    "asset_id",
+    "symbol",
+    "resolution_state",
+    "observed_at",
+    "coverage_tier",
+    "reference_price",
+    "quality"
+  ],
+  "title": "MarketState",
+  "type": "object"
+}

@@ -41,6 +41,11 @@ from vizanix_atlas.models.venue import Venue
 
 _log = get_logger(__name__)
 
+#: Below this share of tickers carrying any usable price, a venue is degraded. Real venues
+#: measured between 0.80 (Deribit, whose unquoted options have no price) and 1.00, so 0.25
+#: leaves wide headroom and still catches a payload that lost its price fields entirely.
+_MIN_PRICED_TICKER_RATIO = 0.25
+
 
 @dataclass(slots=True)
 class CollectionRequest:
@@ -153,6 +158,30 @@ async def collect_venue(request: CollectionRequest, config: CollectionConfig) ->
         await adapter.client.aclose()
 
     duration_ms = int((time.monotonic() - clock) * 1000)
+    if tickers:
+        priced = sum(1 for ticker in tickers if ticker.reference_candidate is not None)
+        if priced / len(tickers) < _MIN_PRICED_TICKER_RATIO:
+            # A payload that parses but carries almost no prices is what a silent schema
+            # change looks like: rows survive, fields do not. Say so instead of reporting
+            # a healthy venue.
+            failures += 1
+            notes.append(
+                f"only {priced} of {len(tickers)} tickers carried a price: "
+                "possible upstream schema change"
+            )
+    ceiling = config.tiers.a_universal.max_requests_per_venue
+    if not request.order_book_symbols and adapter.client.metrics.attempted > ceiling:
+        # Tier A must use bulk endpoints. An adapter that needs one request per symbol is
+        # a bug, so it degrades the venue loudly instead of quietly hammering it.
+        failures += 1
+        notes.append(
+            f"tier A used {adapter.client.metrics.attempted} requests, above the "
+            f"{ceiling}-request ceiling: the adapter is not using bulk endpoints"
+        )
+        _log.error(
+            "tier A request ceiling exceeded",
+            extra={"venue": venue.slug, "requests": adapter.client.metrics.attempted},
+        )
     status = _status(
         geo_restricted=geo_restricted,
         failures=failures,
