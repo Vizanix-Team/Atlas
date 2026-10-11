@@ -11,7 +11,7 @@ dataset (see ``docs/GITHUB_ARCHITECTURE.md``).
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
 from vizanix_atlas.analytics.series import PriceSeries
@@ -39,6 +39,7 @@ from vizanix_atlas.quality.validation import (
     deduplicate_instruments,
     validated_tickers,
 )
+from vizanix_atlas.storage.history import AssetHistory
 
 _log = get_logger(__name__)
 
@@ -96,6 +97,19 @@ class Generation:
         return tuple(sorted(h.venue_slug for h in self.health if h.status == status.value))
 
 
+def slot_time_for(results: Sequence[CollectionResult], *, config: CollectionConfig) -> int:
+    """Return the snapshot slot (epoch milliseconds) a set of results is attributed to.
+
+    Derived from when collection *started*, floored to the slot, so a late GitHub Actions
+    start does not misattribute the snapshot. Exposed so that callers can read history
+    "as of" the snapshot before the generation exists.
+    """
+    started = min((r.collection_started_at for r in results), default=to_epoch_ms(utc_now()))
+    return to_epoch_ms(
+        floor_to_slot(from_epoch_ms(started), slot_minutes=config.schedule.slot_minutes)
+    )
+
+
 def build_generation(
     results: Sequence[CollectionResult],
     *,
@@ -104,6 +118,7 @@ def build_generation(
     generation_id: str | None = None,
     snapshot_effective_time: int | None = None,
     history: dict[str, PriceSeries] | None = None,
+    asset_history: Mapping[str, AssetHistory] | None = None,
     origin: ObservationOrigin = ObservationOrigin.SCHEDULED_SNAPSHOT,
 ) -> Generation:
     """Turn per-venue collection results into one complete generation.
@@ -117,14 +132,14 @@ def build_generation(
             the collection window when omitted, so that a late GitHub Actions start does
             not misattribute the snapshot.
         history: Per-asset reference-price history for the windowed metrics.
+        asset_history: Per-asset history from the history store (price, funding, basis,
+            open interest and volume), which supersedes ``history`` for an asset it covers.
         origin: How these observations were obtained.
 
     """
     started = min((r.collection_started_at for r in results), default=to_epoch_ms(utc_now()))
     finished = max((r.collection_finished_at for r in results), default=started)
-    effective = snapshot_effective_time or to_epoch_ms(
-        floor_to_slot(from_epoch_ms(started), slot_minutes=config.schedule.slot_minutes)
-    )
+    effective = snapshot_effective_time or slot_time_for(results, config=config)
     slot = floor_to_slot(from_epoch_ms(effective), slot_minutes=config.schedule.slot_minutes)
     from vizanix_atlas.core.atlas_time import slot_label as render_slot
 
@@ -170,6 +185,7 @@ def build_generation(
         validator=validator,
         quarantine=quarantine,
         history=history or {},
+        asset_history=asset_history or {},
     )
 
     # 6. Build a state per asset.
@@ -236,6 +252,7 @@ def _group_by_asset(
     validator: ObservationValidator,
     quarantine: QuarantineLog,
     history: dict[str, PriceSeries],
+    asset_history: Mapping[str, AssetHistory],
 ) -> list[AssetObservations]:
     """Collect every observation for each asset into one bundle.
 
@@ -254,11 +271,17 @@ def _group_by_asset(
         if existing is not None:
             return existing
         asset = assets.get(asset_id) or CanonicalAsset(asset_id=asset_id, symbol=asset_id)
+        stored = asset_history.get(asset_id)
         created = AssetObservations(
             asset=asset,
             listing_venues=set(listing_venues.get(asset_id, ())),
             expected_venues=set(listing_venues.get(asset_id, ())),
-            history=history.get(asset_id, PriceSeries(points=())),
+            history=(stored.prices if stored else history.get(asset_id, PriceSeries(points=()))),
+            funding_history=stored.funding_8h if stored else (),
+            basis_history=stored.basis_bps if stored else (),
+            open_interest_previous_usd=stored.open_interest_previous_usd if stored else None,
+            open_interest_24h_ago_usd=stored.open_interest_24h_ago_usd if stored else None,
+            volume_baseline_usd=stored.volume_baseline_usd if stored else None,
         )
         grouped[asset_id] = created
         return created

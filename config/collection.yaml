@@ -145,6 +145,14 @@ history:
     minimum_observations: 2688     # 28 days at 15-minute cadence
     warming_up_threshold: 672      # 7 days; below this the status is insufficient_history
     feature_version: "1.0.0"
+  # The history store: one small Parquet file in the `data-latest` release, extended after
+  # every published generation. It holds each tracked asset's reference price, funding,
+  # basis, open interest and reported volume per snapshot, which is everything the windowed
+  # metrics read. Nothing is back-filled or interpolated: a missed run is a gap.
+  store:
+    max_assets: 600
+    retention_hours: 744           # 31 days, enough for the 30-day windows
+    grace_hours: 24
 
 publishing:
   # Hard safety budgets. A venue schema change must not silently produce a

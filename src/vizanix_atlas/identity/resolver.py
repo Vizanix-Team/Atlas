@@ -222,6 +222,11 @@ class AssetResolver:
         #: is a reviewed assertion carrying a reason, source, date and author, which is
         #: what makes it usable evidence rather than a guess.
         self._declared_by_symbol: dict[str, str] = {}
+        #: Tickers seen as a base asset, and tickers seen as a quote or settlement currency.
+        #: A symbol that is an ISO currency code but is only ever *traded* (never quoted
+        #: against) is a token that shares the code, not a currency: RON is Ronin.
+        self._seen_as_base: set[str] = set()
+        self._seen_as_quote: set[str] = set()
         self.report = ResolutionReport()
         self._seed_declared_assets()
 
@@ -281,6 +286,10 @@ class AssetResolver:
         resolving it is what makes quote conversion possible.
         """
         for instrument in instruments:
+            self._seen_as_base.add(instrument.base_symbol_native.strip().upper())
+            self._seen_as_quote.add(instrument.quote_symbol_native.strip().upper())
+            if instrument.settlement_symbol_native:
+                self._seen_as_quote.add(instrument.settlement_symbol_native.strip().upper())
             self._collect(
                 venue_slug=instrument.venue_slug,
                 symbol=instrument.base_symbol_native,
@@ -405,8 +414,12 @@ class AssetResolver:
                     evidence_keys=tuple(keys),
                 )
 
-        # 3. A government-issued currency is identified by its ISO code.
-        if upper in _FIAT_CODES:
+        # 3. A government-issued currency is identified by its ISO code, unless the symbol
+        # is only ever traded and never quoted against: then it is a token that happens to
+        # share the code (RON is Ronin, not the Romanian leu), and is resolved like any other.
+        if upper in _FIAT_CODES and not (
+            upper in self._seen_as_base and upper not in self._seen_as_quote
+        ):
             asset_id = fiat_asset_id(upper)
             self._ensure_asset(
                 asset_id, symbol=upper, name=None, state=ResolutionState.RESOLVED, is_fiat=True

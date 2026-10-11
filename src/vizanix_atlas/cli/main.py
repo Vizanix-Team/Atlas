@@ -32,8 +32,9 @@ from vizanix_atlas.core.versions import (
     SCHEMA_VERSION,
     SOFTWARE_VERSION,
 )
+from vizanix_atlas.discovery.books_plan import load_books_plan, plan_order_books
 from vizanix_atlas.discovery.collector import CollectionRequest, collect_venue
-from vizanix_atlas.discovery.pipeline import build_generation
+from vizanix_atlas.discovery.pipeline import Generation, build_generation, slot_time_for
 from vizanix_atlas.discovery.relay import (
     DEFAULT_MAX_AGE_SECONDS,
     DEFAULT_RELAY_URL,
@@ -56,6 +57,7 @@ from vizanix_atlas.publishing.validator import (
     validate_schema,
 )
 from vizanix_atlas.publishing.webexport import export_web_data
+from vizanix_atlas.publishing.working_state import load_history, publish_books_plan, save_history
 from vizanix_atlas.sdk.client import Atlas
 from vizanix_atlas.sdk.remote import ReleaseDownloader
 from vizanix_atlas.storage.dataset_builder import build_dataset_files
@@ -352,8 +354,22 @@ def collect(
     output: Annotated[
         Path, typer.Option(help="Directory to write the collection result JSON into.")
     ],
+    books_plan: Annotated[
+        str | None,
+        typer.Option(
+            "--books-plan",
+            envvar="ATLAS_BOOKS_PLAN",
+            help=(
+                "An order-book plan (a file or an https URL) naming the markets to snapshot. "
+                "Without one, or if it cannot be read, only tier A is collected."
+            ),
+        ),
+    ] = None,
 ) -> None:
-    """Collect one venue's tier-A observations and write them as a CollectionResult."""
+    """Collect one venue's observations and write them as a CollectionResult.
+
+    Tier A always; tier B order books too when a plan is given and names this venue.
+    """
     registry = load_exchange_registry()
     config = load_collection_config()
     try:
@@ -361,8 +377,16 @@ def collect(
     except AtlasError as error:
         raise _fail(error) from error
 
+    plan = load_books_plan(books_plan)
+    symbols = plan.symbols_for(venue.slug) if plan else ()
+
     run_id = f"local-{to_epoch_ms(utc_now())}"
-    request = CollectionRequest(venue=venue, run_id=run_id)
+    request = CollectionRequest(
+        venue=venue,
+        run_id=run_id,
+        order_book_symbols=symbols,
+        order_book_depth=plan.depth if plan else 100,
+    )
     result = asyncio.run(collect_venue(request, config))
 
     output.mkdir(parents=True, exist_ok=True)
@@ -371,7 +395,7 @@ def collect(
     console.print(
         f"{venue.slug}: {result.health.status}  "
         f"instruments={result.health.instrument_count}  tickers={result.health.ticker_count}  "
-        f"-> {destination}"
+        f"books={result.health.order_book_count}  -> {destination}"
     )
 
 
@@ -471,17 +495,23 @@ def _build_and_publish(input_dir: Path, staging_root: Path, publisher: Publisher
         )
         raise typer.Exit(code=1)
     config = load_collection_config()
-    generation = build_generation(results, config=config)
+    registry = load_exchange_registry()
 
-    staging_dir = staging_root / generation.generation_id
-    built = build_dataset_files(generation, staging_dir, config=config)
-
-    async def publish() -> PublishOutcome:
-        # The publisher's HTTP clients are bound to this event loop, so they must be
-        # closed here: a later asyncio.run() would see a closed loop and raise
-        # "Event loop is closed", hiding the real publication error.
+    async def run() -> tuple[Generation, PublishOutcome]:
+        # Everything that touches the publisher happens in this one event loop, because its
+        # HTTP clients are bound to it: a second asyncio.run() would see a closed loop and
+        # raise "Event loop is closed", hiding the real error. The clients are closed here too.
         try:
-            return await publish_generation(
+            loaded = await load_history(publisher)
+            # The store is read strictly before the snapshot being built; see storage/history.py.
+            generation = build_generation(
+                results,
+                config=config,
+                asset_history=loaded.store.view(as_of=slot_time_for(results, config=config)),
+            )
+            staging_dir = staging_root / generation.generation_id
+            built = build_dataset_files(generation, staging_dir, config=config)
+            outcome = await publish_generation(
                 generation,
                 dataset_dir=staging_dir,
                 written_files=list(built.written_files),
@@ -490,12 +520,25 @@ def _build_and_publish(input_dir: Path, staging_root: Path, publisher: Publisher
                 release_tag=f"atlas-data-{generation.generation_id}",
                 shard_indices=built.shard_indices,
             )
+            if outcome.published:
+                # Working state for the next run. Neither may fail this one: the generation
+                # is already canonical.
+                await save_history(publisher, loaded, generation, config=config.history.store)
+                plan = plan_order_books(
+                    generation,
+                    config=config,
+                    venues_with_books={
+                        v.slug for v in registry.enabled() if v.capabilities.orderbook
+                    },
+                )
+                await publish_books_plan(publisher, plan)
+            return generation, outcome
         finally:
             close = getattr(publisher, "aclose", None)
             if close is not None:
                 await close()
 
-    outcome = asyncio.run(publish())
+    generation, outcome = asyncio.run(run())
     if not outcome.published:
         error_console.print(f"[bold red]not published:[/bold red] {outcome.reason}")
         raise typer.Exit(code=1)

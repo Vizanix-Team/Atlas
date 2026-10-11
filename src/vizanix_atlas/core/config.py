@@ -380,12 +380,36 @@ class GenomeConfig(AtlasModel):
         return self
 
 
+class HistoryStoreConfig(AtlasModel):
+    """How much snapshot history Atlas keeps for the windowed metrics."""
+
+    max_assets: int = Field(
+        default=600,
+        gt=0,
+        description="Assets whose history is kept, the most liquid by reported volume.",
+    )
+    retention_hours: int = Field(
+        default=744,
+        gt=0,
+        description="History older than this is dropped. 31 days covers the 30-day windows.",
+    )
+    grace_hours: int = Field(
+        default=24,
+        ge=0,
+        description=(
+            "An asset that falls out of the top ranking keeps its history this long, so a "
+            "brief dip in volume does not erase weeks of accumulated series."
+        ),
+    )
+
+
 class HistoryConfig(AtlasModel):
     """Minimum history required before a windowed metric is published."""
 
     minimum_observations: dict[str, int]
     max_window_missingness: float = Field(ge=0.0, lt=1.0)
     genome: GenomeConfig
+    store: HistoryStoreConfig = HistoryStoreConfig()
 
     def required_for(self, metric: str) -> int:
         """Return the observation count ``metric`` needs, or 0 when unconstrained."""

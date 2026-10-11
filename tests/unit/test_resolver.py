@@ -176,6 +176,27 @@ def test_fiat_quote_currencies_resolve_by_iso_code() -> None:
     assert resolver.asset_id_for("kraken", "EUR") == "asset:fiat:eur"
 
 
+def test_a_token_sharing_an_iso_code_is_not_a_currency_when_it_is_never_quoted() -> None:
+    """RON is the Ronin token on crypto venues. Only ever traded, it is not the leu."""
+    resolver = build_resolver([instrument("okx", "RON"), instrument("bitget", "RON")])
+    assert resolver.asset_id_for("okx", "RON") != "asset:fiat:ron"
+    assert resolver.asset_id_for("bitget", "RON") != "asset:fiat:ron"
+
+
+def test_an_iso_code_that_is_also_quoted_against_stays_a_currency() -> None:
+    """EUR is both traded (EUR/USDT) and quoted against (BTC/EUR): it is the euro."""
+    resolver = build_resolver(
+        [instrument("binance", "EUR", "USDT"), instrument("kraken", "BTC", "EUR")]
+    )
+    assert resolver.asset_id_for("binance", "EUR") == "asset:fiat:eur"
+    assert resolver.asset_id_for("kraken", "EUR") == "asset:fiat:eur"
+
+
+def test_a_currency_that_is_only_ever_a_quote_is_still_a_currency() -> None:
+    resolver = build_resolver([instrument("coinbase", "BTC", "GBP")])
+    assert resolver.asset_id_for("coinbase", "GBP") == "asset:fiat:gbp"
+
+
 def test_name_agreement_gives_probable_not_resolved() -> None:
     """Two venues agreeing on a name is suggestive, not decisive.
 

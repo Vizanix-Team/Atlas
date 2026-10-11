@@ -159,6 +159,23 @@ class FilesystemPublisher:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(pointer.model_dump_json(indent=2), encoding="utf-8")
 
+    async def read_data_latest_asset(self, filename: str) -> bytes | None:
+        """Read a small auxiliary file kept next to the pointer, or ``None``."""
+        path = self._latest_dir() / filename
+        return path.read_bytes() if path.is_file() else None
+
+    async def publish_data_latest_asset(
+        self,
+        filename: str,
+        content: bytes,
+        *,
+        content_type: str = "application/octet-stream",
+    ) -> None:
+        """Write a small auxiliary file next to the pointer, replacing any earlier one."""
+        path = self._latest_dir() / filename
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+
     async def list_generation_ids(self) -> tuple[str, ...]:
         """List every generation directory with a manifest."""
         if not self.root.is_dir():
@@ -383,6 +400,21 @@ class GitHubReleasePublisher:
             pointer.model_dump_json(indent=2).encode("utf-8"),
             content_type="application/json",
         )
+
+    async def read_data_latest_asset(self, filename: str) -> bytes | None:
+        """Read a small auxiliary file kept in the ``data-latest`` release, or ``None``."""
+        return await self._read_asset(DATA_LATEST_TAG, filename)
+
+    async def publish_data_latest_asset(
+        self, filename: str, content: bytes, *, content_type: str = "application/octet-stream"
+    ) -> None:
+        """Upload a small auxiliary file to the ``data-latest`` release, replacing any earlier one.
+
+        Used for the order-book plan and the history store. Neither is part of a generation's
+        manifest: both are working state that the next run reads.
+        """
+        release_id = await self._find_or_create_release(DATA_LATEST_TAG)
+        await self._upload_asset(release_id, filename, content, content_type=content_type)
 
     async def list_generation_ids(self) -> tuple[str, ...]:
         """List every release tagged as an Atlas data generation."""

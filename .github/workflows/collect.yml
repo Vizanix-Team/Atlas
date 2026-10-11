@@ -63,6 +63,11 @@ jobs:
           cache: pip
       - run: python -m pip install -e .
       - name: Collect ${{ matrix.venue }}
+        # Tier B: the order-book plan comes from the last published generation, so the
+        # books are fetched in the same pass as tier A. No plan (first run, or the asset is
+        # unavailable) simply means tier A only.
+        env:
+          ATLAS_BOOKS_PLAN: https://github.com/${{ github.repository }}/releases/download/data-latest/books-plan.json
         run: atlas collect --exchange "${{ matrix.venue }}" --output collected
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
