@@ -8,7 +8,16 @@ Snapshots are scheduled every 15 minutes at best. GitHub Actions can delay or dr
 
 ## Public data only
 
-Atlas reads unauthenticated public endpoints. It has no order flow, no private or account information, no trades-by-participant, and no view of anything a venue does not publish. It never uses API keys and never tries to defeat a block: a venue that refuses GitHub's network is `unavailable_from_collector_network`. Bybit (geo-blocked from the network used to build 0.1.0), BitMEX (unrepresentative catalogue) and Binance derivatives (HTTP 451) are disabled with recorded reasons. Binance derivatives are among the largest, so **funding and open-interest coverage is materially incomplete** relative to the whole market.
+Atlas reads unauthenticated public endpoints. It has no order flow, no private or account information, no trades-by-participant, and no view of anything a venue does not publish. It never uses API keys and never tries to defeat a block: a venue that refuses a collector's network is `unavailable_from_collector_network`.
+
+Bybit and Binance derivatives refuse the United States addresses GitHub-hosted runners use, so they are collected by a **relay** on a network where they answer normally, and the workflow pulls the validated result ([relay](RELAY.md)). That is trust in a host the project operates, bounded by the checks listed there. If the relay is down or its result is stale, those two venues appear as `failed` for that generation and the rest of the market is unaffected, but **derivative coverage drops sharply** for that slot because they are two of the largest derivative venues.
+
+Two coverage limits are inherent in the venues' own APIs:
+
+- Binance publishes open interest only per symbol, so Atlas samples its 15 USD-M and 10 COIN-M highest-volume contracts; the rest carry funding and mark price with open interest empty.
+- Tokenised equities, ETFs, commodities and FX listed as contracts are skipped, because Atlas is a crypto market-state layer.
+
+BitMEX is not a gap in Atlas: the exchange ceased trading in September 2026.
 
 ## Exchange APIs differ, and lie
 
@@ -24,8 +33,8 @@ Only ~169 of ~12,100 assets in a real run were pooled across two or more venues.
 
 ## Some headline capabilities are not live yet
 
-- **Order-book liquidity** (depth bands, impact estimates, liquidity surface) is implemented as library code with tests, but scheduled runs collect tier A only. Selecting a liquid universe needs a cross-venue pass before order books are fetched, which the current one-job-per-venue matrix does not do.
-- **History-dependent metrics** (returns, percentiles, realised volatility, technical indicators, pressure/crowding vectors, genome, similarity search) need accumulated snapshots. Atlas starts with none, never fabricates any, and leaves these null until minimum observation counts are met.
+- **Order-book liquidity** (depth bands, impact estimates) is collected as tier B. The universe is chosen after each published generation and used by the *next* run, so a plan is one generation old and the first books appear one generation after the first publish. Venues whose bulk ticker has no quote volume (Coinbase, Kraken, Bitstamp) are ranked, for selection only, by the asset's total volume. The wider **liquidity surface** is not published.
+- **History-dependent metrics** (returns, percentiles, realised volatility, technical indicators, pressure/crowding vectors, genome, similarity search) read a history store that holds the 600 most liquid assets for 31 days. Atlas starts with none, never fabricates any, and leaves each metric null until its minimum observation count is met (for example 24 h volatility needs 48 snapshots, the 30-day funding percentile 720, the genome 2,688). A run that cannot read the store continues without history and does not overwrite it. Metrics are computed from history up to the *previous* snapshot, and assets outside the top 600 by volume have no windowed metrics.
 - **Roll-ups** (hourly, monthly) are configured but not implemented; only daily compaction exists.
 - **Options** are ingested from OKX and Deribit but do not yet produce surfaces, skew or term structure.
 - **DEXs** are not supported.

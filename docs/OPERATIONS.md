@@ -8,9 +8,22 @@ A fresh repository has no data releases and scheduled workflows do not run until
 2. In **Settings → Pages**, set the source to **GitHub Actions**.
 3. Run **Collect** manually (Actions → Collect → Run workflow). Success creates `atlas-data-<id>` and `data-latest` releases. The first run needs at least 4 successful venues or the validity gate refuses to publish.
 4. Run **Pages** manually to deploy the site with real data (until then it shows the fixture, clearly labelled).
-5. Check the job summaries. Then leave the schedule to run. Set `ATLAS_REPOSITORY=owner/name` (or edit `DEFAULT_OWNER`/`DEFAULT_REPO` in `sdk/remote.py`) so `Atlas.latest()` points at your repository.
+5. **Relay venues.** Bybit and Binance derivatives are collected by the [relay](RELAY.md), not by the runners. Until a relay is serving them (or `ATLAS_RELAY_URL` points at yours), they appear as `failed` in every generation and the rest of the market is unaffected.
+6. Check the job summaries. Then leave the schedule to run. Set `ATLAS_REPOSITORY=owner/name` (or edit `DEFAULT_OWNER`/`DEFAULT_REPO` in `sdk/remote.py`) so `Atlas.latest()` points at your repository.
 
 Repository topics to set: `cryptocurrency`, `market-data`, `quantitative-finance`, `algorithmic-trading`, `order-book`, `crypto-data`, `market-microstructure`, `derivatives`, `python`, `parquet`, `duckdb`, `polars`, `github-actions`, `open-data`.
+
+## Working state between runs
+
+Besides generations, the `data-latest` release holds small auxiliary assets, all written after a generation is published and none of them allowed to fail a run:
+
+| Asset | What it is | Read by |
+|---|---|---|
+| `latest.json` | The pointer to the canonical generation. | SDK, CLI, Pages. |
+| `books-plan.json` | The order-book plan (tier B) for the next run. | Every collector, including the relay. |
+| `history-a.parquet`, `history-b.parquet` | The history store, written alternately so one is always intact. | The aggregate job. |
+
+A run that cannot read the history continues without it **and does not save**, so a flaky read can never erase accumulated history. A corrupt history asset is ignored and the other one is used. Deleting both resets the windowed metrics to "insufficient history" and nothing else.
 
 ## Running the pipeline locally
 

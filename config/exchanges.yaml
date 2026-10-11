@@ -109,10 +109,9 @@ exchanges:
     notes:
       - "Spot only. Atlas uses the official market-data host data-api.binance.vision."
       - >-
-        Binance USD-M and COIN-M futures are not collected. Their hosts
-        (fapi.binance.com, dapi.binance.com) returned HTTP 451 from the network used
-        to build this release. A separate adapter can be enabled from an
-        unrestricted network; see docs/EXCHANGE_ADAPTERS.md.
+        Binance USD-M and COIN-M futures are a separate venue, binance_derivatives,
+        collected through the relay: their hosts (fapi.binance.com, dapi.binance.com)
+        answer HTTP 451 to United States addresses. See docs/RELAY.md.
 
   # --------------------------------------------------------------------------
   - id: coinbase
@@ -584,7 +583,7 @@ exchanges:
       max_concurrency: 4
     notes:
       # Verified 2026-10-11 against live responses (see adapters/bybit.py).
-      - "Collected from a non-US network: Bybit refuses some jurisdictions at its CDN edge (HTTP 403), including GitHub-hosted runner addresses. See docs/DATA_SOURCES.md."
+      - "Collected from a non-US network: Bybit refuses some jurisdictions at its CDN edge (HTTP 403), the United States among them, which is where GitHub-hosted runners run. See docs/DATA_SOURCES.md."
       - "One bulk instruments-info and one bulk tickers request per category (spot, linear, inverse) covers the venue; tickers carry mark, index, funding and open interest."
       - "Tokenised equities, ETFs, commodities and FX contracts (symbolType stock, ETF, commodity, forex, xstocks) are skipped: Atlas is a crypto market-state layer."
       - "Inverse volume24h is in contracts (1 USD each) and turnover24h in the base coin; linear and spot volume24h is base volume and turnover24h is quote volume."
@@ -639,7 +638,7 @@ exchanges:
       max_concurrency: 4
     notes:
       # Verified 2026-10-11 against live responses (see adapters/binance_derivatives.py).
-      - "Collected from a non-US network: fapi.binance.com and dapi.binance.com answer HTTP 451 to United States addresses, including GitHub-hosted runners, and have no market-data-only mirror. See docs/DATA_SOURCES.md."
+      - "Collected from a non-US network: fapi.binance.com and dapi.binance.com answer HTTP 451 to United States addresses, which is where GitHub-hosted runners run, and have no market-data-only mirror. See docs/DATA_SOURCES.md."
       - "USD-M (linear, base-unit quantities) and COIN-M (inverse, contractSize USD per contract) share one slug; mark, index and funding come from one premiumIndex request per product."
       - "Binance publishes open interest only per symbol, so Atlas samples the highest-volume contracts (15 USD-M, 10 COIN-M); other contracts carry mark, index and funding with open interest left empty, never zero."
       - "TRADIFI_PERPETUAL contracts (equities, commodities, FX) are skipped: Atlas is a crypto market-state layer."

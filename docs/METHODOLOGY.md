@@ -93,7 +93,7 @@ Read them together. Wide dispersion may be real fragmentation, a stale quote, or
 
 ## Liquidity (library implemented, not yet collected in scheduled runs)
 
-From sampled order books: `spread_bps`, depth within 5/10/25/50/100 bps of mid, and *observable order-book impact* for notional sizes (10 k / 100 k / 1 M USD). This is not slippage: fees, latency, hidden liquidity, cancellations and market response are not modelled. Scheduled runs currently collect tier A only ([roadmap](ROADMAP.md)).
+From sampled order books: `spread_bps`, depth within 5/10/25/50/100 bps of mid, and *observable order-book impact* for notional sizes (10 k / 100 k / 1 M USD). This is not slippage: fees, latency, hidden liquidity, cancellations and market response are not modelled. Books are sampled for a deterministic liquid universe chosen after each published generation and used by the next run, so a book's market selection is one generation old ([operations](OPERATIONS.md)). Assets with no sampled book carry `coverage_tier = A` and null liquidity, never zeros.
 
 ## History, warm-up and windows (needs accumulated history)
 

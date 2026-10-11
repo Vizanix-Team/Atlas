@@ -20,23 +20,32 @@ Every source is a venue's own public, unauthenticated market-data endpoint. Atla
 | KuCoin | enabled | spot | [docs](https://www.kucoin.com/docs-new/) | [link](https://www.kucoin.com/legal/terms-of-use) | 2026-09-27 | no |
 | MEXC | enabled | spot | [docs](https://mexcdevelop.github.io/apidocs/spot_v3_en/) | [link](https://www.mexc.com/user-agreement) | 2026-09-27 | no |
 | OKX | enabled | spot, perpetual, future, option | [docs](https://www.okx.com/docs-v5/en/) | [link](https://www.okx.com/docs-v5/en/#overview) | 2026-09-27 | no |
-| Binance Derivatives | disabled | n/a | [docs](https://developers.binance.com/docs/derivatives) | not recorded | n/a | no |
-| BitMEX | disabled | n/a | [docs](https://www.bitmex.com/app/apiOverview) | not recorded | n/a | no |
-| Bybit | disabled | n/a | [docs](https://bybit-exchange.github.io/docs/v5/intro) | not recorded | n/a | no |
+| Binance Derivatives | enabled (relay) | perpetual, future | [docs](https://developers.binance.com/docs/derivatives) | [link](https://www.binance.com/en/terms) | 2026-10-11 | no |
+| Bybit | enabled (relay) | spot, perpetual, future | [docs](https://bybit-exchange.github.io/docs/v5/intro) | [link](https://www.bybit.com/en/help-center/article/Terms-of-Service) | 2026-10-11 | no |
+| BitMEX | disabled (closed) | n/a | [docs](https://www.bitmex.com/app/apiOverview) | not recorded | n/a | no |
 
 "Terms URL recorded on" is the date the URL was recorded in `config/exchanges.yaml`. **It is not a legal review.** Terms change; maintainers must re-check them before treating any redistribution as cleared ([DATA_POLICY](DATA_POLICY.md)).
 
-## Disabled adapters (and why)
+## Relay venues
 
-- **Bybit** — every API host returned HTTP 403 from a CloudFront edge ("configured to block access from your country") from the network used to build 0.1.0, so no payload could be captured and no parser could honestly be written. It may work from other networks; it is disabled until a fixture can be captured.
-- **BitMEX** — reachable, but the catalogue seen was not representative (12 placeholder spot pairs dated 2200, empty `activeIntervals`, the flagship `XBTUSD` reported as settled). Enabling an adapter on that would publish wrong data.
-- **Binance derivatives** — `fapi`/`dapi` returned HTTP 451 (jurisdiction restriction) with no market-data-only mirror. Binance is a very large derivatives venue, so funding and open-interest coverage is materially lower without it.
+**Bybit** and **Binance derivatives** (USD-M `fapi`, COIN-M `dapi`) refused the United States address they were probed from (HTTP 403 from Bybit's CDN edge, HTTP 451 from Binance), and neither has a market-data-only mirror. GitHub-hosted runners also egress from United States ranges, so the same refusal is what to expect there. Both were disabled in 0.1.0 because no payload could be captured from the network used to build it.
+
+From 0.2.0 they are enabled and collected from a non-US network with the same adapters and result format; the workflow pulls the validated result. This was checked on 2026-10-11: every endpoint the adapters use answered HTTP 200 from a European network, the payloads were recorded as fixtures, and unit semantics (for example Bybit's inverse `volume24h` in contracts against `turnover24h` in the base coin, or Binance COIN-M `volume` in contracts of 100 USD against `baseVolume` in BTC) were cross-checked against the captures. See [the relay](RELAY.md) for what is checked on pull.
+
+Two coverage notes that follow from the venues' own APIs:
+
+- Binance publishes open interest only **per symbol**. Atlas samples the highest-volume contracts (15 USD-M, 10 COIN-M) and leaves open interest empty for the rest, never zero. That keeps the venue inside the tier A request ceiling.
+- Tokenised equities, ETFs, commodities and FX listed as contracts (Bybit `symbolType` `stock`/`ETF`/`commodity`/`forex`/`xstocks`, Binance `TRADIFI_PERPETUAL`) are skipped.
 
 Spot Binance is collected through Binance's documented market-data host (`data-api.binance.vision`).
 
+## Disabled adapters (and why)
+
+- **BitMEX** — **closed.** BitMEX's own announcements (`bitmex.com/blog/bitmex-closure`, and "[Notice] BitMEX Exchange Now Closed" in `/api/v1/announcement`) state that the exchange ceased all trading in September 2026. Re-checked on 2026-10-11 from an unrestricted network: `/api/v1/instrument/active` lists only 12 unlisted placeholder spot pairs dated 2200, every other instrument (XBTUSD included, expiry 2026-09-16) is `Settled`, the order book is empty and the last XBTUSD trade is that settlement. An earlier suspicion that this was a network artefact is ruled out. There is no live market, so an adapter would publish nothing true; the recorded responses are test fixtures that prove it (`tests/fixtures/exchanges/bitmex/`).
+
 ## Network availability
 
-Availability was observed from one United States egress on 2026-09-27 (`tests/fixtures/exchanges/AVAILABILITY.md`). It is an observation from one network, not a judgement about any venue. Availability from GitHub-hosted runners is unknown until scheduled runs happen; a venue that blocks them is reported as `unavailable_from_collector_network` and never worked around.
+Availability depends on where Atlas runs, and it is an observation, not a judgement about a venue. The 2026-09-27 observations from one United States egress are in `tests/fixtures/exchanges/AVAILABILITY.md`; the 2026-10-11 observations from a European egress are described above. A venue that refuses a collector network is reported as `unavailable_from_collector_network` and is never reached through a proxy or any other disguise. Venues declared `egress: relay` are the ones collected from a network where they answer normally.
 
 ## Attribution
 

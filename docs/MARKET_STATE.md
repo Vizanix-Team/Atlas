@@ -9,7 +9,7 @@
 | `returns` | Changes over 1h/24h/7d | Needs history |
 | `volume` | Reported spot / perpetual / futures volume (USD) | Populated where venues report |
 | `volatility` | Realised volatility, ATR | Needs history |
-| `liquidity` | Spread, depth bands, per-venue liquidity, concentration | Library ready; not collected yet |
+| `liquidity` | Spread, depth bands, per-venue liquidity, concentration | Collected as tier B for a liquid universe; other assets are null |
 | `structure` | Spot/perp/futures venue counts | Populated |
 | `funding`, `open_interest`, `basis` | Normalised derivatives state | Populated where venues report |
 | `dispersion` | Price dispersion (robust) | Populated |

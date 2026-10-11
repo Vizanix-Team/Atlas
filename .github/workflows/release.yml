@@ -1,4 +1,9 @@
-# Software releases (v0.1.0, ...). Distinct from data releases (atlas-data-*, data-latest).
+# Software releases (v0.2.0, ...). Distinct from data releases (atlas-data-*, data-latest).
+#
+# Pushing a `v*` tag runs the full checks, builds the sdist and wheel, proves that the wheel
+# installs and works in a clean environment, creates the GitHub release and publishes to
+# PyPI with trusted publishing (OIDC: no token is stored anywhere). The PyPI step needs the
+# one-time setup in docs/RELEASING.md and is skipped, not failed, until it exists.
 name: Release
 
 on:
@@ -11,7 +16,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -19,16 +24,53 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - run: python -m pip install build -e ".[dev]"
+      - run: python -m pip install build twine -e ".[dev]"
       - run: ruff check src tests && mypy src && pytest -q
+      - name: The tag must match the package version
+        run: |
+          expected="v$(python -c 'import vizanix_atlas; print(vizanix_atlas.__version__)')"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "tag $GITHUB_REF_NAME does not match package version $expected"
+            exit 1
+          fi
       - run: python -m build
+      - run: twine check --strict dist/*
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
           path: dist/
 
-  publish:
+  # The wheel is what users install, so it is tested on its own, away from the source tree:
+  # a missing bundled config file or a broken entry point shows up here and nowhere else.
+  smoke:
     needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the wheel into a clean environment
+        shell: bash
+        run: |
+          python -m venv smoke-env
+          if [ -f smoke-env/Scripts/python.exe ]; then PY=smoke-env/Scripts/python; else PY=smoke-env/bin/python; fi
+          "$PY" -m pip install --quiet dist/*.whl
+          "$PY" -m vizanix_atlas.cli.main --help > /dev/null
+          "$PY" -c "import vizanix_atlas; from vizanix_atlas import Atlas; print(vizanix_atlas.__version__)"
+          "$PY" -m vizanix_atlas.cli.main exchanges --json | "$PY" -c "import json,sys; v=json.load(sys.stdin); assert len(v) >= 19, len(v); print(len(v), 'venues')"
+
+  github-release:
+    needs: [build, smoke]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -42,3 +84,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "$TAG" --generate-notes
+
+  pypi:
+    needs: [build, smoke]
+    # Only when the repository has opted in. Without the variable the job is skipped, so a tag
+    # push before PyPI is configured still produces the GitHub release.
+    if: ${{ vars.PUBLISH_TO_PYPI == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/vizanix-atlas/
+    permissions:
+      id-token: write # trusted publishing: PyPI verifies this workflow's identity
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2

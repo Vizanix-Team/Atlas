@@ -39,4 +39,4 @@ Recorded in `config/exchanges.yaml` per venue: OKX volume units and option famil
 
 ## Status
 
-Enabled (16): OKX, Binance (spot, via the market-data mirror), Coinbase, Kraken, Kraken Futures, Bitget, Gate.io, KuCoin, MEXC, HTX, Crypto.com, Deribit, Hyperliquid, dYdX v4, Bitstamp, Bitfinex. Disabled with reasons: Bybit, BitMEX, Binance derivatives ([DATA_SOURCES](DATA_SOURCES.md)).
+Enabled (18): OKX, Binance (spot, via the market-data mirror), Coinbase, Kraken, Kraken Futures, Bitget, Gate.io, KuCoin, MEXC, HTX, Crypto.com, Deribit, Hyperliquid, dYdX v4, Bitstamp, Bitfinex, plus **Bybit** and **Binance derivatives**, which are collected through the [relay](RELAY.md). Disabled with a reason: BitMEX, which has closed ([DATA_SOURCES](DATA_SOURCES.md)).

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="380" viewBox="0 0 1280 380" role="img" aria-labelledby="t d">
+  <title id="t">Vizanix Atlas</title><desc id="d">18 venues feed one reproducible market state per asset.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1020"/><stop offset="1" stop-color="#101B33"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/><stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="spoke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#243455" opacity="0.55"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8FA0B8"/>
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="380" fill="url(#bg)"/>
+<rect width="1280" height="380" fill="url(#dots)" opacity="0.5"/>
+<circle cx="985" cy="190" r="230" fill="url(#glow)"/>
+<line x1="985.0" y1="52.0" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="985.0" cy="52.0" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="985.0" cy="52.0" r="3.2" fill="#2DD4BF"/>
+<line x1="1029.8" y1="59.5" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1029.8" cy="59.5" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1029.8" cy="59.5" r="3.2" fill="#2DD4BF"/>
+<line x1="1069.8" y1="81.1" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1069.8" cy="81.1" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1069.8" cy="81.1" r="3.2" fill="#2DD4BF"/>
+<line x1="1100.5" y1="114.5" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1100.5" cy="114.5" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1100.5" cy="114.5" r="3.2" fill="#2DD4BF"/>
+<line x1="1118.8" y1="156.1" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1118.8" cy="156.1" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1118.8" cy="156.1" r="3.2" fill="#2DD4BF"/>
+<line x1="1122.5" y1="201.4" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1122.5" cy="201.4" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1122.5" cy="201.4" r="3.2" fill="#2DD4BF"/>
+<line x1="1111.4" y1="245.4" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1111.4" cy="245.4" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1111.4" cy="245.4" r="3.2" fill="#2DD4BF"/>
+<line x1="1086.5" y1="283.5" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1086.5" cy="283.5" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1086.5" cy="283.5" r="3.2" fill="#2DD4BF"/>
+<line x1="1050.7" y1="311.4" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1050.7" cy="311.4" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1050.7" cy="311.4" r="3.2" fill="#2DD4BF"/>
+<line x1="1007.7" y1="326.1" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="1007.7" cy="326.1" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="1007.7" cy="326.1" r="3.2" fill="#2DD4BF"/>
+<line x1="962.3" y1="326.1" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="962.3" cy="326.1" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="962.3" cy="326.1" r="3.2" fill="#2DD4BF"/>
+<line x1="919.3" y1="311.4" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="919.3" cy="311.4" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="919.3" cy="311.4" r="3.2" fill="#2DD4BF"/>
+<line x1="883.5" y1="283.5" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="883.5" cy="283.5" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="883.5" cy="283.5" r="3.2" fill="#2DD4BF"/>
+<line x1="858.6" y1="245.4" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="858.6" cy="245.4" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="858.6" cy="245.4" r="3.2" fill="#2DD4BF"/>
+<line x1="847.5" y1="201.4" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="847.5" cy="201.4" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="847.5" cy="201.4" r="3.2" fill="#2DD4BF"/>
+<line x1="851.2" y1="156.1" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="851.2" cy="156.1" r="9" fill="#0A1020" stroke="#2DD4BF" stroke-width="2"/>
+<circle cx="851.2" cy="156.1" r="3.2" fill="#2DD4BF"/>
+<line x1="869.5" y1="114.5" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="869.5" cy="114.5" r="9" fill="#0A1020" stroke="#A78BFA" stroke-width="2"/>
+<circle cx="869.5" cy="114.5" r="3.2" fill="#A78BFA"/>
+<line x1="900.2" y1="81.1" x2="985" y2="190" stroke="url(#spoke)" stroke-width="1.4"/>
+<circle cx="900.2" cy="81.1" r="9" fill="#0A1020" stroke="#A78BFA" stroke-width="2"/>
+<circle cx="900.2" cy="81.1" r="3.2" fill="#A78BFA"/>
+<line x1="940.2" y1="59.5" x2="985" y2="190" stroke="#566786" stroke-width="1.4" stroke-dasharray="3 5"/>
+<circle cx="940.2" cy="59.5" r="9" fill="#0A1020" stroke="#566786" stroke-width="2" stroke-dasharray="3 5"/>
+<polygon points="1030.0,216.0 985.0,242.0 940.0,216.0 940.0,164.0 985.0,138.0 1030.0,164.0" fill="#131F3A" stroke="url(#brand)" stroke-width="2.5"/>
+<text x="985.0" y="186.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >one</text>
+<text x="985.0" y="206.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >market state</text>
+<text x="64.0" y="128.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="600" fill="#8FA0B8" text-anchor="start" opacity="1.0" letter-spacing="6">Vizanix</text>
+<text x="60.0" y="205.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="96" font-weight="800" fill="url(#brand)" text-anchor="start" opacity="1.0" >Atlas</text>
+<text x="64.0" y="250.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="500" fill="#E6EDF3" text-anchor="start" opacity="1.0" >The semantic layer for global crypto markets.</text>
+<text x="64.0" y="284.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Exchanges provide events. Atlas provides market state.</text>
+<rect x="64.0" y="312.0" width="97.6" height="34.0" rx="17" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="112.8" y="334.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >18 venues</text>
+<rect x="173.6" y="312.0" width="282.4" height="34.0" rx="17" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="314.8" y="334.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >spot · perp · futures · options</text>
+<rect x="468.0" y="312.0" width="122.8" height="34.0" rx="17" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="529.4" y="334.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >reproducible</text>
+<rect x="602.8" y="312.0" width="97.6" height="34.0" rx="17" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="651.6" y="334.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >open data</text>
+<rect x="835.0" y="344.0" width="8.0" height="8.0" rx="4" fill="#2DD4BF" opacity="1.0"/>
+<text x="849.0" y="352.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >collected by CI runners</text>
+<rect x="1003.0" y="344.0" width="8.0" height="8.0" rx="4" fill="#A78BFA" opacity="1.0"/>
+<text x="1017.0" y="352.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >collected by the relay</text>
+</svg>

@@ -4,9 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vizanix-atlas"
-version = "0.1.0"
+version = "0.2.0"
 description = "The semantic layer for global crypto markets: reproducible, cross-venue market state."
-readme = "README.md"
+# A text-first description for PyPI: the repository README uses relative-path graphics,
+# which PyPI cannot resolve.
+readme = "PYPI_README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [{ name = "Vizanix" }]
@@ -30,6 +32,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Operating System :: OS Independent",
   "Topic :: Office/Business :: Financial :: Investment",
   "Typing :: Typed",
 ]
@@ -76,7 +79,10 @@ Issues = "https://github.com/Vizanix-Team/Atlas/issues"
 Changelog = "https://github.com/Vizanix-Team/Atlas/blob/main/CHANGELOG.md"
 
 [project.scripts]
+# `atlas` is the everyday command. The longer name exists because another PyPI project also
+# installs an `atlas` script, so `vizanix-atlas` is the unambiguous one for scripts and CI.
 atlas = "vizanix_atlas.cli.main:app"
+vizanix-atlas = "vizanix_atlas.cli.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vizanix_atlas"]

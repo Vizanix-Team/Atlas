@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="775" viewBox="0 0 1100 775" role="img" aria-labelledby="t d">
+  <title id="t">Venue coverage</title><desc id="d">Which markets, order books and derivative data each venue provides, and who collects it.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1020"/><stop offset="1" stop-color="#101B33"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/><stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="spoke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#243455" opacity="0.55"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8FA0B8"/>
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="775" fill="url(#bg)"/>
+<rect width="1100" height="775" fill="url(#dots)" opacity="0.35"/>
+<text x="48.0" y="58.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="800" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Venue coverage</text>
+<text x="48.0" y="86.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >18 venues collected from public endpoints. Read from config/exchanges.yaml.</text>
+<text x="330.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Spot</text>
+<text x="430.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Perp</text>
+<text x="530.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Futures</text>
+<text x="630.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Options</text>
+<text x="730.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Order book</text>
+<text x="830.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Funding / OI</text>
+<text x="950.0" y="124.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8FA0B8" text-anchor="middle" opacity="1.0" >Collected by</text>
+<line x1="40" y1="140" x2="1060" y2="140" stroke="#243455"/>
+<rect x="40.0" y="149.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="168.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Binance</text>
+<circle cx="330" cy="163" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="163" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="163" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="163" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="163" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="163" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="149.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="165.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="197.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bitfinex</text>
+<circle cx="330" cy="192" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="192" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="192" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="192" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="192" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="192" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="178.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="194.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="207.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="226.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bitget</text>
+<circle cx="330" cy="221" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="221" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="221" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="221" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="221" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="221" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="207.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="223.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="255.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bitstamp</text>
+<circle cx="330" cy="250" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="250" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="250" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="250" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="250" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="250" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="236.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="252.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="265.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="284.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Coinbase Exchange</text>
+<circle cx="330" cy="279" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="279" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="279" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="279" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="279" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="279" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="265.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="281.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="313.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Crypto.com Exchange</text>
+<circle cx="330" cy="308" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="308" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="308" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="308" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="308" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="308" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="294.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="310.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="323.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="342.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Deribit</text>
+<circle cx="330" cy="337" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="337" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="337" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="337" r="6" fill="#2DD4BF"/>
+<circle cx="730" cy="337" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="337" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="323.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="339.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="371.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >dYdX v4</text>
+<circle cx="330" cy="366" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="430" cy="366" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="366" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="366" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="366" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="366" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="352.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="368.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="381.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="400.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Gate.io</text>
+<circle cx="330" cy="395" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="395" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="395" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="395" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="395" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="395" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="381.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="397.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="429.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >HTX</text>
+<circle cx="330" cy="424" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="424" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="424" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="424" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="424" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="424" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="410.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="426.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="439.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="458.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Hyperliquid</text>
+<circle cx="330" cy="453" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="453" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="453" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="453" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="453" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="453" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="439.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="455.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="487.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Kraken</text>
+<circle cx="330" cy="482" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="482" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="482" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="482" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="482" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="482" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="468.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="484.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="497.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="516.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Kraken Futures</text>
+<circle cx="330" cy="511" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="430" cy="511" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="511" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="511" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="511" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="511" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="497.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="513.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="545.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >KuCoin</text>
+<circle cx="330" cy="540" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="540" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="540" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="540" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="540" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="540" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="526.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="542.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="555.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="574.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >MEXC</text>
+<circle cx="330" cy="569" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="569" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="530" cy="569" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="630" cy="569" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="569" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="569" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<rect x="912.0" y="555.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="571.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<text x="56.0" y="603.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >OKX</text>
+<circle cx="330" cy="598" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="598" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="598" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="598" r="6" fill="#2DD4BF"/>
+<circle cx="730" cy="598" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="598" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="584.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<text x="950.0" y="600.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#2DD4BF" text-anchor="middle" opacity="1.0" >runner</text>
+<rect x="40.0" y="613.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="632.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Binance Derivatives</text>
+<circle cx="330" cy="627" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="430" cy="627" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="627" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="627" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="627" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="627" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="613.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#A78BFA" stroke-width="1.0"/>
+<text x="950.0" y="629.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#A78BFA" text-anchor="middle" opacity="1.0" >relay</text>
+<text x="56.0" y="661.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bybit</text>
+<circle cx="330" cy="656" r="6" fill="#2DD4BF"/>
+<circle cx="430" cy="656" r="6" fill="#2DD4BF"/>
+<circle cx="530" cy="656" r="6" fill="#2DD4BF"/>
+<circle cx="630" cy="656" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<circle cx="730" cy="656" r="6" fill="#2DD4BF"/>
+<circle cx="830" cy="656" r="6" fill="#2DD4BF"/>
+<rect x="912.0" y="642.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#A78BFA" stroke-width="1.0"/>
+<text x="950.0" y="658.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#A78BFA" text-anchor="middle" opacity="1.0" >relay</text>
+<rect x="40.0" y="671.0" width="1020.0" height="29.0" rx="6" fill="#131F3A" opacity="0.55"/>
+<text x="56.0" y="690.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#566786" text-anchor="start" opacity="1.0" >BitMEX</text>
+<line x1="325" y1="685" x2="335" y2="685" stroke="#566786" stroke-width="2"/>
+<line x1="425" y1="685" x2="435" y2="685" stroke="#566786" stroke-width="2"/>
+<line x1="525" y1="685" x2="535" y2="685" stroke="#566786" stroke-width="2"/>
+<line x1="625" y1="685" x2="635" y2="685" stroke="#566786" stroke-width="2"/>
+<line x1="725" y1="685" x2="735" y2="685" stroke="#566786" stroke-width="2"/>
+<line x1="825" y1="685" x2="835" y2="685" stroke="#566786" stroke-width="2"/>
+<rect x="912.0" y="671.0" width="76.0" height="22.0" rx="11" fill="#101B33" opacity="1.0" stroke="#FB7185" stroke-width="1.0"/>
+<text x="950.0" y="687.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="700" fill="#FB7185" text-anchor="middle" opacity="1.0" >closed</text>
+<circle cx="56" cy="731" r="6" fill="#2DD4BF"/>
+<text x="70.0" y="736.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >supported</text>
+<circle cx="170" cy="731" r="5" fill="none" stroke="#243455" stroke-width="1.6"/>
+<text x="184.0" y="736.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >not offered by the venue</text>
+<text x="1052.0" y="736.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FB7185" text-anchor="end" opacity="1.0" >BitMEX: ceased trading in September 2026.</text>
+</svg>

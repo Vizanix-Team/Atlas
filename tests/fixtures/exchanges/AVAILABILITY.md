@@ -38,3 +38,20 @@ GitHub-hosted runners egress from Microsoft Azure ranges, which are not the same
 addresses used for this capture. A venue unavailable here may be available from
 Actions and the reverse is also possible. `atlas exchanges --probe` re-measures
 availability from wherever it is run.
+
+## Re-check from a European egress, 2026-10-11
+
+The same venues probed from a Helsinki address (AEZA Group, FI). Every endpoint the
+Bybit and Binance derivatives adapters use answered `200`, which is what made their
+fixtures capturable (`tests/fixtures/exchanges/bybit/`, `.../binance_derivatives/`).
+
+| Venue | Endpoint probed | Result |
+| --- | --- | --- |
+| Bybit (`api.bybit.com`, `api.bytick.com`) | `/v5/market/tickers?category=linear` | `200`, 671 KB |
+| Binance USD-M futures | `/fapi/v1/exchangeInfo`, `/fapi/v1/ticker/24hr` | `200` |
+| Binance COIN-M futures | `/dapi/v1/exchangeInfo` | `200` |
+| BitMEX | `/api/v1/instrument/active` | `200`, still only 12 unlisted placeholder pairs |
+
+So the BitMEX body seen on 2026-09-27 was not a network artefact: the exchange had
+ceased trading (`/api/v1/announcement`: "[Notice] BitMEX Exchange Now Closed"), and
+`tests/fixtures/exchanges/bitmex/` records the evidence.

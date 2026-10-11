@@ -1,0 +1,88 @@
+{
+ "note": "Assembled on 2026-10-11 from live collections made within about half an hour of each other, from 9 of the 18 venues (those reachable from the author's machine plus the relay venues). Rendered into the README by scripts/render_readme_assets.py.",
+ "generation_id": "20261011T210000Z",
+ "asset": "BTC",
+ "venues": [
+  {
+   "venue": "binance_derivatives",
+   "price_usd": 83508.30816425,
+   "funding_8h": 0.0001,
+   "open_interest_usd": 9405523103.61044,
+   "reported_volume_24h_usd": 4992217924.017475,
+   "depth_50bps_usd": null,
+   "spread_bps": 0.01196174394945312
+  },
+  {
+   "venue": "bitget",
+   "price_usd": 83463.692072425,
+   "funding_8h": 5.4e-05,
+   "open_interest_usd": 2908867259.467709,
+   "reported_volume_24h_usd": 103387619.32018837,
+   "depth_50bps_usd": null,
+   "spread_bps": 0.001196813819431221
+  },
+  {
+   "venue": "bitstamp",
+   "price_usd": 83354.985,
+   "funding_8h": null,
+   "open_interest_usd": null,
+   "reported_volume_24h_usd": null,
+   "depth_50bps_usd": 6362190.538320037,
+   "spread_bps": 0.0011996882981039738
+  },
+  {
+   "venue": "bybit",
+   "price_usd": 83544.46852524999,
+   "funding_8h": 0.0001,
+   "open_interest_usd": 5322377107.24289,
+   "reported_volume_24h_usd": 289413852.1442755,
+   "depth_50bps_usd": null,
+   "spread_bps": 0.01195656657695106
+  },
+  {
+   "venue": "coinbase",
+   "price_usd": 83352.89,
+   "funding_8h": null,
+   "open_interest_usd": null,
+   "reported_volume_24h_usd": null,
+   "depth_50bps_usd": 3047473.836424717,
+   "spread_bps": null
+  },
+  {
+   "venue": "deribit",
+   "price_usd": 83341.86262125,
+   "funding_8h": 7.074e-05,
+   "open_interest_usd": 1731203956.3289888,
+   "reported_volume_24h_usd": null,
+   "depth_50bps_usd": null,
+   "spread_bps": null
+  },
+  {
+   "venue": "gateio",
+   "price_usd": 83457.56379025,
+   "funding_8h": 0.0001,
+   "open_interest_usd": 2158295089.852116,
+   "reported_volume_24h_usd": 224185878.98433885,
+   "depth_50bps_usd": null,
+   "spread_bps": 0.011969017003283792
+  },
+  {
+   "venue": "kraken",
+   "price_usd": 83353.65,
+   "funding_8h": null,
+   "open_interest_usd": null,
+   "reported_volume_24h_usd": null,
+   "depth_50bps_usd": 7565812.776999999,
+   "spread_bps": 0.011997075112039948
+  },
+  {
+   "venue": "kucoin",
+   "price_usd": 83338.29453325,
+   "funding_8h": null,
+   "open_interest_usd": null,
+   "reported_volume_24h_usd": 220644919.65514445,
+   "depth_50bps_usd": null,
+   "spread_bps": 0.01198614641093051
+  }
+ ]
+}

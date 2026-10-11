@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700" role="img" aria-labelledby="t d">
+  <title id="t">Atlas architecture</title><desc id="d">Collection from runners and a relay, aggregation, validity gate, GitHub Releases, consumers.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1020"/><stop offset="1" stop-color="#101B33"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/><stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="spoke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#243455" opacity="0.55"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8FA0B8"/>
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="700" fill="url(#bg)"/>
+<rect width="1280" height="700" fill="url(#dots)" opacity="0.35"/>
+<text x="64.0" y="62.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="800" fill="#E6EDF3" text-anchor="start" opacity="1.0" >How a snapshot is made</text>
+<text x="64.0" y="88.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Every 15 minutes, best effort. A failed venue degrades a generation; it never fails one.</text>
+<rect x="64.0" y="120.0" width="520.0" height="112.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="64.0" y="120.0" width="6" height="112.0" rx="3" fill="#2DD4BF"/>
+<text x="86.0" y="152.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >CI runners: 16 direct venues</text>
+<text x="86.0" y="178.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >One matrix job per venue, public endpoints only.</text>
+<text x="86.0" y="199.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Bulk requests, per-venue rate limits, a request ceiling.</text>
+<rect x="696.0" y="120.0" width="520.0" height="112.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="696.0" y="120.0" width="6" height="112.0" rx="3" fill="#A78BFA"/>
+<text x="718.0" y="152.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Relay collector (non-US network)</text>
+<text x="718.0" y="178.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Binance Derivatives · Bybit refuse US runners.</text>
+<text x="718.0" y="199.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Same adapters, same result format, pulled over HTTPS.</text>
+<path d="M324 232 L560 292" fill="none" stroke="#2DD4BF" stroke-width="2" marker-end="url(#arrow-teal)"/>
+<path d="M956 232 L720 292" fill="none" stroke="#A78BFA" stroke-width="2" marker-end="url(#arrow-violet)"/>
+<text x="972.0" y="262.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#A78BFA" text-anchor="start" opacity="1.0" >checksum · schema · venue · freshness</text>
+<rect x="64.0" y="292.0" width="1152.0" height="104.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="64.0" y="292.0" width="6" height="104.0" rx="3" fill="#60A5FA"/>
+<text x="86.0" y="324.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Aggregate</text>
+<text x="86.0" y="350.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Identity resolution (conservative)  →  quote-conversion graph  →  validation and quarantine  →  Universal Market State</text>
+<text x="86.0" y="371.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Reference price · dispersion · volume · funding · open interest · basis · liquidity · history metrics</text>
+<path d="M640 396 L640 440" fill="none" stroke="#8FA0B8" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="64.0" y="440.0" width="380.0" height="96.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="64.0" y="440.0" width="6" height="96.0" rx="3" fill="#FBBF24"/>
+<text x="86.0" y="472.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Validity gate</text>
+<text x="86.0" y="498.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Anomaly guards against the last generation.</text>
+<text x="86.0" y="519.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Refused? The previous one stays canonical.</text>
+<path d="M444 488 L520 488" fill="none" stroke="#2DD4BF" stroke-width="2" marker-end="url(#arrow-teal)"/>
+<rect x="520.0" y="440.0" width="696.0" height="96.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="520.0" y="440.0" width="6" height="96.0" rx="3" fill="#2DD4BF"/>
+<text x="542.0" y="472.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >GitHub Releases</text>
+<text x="542.0" y="498.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >atlas-data-&lt;id&gt;: sharded Parquet + manifest with per-file SHA-256</text>
+<text x="542.0" y="519.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >data-latest: latest.json · books-plan.json · history store</text>
+<path d="M868 536 L868 584" fill="none" stroke="#8FA0B8" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="64.0" y="584.0" width="1152.0" height="70.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="92.0" y="604.0" width="112.0" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="148.0" y="624.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >Python SDK</text>
+<rect x="218.0" y="604.0" width="103.4" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="269.7" y="624.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >atlas CLI</text>
+<rect x="335.4" y="604.0" width="180.8" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="425.8" y="624.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >MQL (local DuckDB)</text>
+<rect x="530.2" y="604.0" width="146.4" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="603.4" y="624.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >Static website</text>
+<rect x="690.6" y="604.0" width="241.0" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="811.1" y="624.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >pip install vizanix-atlas</text>
+<path d="M1216 488 L1248 488" fill="none" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<path d="M1248 488 L1248 176 L1216 176" fill="none" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="1236.0" y="340.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#60A5FA" text-anchor="middle" opacity="1.0" transform="rotate(-90 1236 340)">books plan</text>
+<path d="M620 536 L620 560 L40 560 L40 344 L64 344" fill="none" stroke="#60A5FA" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="330.0" y="553.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#60A5FA" text-anchor="middle" opacity="1.0" >history store</text>
+</svg>

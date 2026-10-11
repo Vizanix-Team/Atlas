@@ -26,7 +26,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Final
 
-SOFTWARE_VERSION: Final = "0.1.0"
+SOFTWARE_VERSION: Final = "0.2.0"
 SCHEMA_VERSION: Final = "1.0.0"
 METHODOLOGY_VERSION: Final = "1.0.0"
 DATASET_FORMAT_VERSION: Final = "1.0.0"

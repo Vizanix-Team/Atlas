@@ -45,6 +45,7 @@ from vizanix_atlas.core.ratelimit import (
     RetryPolicy,
     TokenBucket,
 )
+from vizanix_atlas.core.versions import SOFTWARE_VERSION
 from vizanix_atlas.models.venue import RateLimitPolicy
 
 _log = get_logger(__name__)
@@ -52,7 +53,8 @@ _log = get_logger(__name__)
 #: Identifies Atlas to venues. A venue that wants to contact or throttle Atlas
 #: specifically can do so; Atlas never imitates a browser to defeat a control.
 USER_AGENT: Final = (
-    "VizanixAtlas/0.1.0 (+https://github.com/Vizanix-Team/Atlas; open-source market-data collector)"
+    f"VizanixAtlas/{SOFTWARE_VERSION} "
+    "(+https://github.com/Vizanix-Team/Atlas; open-source market-data collector)"
 )
 
 #: Statuses venues use for jurisdiction refusals. Separated from generic HTTP
