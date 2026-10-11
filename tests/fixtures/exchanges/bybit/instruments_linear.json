@@ -1,0 +1,504 @@
+{
+ "retCode": 0,
+ "retMsg": "OK",
+ "result": {
+  "category": "linear",
+  "list": [
+   {
+    "symbol": "BTCUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "BTC",
+    "quoteCoin": "USDT",
+    "launchTime": "1584230400000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "2",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "150.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.10",
+     "maxPrice": "1999999.80",
+     "tickSize": "0.10"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "1500.000",
+     "minOrderQty": "0.001",
+     "qtyStep": "0.001",
+     "postOnlyMaxOrderQty": "1500.000",
+     "maxMktOrderQty": "150.000",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 480,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.00333",
+    "lowerFundingRate": "-0.00333",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.01",
+     "priceLimitRatioY": "0.02"
+    },
+    "displayName": "BTCUSDT",
+    "symbolType": "",
+    "forbidUplWithdrawal": false,
+    "symbolId": 5,
+    "fullName": "Bitcoin",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   },
+   {
+    "symbol": "ETHUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "ETH",
+    "quoteCoin": "USDT",
+    "launchTime": "1615766400000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "2",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "150.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.01",
+     "maxPrice": "199999.98",
+     "tickSize": "0.01"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "10000.00",
+     "minOrderQty": "0.01",
+     "qtyStep": "0.01",
+     "postOnlyMaxOrderQty": "10000.00",
+     "maxMktOrderQty": "2000.00",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 480,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.00333",
+    "lowerFundingRate": "-0.00333",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.02",
+     "priceLimitRatioY": "0.04"
+    },
+    "displayName": "ETHUSDT",
+    "symbolType": "",
+    "forbidUplWithdrawal": false,
+    "symbolId": 6,
+    "fullName": "Ethereum",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   },
+   {
+    "symbol": "0GUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "0G",
+    "quoteCoin": "USDT",
+    "launchTime": "1758175736000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "4",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "50.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.0001",
+     "maxPrice": "1999.9998",
+     "tickSize": "0.0001"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "350000.0",
+     "minOrderQty": "0.1",
+     "qtyStep": "0.1",
+     "postOnlyMaxOrderQty": "350000.0",
+     "maxMktOrderQty": "70000.0",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 240,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.005",
+    "lowerFundingRate": "-0.005",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.15",
+     "priceLimitRatioY": "0.3"
+    },
+    "displayName": "0GUSDT",
+    "symbolType": "",
+    "forbidUplWithdrawal": false,
+    "symbolId": 2449,
+    "fullName": "0G",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   },
+   {
+    "symbol": "1000TAGUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "1000TAG",
+    "quoteCoin": "USDT",
+    "launchTime": "1753691858000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "4",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "5.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.0001",
+     "maxPrice": "1999.9998",
+     "tickSize": "0.0001"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "25750",
+     "minOrderQty": "1",
+     "qtyStep": "1",
+     "postOnlyMaxOrderQty": "25750",
+     "maxMktOrderQty": "5150",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 240,
+    "settleCoin": "USDT",
+    "copyTrading": "none",
+    "upperFundingRate": "0.05",
+    "lowerFundingRate": "-0.05",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.15",
+     "priceLimitRatioY": "0.3"
+    },
+    "displayName": "1000TAGUSDT",
+    "symbolType": "innovation",
+    "forbidUplWithdrawal": false,
+    "symbolId": 2382,
+    "fullName": "",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": [
+     "ST"
+    ]
+   },
+   {
+    "symbol": "1000BONKPERP",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "1000BONK",
+    "quoteCoin": "USDC",
+    "launchTime": "1732783376000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "6",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "75.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.000001",
+     "maxPrice": "19.999998",
+     "tickSize": "0.000001"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "5500000",
+     "minOrderQty": "10",
+     "qtyStep": "10",
+     "postOnlyMaxOrderQty": "5500000",
+     "maxMktOrderQty": "1100000",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 480,
+    "settleCoin": "USDC",
+    "copyTrading": "none",
+    "upperFundingRate": "0.02",
+    "lowerFundingRate": "-0.02",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.05",
+     "priceLimitRatioY": "0.1"
+    },
+    "displayName": "1000BONKUSDC",
+    "symbolType": "",
+    "forbidUplWithdrawal": false,
+    "symbolId": 677,
+    "fullName": "",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   },
+   {
+    "symbol": "BTCUSDT-16OCT26",
+    "contractType": "LinearFutures",
+    "status": "Trading",
+    "baseCoin": "BTC",
+    "quoteCoin": "USDT",
+    "launchTime": "1790323200000",
+    "deliveryTime": "1792137600000",
+    "deliveryFeeRate": "0",
+    "priceScale": "1",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "50.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.1",
+     "maxPrice": "1999999.8",
+     "tickSize": "0.1"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "10.000",
+     "minOrderQty": "0.001",
+     "qtyStep": "0.001",
+     "postOnlyMaxOrderQty": "10.000",
+     "maxMktOrderQty": "10.000",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 0,
+    "settleCoin": "USDT",
+    "copyTrading": "none",
+    "upperFundingRate": "0",
+    "lowerFundingRate": "0",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.05",
+     "priceLimitRatioY": "0.1"
+    },
+    "displayName": "BTCUSDT-16OCT26",
+    "symbolType": "",
+    "forbidUplWithdrawal": false,
+    "symbolId": 1499,
+    "fullName": "Bitcoin",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   },
+   {
+    "symbol": "AAPLUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "AAPL",
+    "quoteCoin": "USDT",
+    "launchTime": "1777364510000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "2",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "100.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.01",
+     "maxPrice": "199999.98",
+     "tickSize": "0.01"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "8000.00",
+     "minOrderQty": "0.01",
+     "qtyStep": "0.01",
+     "postOnlyMaxOrderQty": "8000.00",
+     "maxMktOrderQty": "2000.00",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 480,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.005",
+    "lowerFundingRate": "-0.005",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.03",
+     "priceLimitRatioY": "0.05"
+    },
+    "displayName": "AAPLUSDT",
+    "symbolType": "stock",
+    "forbidUplWithdrawal": false,
+    "symbolId": 2640,
+    "fullName": "Apple",
+    "marketRegion": "US",
+    "underlyingTicker": "AAPL",
+    "tags": []
+   },
+   {
+    "symbol": "ARKKUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "ARKK",
+    "quoteCoin": "USDT",
+    "launchTime": "1784538556000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "2",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "25.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.01",
+     "maxPrice": "199999.98",
+     "tickSize": "0.01"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "2656.00",
+     "minOrderQty": "0.01",
+     "qtyStep": "0.01",
+     "postOnlyMaxOrderQty": "2656.00",
+     "maxMktOrderQty": "664.00",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 480,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.02",
+    "lowerFundingRate": "-0.02",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.03",
+     "priceLimitRatioY": "0.05"
+    },
+    "displayName": "ARKKUSDT",
+    "symbolType": "ETF",
+    "forbidUplWithdrawal": false,
+    "symbolId": 2783,
+    "fullName": "ARK Innovation ETF",
+    "marketRegion": "US",
+    "underlyingTicker": "ARKK",
+    "tags": []
+   },
+   {
+    "symbol": "XAUUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "XAU",
+    "quoteCoin": "USDT",
+    "launchTime": "1773022440000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "2",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "150.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.01",
+     "maxPrice": "199999.98",
+     "tickSize": "0.01"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "500.000",
+     "minOrderQty": "0.001",
+     "qtyStep": "0.001",
+     "postOnlyMaxOrderQty": "500.000",
+     "maxMktOrderQty": "250.000",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 240,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.00267",
+    "lowerFundingRate": "-0.00267",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.02",
+     "priceLimitRatioY": "0.05"
+    },
+    "displayName": "XAUUSDT",
+    "symbolType": "commodity",
+    "forbidUplWithdrawal": false,
+    "symbolId": 2589,
+    "fullName": "XAU",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   },
+   {
+    "symbol": "EURUSDUSDT",
+    "contractType": "LinearPerpetual",
+    "status": "Trading",
+    "baseCoin": "EURUSD",
+    "quoteCoin": "USDT",
+    "launchTime": "1788858596000",
+    "deliveryTime": "0",
+    "deliveryFeeRate": "",
+    "priceScale": "5",
+    "leverageFilter": {
+     "minLeverage": "1",
+     "maxLeverage": "100.00",
+     "leverageStep": "0.01"
+    },
+    "priceFilter": {
+     "minPrice": "0.00001",
+     "maxPrice": "199.99998",
+     "tickSize": "0.00001"
+    },
+    "lotSizeFilter": {
+     "maxOrderQty": "356000.0",
+     "minOrderQty": "0.1",
+     "qtyStep": "0.1",
+     "postOnlyMaxOrderQty": "356000.0",
+     "maxMktOrderQty": "89000.0",
+     "minNotionalValue": "5"
+    },
+    "unifiedMarginTrade": true,
+    "fundingInterval": 480,
+    "settleCoin": "USDT",
+    "copyTrading": "both",
+    "upperFundingRate": "0.005",
+    "lowerFundingRate": "-0.005",
+    "isPreListing": false,
+    "preListingInfo": null,
+    "riskParameters": {
+     "priceLimitRatioX": "0.01",
+     "priceLimitRatioY": "0.02"
+    },
+    "displayName": "EURUSDUSDT",
+    "symbolType": "forex",
+    "forbidUplWithdrawal": false,
+    "symbolId": 2902,
+    "fullName": "EURUSD",
+    "marketRegion": "",
+    "underlyingTicker": "",
+    "tags": []
+   }
+  ],
+  "nextPageCursor": ""
+ },
+ "retExtInfo": {},
+ "time": 1791751162442
+}

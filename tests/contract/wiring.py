@@ -167,9 +167,53 @@ def _bitfinex(r: RouteRecorder) -> None:
     r.on_path("/v2/tickers", load_fixture("bitfinex", "tickers"))
 
 
+def _bybit(r: RouteRecorder) -> None:
+    for category in ("spot", "linear", "inverse"):
+        r.on_path_param(
+            "/v5/market/instruments-info",
+            "category",
+            category,
+            load_fixture("bybit", f"instruments_{category}"),
+        )
+        r.on_path_param(
+            "/v5/market/tickers", "category", category, load_fixture("bybit", f"tickers_{category}")
+        )
+    r.on_path_param("/v5/market/orderbook", "category", "spot", load_fixture("bybit", "book_spot"))
+    r.on_path_param(
+        "/v5/market/orderbook", "category", "linear", load_fixture("bybit", "book_linear")
+    )
+    r.on_path("/v5/market/time", load_fixture("bybit", "time"))
+
+
+def _binance_derivatives(r: RouteRecorder) -> None:
+    for prefix, api in (("usdm", "/fapi/v1"), ("coinm", "/dapi/v1")):
+        r.on_path(
+            f"{api}/exchangeInfo", load_fixture("binance_derivatives", f"{prefix}_exchange_info")
+        )
+        r.on_path(
+            f"{api}/ticker/24hr", load_fixture("binance_derivatives", f"{prefix}_ticker_24hr")
+        )
+        r.on_path(
+            f"{api}/ticker/bookTicker", load_fixture("binance_derivatives", f"{prefix}_book_ticker")
+        )
+        r.on_path(
+            f"{api}/premiumIndex", load_fixture("binance_derivatives", f"{prefix}_premium_index")
+        )
+        r.on_path(
+            f"{api}/fundingInfo", load_fixture("binance_derivatives", f"{prefix}_funding_info")
+        )
+        r.on_path(
+            f"{api}/openInterest", load_fixture("binance_derivatives", f"{prefix}_open_interest")
+        )
+        r.on_path(f"{api}/depth", load_fixture("binance_derivatives", f"{prefix}_depth"))
+    r.on_path("/fapi/v1/time", load_fixture("binance_derivatives", "usdm_time"))
+
+
 #: Venue slug to the function that wires its fixtures.
 WIRING: dict[str, Callable[[RouteRecorder], None]] = {
     "binance": _binance,
+    "binance_derivatives": _binance_derivatives,
+    "bybit": _bybit,
     "bitfinex": _bitfinex,
     "bitget": _bitget,
     "bitstamp": _bitstamp,
@@ -190,6 +234,8 @@ WIRING: dict[str, Callable[[RouteRecorder], None]] = {
 #: A symbol known to be present in each venue's fixture set, for order-book tests.
 BOOK_SYMBOLS: dict[str, str] = {
     "binance": "BTCUSDT",
+    "binance_derivatives": "BTCUSDT",
+    "bybit": "BTCUSDT",
     "coinbase": "BTC-USD",
     "kraken": "XBTUSD",
     "okx": "BTC-USDT",

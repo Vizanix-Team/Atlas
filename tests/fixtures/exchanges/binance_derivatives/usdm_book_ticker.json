@@ -1,0 +1,101 @@
+[
+ {
+  "symbol": "BTCUSDT",
+  "bidPrice": "83656.60",
+  "bidQty": "4.413",
+  "askPrice": "83656.70",
+  "askQty": "5.401",
+  "time": 1791751166082,
+  "lastUpdateId": 11790360484471
+ },
+ {
+  "symbol": "ETHUSDT",
+  "bidPrice": "2536.56",
+  "bidQty": "67.706",
+  "askPrice": "2536.57",
+  "askQty": "234.669",
+  "time": 1791751168741,
+  "lastUpdateId": 11790360685735
+ },
+ {
+  "symbol": "BTCDOMUSDT",
+  "bidPrice": "5379.1",
+  "bidQty": "0.024",
+  "askPrice": "5379.2",
+  "askQty": "0.049",
+  "time": 1791751168633,
+  "lastUpdateId": 11790360633513
+ },
+ {
+  "symbol": "1000PEPEUSDT",
+  "bidPrice": "0.0041981",
+  "bidQty": "511583",
+  "askPrice": "0.0041982",
+  "askQty": "572756",
+  "time": 1791751168394,
+  "lastUpdateId": 11790360599015
+ },
+ {
+  "symbol": "BTCUSDC",
+  "bidPrice": "83585.6",
+  "bidQty": "6.626",
+  "askPrice": "83585.7",
+  "askQty": "2.206",
+  "time": 1791751167623,
+  "lastUpdateId": 11790360560603
+ },
+ {
+  "symbol": "STRKUSDT",
+  "bidPrice": "0.1163900",
+  "bidQty": "43.9",
+  "askPrice": "0.1164000",
+  "askQty": "10759.4",
+  "time": 1791751168736,
+  "lastUpdateId": 11790360684958
+ },
+ {
+  "symbol": "KAIAUSDT",
+  "bidPrice": "0.0520100",
+  "bidQty": "4341",
+  "askPrice": "0.0520200",
+  "askQty": "25838",
+  "time": 1791751168646,
+  "lastUpdateId": 11790360644423
+ },
+ {
+  "symbol": "XAUUSDT",
+  "bidPrice": "4205.29",
+  "bidQty": "47.935",
+  "askPrice": "4205.30",
+  "askQty": "46.828",
+  "time": 1791751167522,
+  "lastUpdateId": 11790360555403
+ },
+ {
+  "symbol": "AAPLUSDT",
+  "bidPrice": "336.81000",
+  "bidQty": "15.20",
+  "askPrice": "336.82000",
+  "askQty": "14.14",
+  "time": 1791751168778,
+  "lastUpdateId": 11790360689980
+ },
+ {
+  "symbol": "BTCUSDT_261225",
+  "bidPrice": "84572.8",
+  "bidQty": "0.043",
+  "askPrice": "84582.0",
+  "askQty": "0.005",
+  "time": 1791751168409,
+  "lastUpdateId": 11790360607219
+ },
+ {
+  "symbol": "ETHUSDT_270326",
+  "bidPrice": "2587.56",
+  "bidQty": "0.060",
+  "askPrice": "2588.42",
+  "askQty": "0.007",
+  "time": 1791750984465,
+  "lastUpdateId": 11790349502450
+ }
+]

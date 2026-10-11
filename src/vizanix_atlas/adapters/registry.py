@@ -15,17 +15,15 @@ from typing import Final
 
 from vizanix_atlas.adapters.base import ExchangeAdapter
 from vizanix_atlas.adapters.binance import BinanceSpotAdapter
+from vizanix_atlas.adapters.binance_derivatives import BinanceDerivativesAdapter
 from vizanix_atlas.adapters.bitfinex import BitfinexAdapter
 from vizanix_atlas.adapters.bitget import BitgetAdapter
 from vizanix_atlas.adapters.bitstamp import BitstampAdapter
+from vizanix_atlas.adapters.bybit import BybitAdapter
 from vizanix_atlas.adapters.coinbase import CoinbaseAdapter
 from vizanix_atlas.adapters.cryptocom import CryptocomAdapter
 from vizanix_atlas.adapters.deribit import DeribitAdapter
-from vizanix_atlas.adapters.disabled import (
-    BinanceDerivativesAdapter,
-    BitmexAdapter,
-    BybitAdapter,
-)
+from vizanix_atlas.adapters.disabled import BitmexAdapter
 from vizanix_atlas.adapters.dydx import DydxAdapter
 from vizanix_atlas.adapters.gateio import GateioAdapter
 from vizanix_atlas.adapters.htx import HtxAdapter

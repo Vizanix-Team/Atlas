@@ -1,0 +1,191 @@
+{
+ "retCode": 0,
+ "retMsg": "OK",
+ "result": {
+  "category": "spot",
+  "list": [
+   {
+    "symbolId": 9,
+    "symbol": "BTCUSDT",
+    "baseCoin": "BTC",
+    "quoteCoin": "USDT",
+    "innovation": "0",
+    "status": "Trading",
+    "marginTrading": "utaOnly",
+    "stTag": "0",
+    "lotSizeFilter": {
+     "basePrecision": "0.000001",
+     "quotePrecision": "0.0000001",
+     "minOrderQty": "0.000001",
+     "maxOrderQty": "230",
+     "minOrderAmt": "5",
+     "maxOrderAmt": "8000000",
+     "maxLimitOrderQty": "230",
+     "maxMarketOrderQty": "120",
+     "postOnlyMaxLimitOrderSize": "1150"
+    },
+    "priceFilter": {
+     "tickSize": "0.1"
+    },
+    "riskParameters": {
+     "priceLimitRatioX": "0.005",
+     "priceLimitRatioY": "0.01"
+    },
+    "symbolType": "",
+    "xstockMultiplier": "1"
+   },
+   {
+    "symbolId": 10,
+    "symbol": "ETHUSDT",
+    "baseCoin": "ETH",
+    "quoteCoin": "USDT",
+    "innovation": "0",
+    "status": "Trading",
+    "marginTrading": "utaOnly",
+    "stTag": "0",
+    "lotSizeFilter": {
+     "basePrecision": "0.00001",
+     "quotePrecision": "0.0000001",
+     "minOrderQty": "0.00001",
+     "maxOrderQty": "8118",
+     "minOrderAmt": "5",
+     "maxOrderAmt": "7000000",
+     "maxLimitOrderQty": "8118",
+     "maxMarketOrderQty": "2706",
+     "postOnlyMaxLimitOrderSize": "40590"
+    },
+    "priceFilter": {
+     "tickSize": "0.01"
+    },
+    "riskParameters": {
+     "priceLimitRatioX": "0.005",
+     "priceLimitRatioY": "0.01"
+    },
+    "symbolType": "",
+    "xstockMultiplier": "1"
+   },
+   {
+    "symbolId": 1285,
+    "symbol": "BTCUSD",
+    "baseCoin": "BTC",
+    "quoteCoin": "USD",
+    "innovation": "0",
+    "status": "Trading",
+    "marginTrading": "none",
+    "stTag": "0",
+    "lotSizeFilter": {
+     "basePrecision": "0.000001",
+     "quotePrecision": "0.0000001",
+     "minOrderQty": "0.000001",
+     "maxOrderQty": "2.663375",
+     "minOrderAmt": "5",
+     "maxOrderAmt": "200000",
+     "maxLimitOrderQty": "2.663375",
+     "maxMarketOrderQty": "0.532675",
+     "postOnlyMaxLimitOrderSize": "13.316875"
+    },
+    "priceFilter": {
+     "tickSize": "0.1"
+    },
+    "riskParameters": {
+     "priceLimitRatioX": "0.005",
+     "priceLimitRatioY": "0.01"
+    },
+    "symbolType": "",
+    "xstockMultiplier": "1"
+   },
+   {
+    "symbolId": 13,
+    "symbol": "ETHBTC",
+    "baseCoin": "ETH",
+    "quoteCoin": "BTC",
+    "innovation": "0",
+    "status": "Trading",
+    "marginTrading": "utaOnly",
+    "stTag": "0",
+    "lotSizeFilter": {
+     "basePrecision": "0.00001",
+     "quotePrecision": "0.00000000001",
+     "minOrderQty": "0.00001",
+     "maxOrderQty": "771",
+     "minOrderAmt": "0.000065",
+     "maxOrderAmt": "10",
+     "maxLimitOrderQty": "771",
+     "maxMarketOrderQty": "257",
+     "postOnlyMaxLimitOrderSize": "3855"
+    },
+    "priceFilter": {
+     "tickSize": "0.000001"
+    },
+    "riskParameters": {
+     "priceLimitRatioX": "0.005",
+     "priceLimitRatioY": "0.01"
+    },
+    "symbolType": "",
+    "xstockMultiplier": "1"
+   },
+   {
+    "symbolId": 383,
+    "symbol": "MCRTUSDT",
+    "baseCoin": "MCRT",
+    "quoteCoin": "USDT",
+    "innovation": "0",
+    "status": "Trading",
+    "marginTrading": "none",
+    "stTag": "0",
+    "lotSizeFilter": {
+     "basePrecision": "0.1",
+     "quotePrecision": "0.000000001",
+     "minOrderQty": "0.1",
+     "maxOrderQty": "89280000",
+     "minOrderAmt": "5",
+     "maxOrderAmt": "10000",
+     "maxLimitOrderQty": "89280000",
+     "maxMarketOrderQty": "29760000",
+     "postOnlyMaxLimitOrderSize": "446400000"
+    },
+    "priceFilter": {
+     "tickSize": "0.00000001"
+    },
+    "riskParameters": {
+     "priceLimitRatioX": "0.1",
+     "priceLimitRatioY": "0.2"
+    },
+    "symbolType": "adventure",
+    "xstockMultiplier": "1"
+   },
+   {
+    "symbolId": 996,
+    "symbol": "NVDAXUSDT",
+    "baseCoin": "NVDAX",
+    "quoteCoin": "USDT",
+    "innovation": "0",
+    "status": "Trading",
+    "marginTrading": "utaOnly",
+    "stTag": "0",
+    "lotSizeFilter": {
+     "basePrecision": "0.001",
+     "quotePrecision": "0.00001",
+     "minOrderQty": "0.001",
+     "maxOrderQty": "1806",
+     "minOrderAmt": "5",
+     "maxOrderAmt": "60000",
+     "maxLimitOrderQty": "1806",
+     "maxMarketOrderQty": "903",
+     "postOnlyMaxLimitOrderSize": "9030"
+    },
+    "priceFilter": {
+     "tickSize": "0.01"
+    },
+    "riskParameters": {
+     "priceLimitRatioX": "0.015",
+     "priceLimitRatioY": "0.03"
+    },
+    "symbolType": "xstocks",
+    "xstockMultiplier": "1.001701196801074"
+   }
+  ]
+ },
+ "retExtInfo": {},
+ "time": 1791751162011
+}

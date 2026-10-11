@@ -1,0 +1,57 @@
+[
+ {
+  "symbol": "BTCUSD_PERP",
+  "pair": "BTCUSD",
+  "markPrice": "83586.23852915",
+  "indexPrice": "83612.54758841",
+  "estimatedSettlePrice": "83591.31098475",
+  "lastFundingRate": "0.00010000",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751174000
+ },
+ {
+  "symbol": "BTCUSD_261225",
+  "pair": "BTCUSD",
+  "markPrice": "84505.60852915",
+  "indexPrice": "83612.54758841",
+  "estimatedSettlePrice": "83591.31098475",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00000000",
+  "nextFundingTime": 0,
+  "time": 1791751174000
+ },
+ {
+  "symbol": "SOLUSD_PERP",
+  "pair": "SOLUSD",
+  "markPrice": "111.16000000",
+  "indexPrice": "111.17386897",
+  "estimatedSettlePrice": "111.10321598",
+  "lastFundingRate": "0.00010000",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751174000
+ },
+ {
+  "symbol": "ETHUSD_270326",
+  "pair": "ETHUSD",
+  "markPrice": "2586.39989362",
+  "indexPrice": "2535.36347747",
+  "estimatedSettlePrice": "2534.17071541",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00000000",
+  "nextFundingTime": 0,
+  "time": 1791751174000
+ },
+ {
+  "symbol": "ETHUSD_PERP",
+  "pair": "ETHUSD",
+  "markPrice": "2534.67000000",
+  "indexPrice": "2535.36347747",
+  "estimatedSettlePrice": "2534.17071541",
+  "lastFundingRate": "0.00010000",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751174000
+ }
+]

@@ -1,0 +1,52 @@
+[
+ {
+  "symbol": "BTCUSD_PERP",
+  "pair": "BTCUSD",
+  "bidPrice": "83584.5",
+  "bidQty": "2234",
+  "askPrice": "83584.6",
+  "askQty": "1821",
+  "time": 1791751172512,
+  "lastUpdateId": 11790360908082
+ },
+ {
+  "symbol": "ETHUSD_PERP",
+  "pair": "ETHUSD",
+  "bidPrice": "2534.66",
+  "bidQty": "2010",
+  "askPrice": "2534.67",
+  "askQty": "11499",
+  "time": 1791751174396,
+  "lastUpdateId": 11790360995553
+ },
+ {
+  "symbol": "SOLUSD_PERP",
+  "pair": "SOLUSD",
+  "bidPrice": "111.150",
+  "bidQty": "594",
+  "askPrice": "111.160",
+  "askQty": "1382",
+  "time": 1791751171065,
+  "lastUpdateId": 11790360831859
+ },
+ {
+  "symbol": "BTCUSD_261225",
+  "pair": "BTCUSD",
+  "bidPrice": "84504.8",
+  "bidQty": "220",
+  "askPrice": "84504.9",
+  "askQty": "331",
+  "time": 1791751174534,
+  "lastUpdateId": 11790361002087
+ },
+ {
+  "symbol": "ETHUSD_270326",
+  "pair": "ETHUSD",
+  "bidPrice": "2586.00",
+  "bidQty": "5",
+  "askPrice": "2586.24",
+  "askQty": "12",
+  "time": 1791751173251,
+  "lastUpdateId": 11790360942928
+ }
+]

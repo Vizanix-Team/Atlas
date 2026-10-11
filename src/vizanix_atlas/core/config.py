@@ -174,6 +174,7 @@ def _build_venue(raw: dict[str, Any], defaults: dict[str, Any]) -> Venue:
         redistributes_raw_observations=bool(raw.get("redistributes_raw_observations", False)),
         attribution=raw.get("attribution"),
         priority=raw.get("priority", "standard"),
+        egress=raw.get("egress", "direct"),
     )
 
 

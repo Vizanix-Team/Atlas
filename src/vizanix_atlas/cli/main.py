@@ -34,6 +34,12 @@ from vizanix_atlas.core.versions import (
 )
 from vizanix_atlas.discovery.collector import CollectionRequest, collect_venue
 from vizanix_atlas.discovery.pipeline import build_generation
+from vizanix_atlas.discovery.relay import (
+    DEFAULT_MAX_AGE_SECONDS,
+    DEFAULT_RELAY_URL,
+    fetch_relay,
+    publish_relay,
+)
 from vizanix_atlas.models.manifest import DailyCompactionReport, GenerationManifest
 from vizanix_atlas.models.observations import CollectionResult
 from vizanix_atlas.publishing.daily import compact_day
@@ -269,6 +275,7 @@ def exchanges(as_json: JsonOption = False) -> None:
             "display_name": v.display_name,
             "enabled": v.enabled,
             "priority": v.priority,
+            "egress": v.egress,
             "disabled_reason": v.disabled_reason,
         }
         for v in registry.venues
@@ -277,13 +284,14 @@ def exchanges(as_json: JsonOption = False) -> None:
         console.print_json(json.dumps(rows))
         return
     table = Table()
-    for column in ("slug", "display_name", "priority", "enabled", "disabled_reason"):
+    for column in ("slug", "display_name", "priority", "egress", "enabled", "disabled_reason"):
         table.add_column(column)
     for row in sorted(rows, key=lambda r: (not r["enabled"], r["slug"])):
         table.add_row(
             str(row["slug"]),
             str(row["display_name"]),
             str(row["priority"]),
+            str(row["egress"]),
             "yes" if row["enabled"] else "no",
             str(row["disabled_reason"] or ""),
         )
@@ -388,6 +396,66 @@ def aggregate(
     console.print(f"venue_count       {generation.venue_count}")
     console.print(f"resolution        {generation.resolution_summary}")
     console.print(f"quarantine        {generation.quarantine_summary}")
+
+
+@app.command(name="relay-publish")
+def relay_publish(
+    input_dir: Annotated[
+        Path, typer.Option("--input", help="Directory `atlas collect` wrote its results into.")
+    ],
+    output: Annotated[Path, typer.Option(help="The directory the web server serves.")],
+    exchange: Annotated[
+        list[str] | None,
+        typer.Option(help="Venue slug to publish. Defaults to every enabled relay venue."),
+    ] = None,
+) -> None:
+    """Validate collected results and publish them for the workflow to pull (relay host)."""
+    registry = load_exchange_registry()
+    slugs = exchange or [v.slug for v in registry.enabled() if v.egress == "relay"]
+    manifest = publish_relay(input_dir, output, venues=slugs)
+    for slug in slugs:
+        entry = manifest.files.get(slug)
+        console.print(
+            f"{slug}: {entry.status if entry else 'NOT PUBLISHED'}"
+            + (f"  sha256={entry.sha256[:12]}  {entry.size_bytes} bytes" if entry else "")
+        )
+    if len(manifest.files) < len(slugs):
+        raise typer.Exit(code=1)
+
+
+@app.command(name="fetch-relay")
+def fetch_relay_command(
+    exchange: Annotated[str, typer.Option(help="The relay venue slug to pull, e.g. bybit.")],
+    output: Annotated[Path, typer.Option(help="Directory to write the collection result into.")],
+    url: Annotated[
+        str, typer.Option(envvar="ATLAS_RELAY_URL", help="The https directory the relay serves.")
+    ] = DEFAULT_RELAY_URL,
+    max_age_seconds: Annotated[
+        int, typer.Option(help="Reject a relay result older than this.")
+    ] = DEFAULT_MAX_AGE_SECONDS,
+) -> None:
+    """Pull one relay venue's result for the collect workflow.
+
+    Always writes a result file: an unusable relay result becomes an explicit ``failed``
+    one, so the aggregation records the gap instead of silently losing the venue.
+    """
+    registry = load_exchange_registry()
+    try:
+        venue = registry.get(exchange)
+        result = asyncio.run(fetch_relay(venue, base_url=url, max_age_seconds=max_age_seconds))
+    except AtlasError as error:
+        raise _fail(error) from error
+
+    output.mkdir(parents=True, exist_ok=True)
+    destination = output / f"{venue.slug}.json"
+    destination.write_text(result.model_dump_json(indent=2), encoding="utf-8")
+    console.print(
+        f"{venue.slug}: {result.health.status}  "
+        f"instruments={result.health.instrument_count}  tickers={result.health.ticker_count}  "
+        f"-> {destination}"
+    )
+    for note in result.health.notes:
+        console.print(f"  note: {note}")
 
 
 def _build_and_publish(input_dir: Path, staging_root: Path, publisher: Publisher) -> None:

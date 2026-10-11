@@ -1,0 +1,122 @@
+[
+ {
+  "symbol": "1000PEPEUSDT",
+  "markPrice": "0.00419810",
+  "indexPrice": "0.00419882",
+  "estimatedSettlePrice": "0.00418948",
+  "lastFundingRate": "0.00010000",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "KAIAUSDT",
+  "markPrice": "0.05203182",
+  "indexPrice": "0.05220108",
+  "estimatedSettlePrice": "0.05213683",
+  "lastFundingRate": "-0.00036579",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791752400000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "ETHUSDT",
+  "markPrice": "2536.84000000",
+  "indexPrice": "2537.83767442",
+  "estimatedSettlePrice": "2536.70964974",
+  "lastFundingRate": "0.00004262",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "AAPLUSDT",
+  "markPrice": "336.81573282",
+  "indexPrice": "336.77703974",
+  "estimatedSettlePrice": "336.75908702",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00000000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168638
+ },
+ {
+  "symbol": "BTCUSDT",
+  "markPrice": "83657.10995652",
+  "indexPrice": "83693.61586957",
+  "estimatedSettlePrice": "83676.30689879",
+  "lastFundingRate": "0.00001986",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "STRKUSDT",
+  "markPrice": "0.11638000",
+  "indexPrice": "0.11640588",
+  "estimatedSettlePrice": "0.11724475",
+  "lastFundingRate": "0.00004796",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "BTCUSDT_261225",
+  "markPrice": "84579.48873913",
+  "indexPrice": "83693.61586957",
+  "estimatedSettlePrice": "83676.30689879",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00000000",
+  "nextFundingTime": 0,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "BTCDOMUSDT",
+  "markPrice": "5379.07041836",
+  "indexPrice": "5374.38603204",
+  "estimatedSettlePrice": "5376.69015530",
+  "lastFundingRate": "0.00010000",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "ETHUSDT_270326",
+  "markPrice": "2588.11603101",
+  "indexPrice": "2537.83767442",
+  "estimatedSettlePrice": "2536.70964974",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00000000",
+  "nextFundingTime": 0,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "XAUUSDT",
+  "markPrice": "4205.29000000",
+  "indexPrice": "4205.38990111",
+  "estimatedSettlePrice": "4205.42216563",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00000000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168638
+ },
+ {
+  "symbol": "BTCUSDC",
+  "markPrice": "83587.32302966",
+  "indexPrice": "83629.58782869",
+  "estimatedSettlePrice": "83602.61008579",
+  "lastFundingRate": "0.00004846",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ },
+ {
+  "symbol": "OMGUSDT",
+  "markPrice": "0.15445273",
+  "indexPrice": "0.15445273",
+  "estimatedSettlePrice": "0.00000000",
+  "lastFundingRate": "0.00000000",
+  "interestRate": "0.00010000",
+  "nextFundingTime": 1791763200000,
+  "time": 1791751168000
+ }
+]

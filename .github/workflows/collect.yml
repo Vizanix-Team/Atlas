@@ -26,6 +26,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       venues: ${{ steps.venues.outputs.venues }}
+      relay_venues: ${{ steps.venues.outputs.relay_venues }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -35,9 +36,14 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: python -m pip install -e .
+      # Direct venues are collected by the runners below. Relay venues refuse the runners'
+      # network (HTTP 403/451 for United States addresses) and are collected from a network
+      # where they answer normally; the `relay` job pulls and validates those results.
       - id: venues
         run: |
-          echo "venues=$(atlas exchanges --json | python -c 'import json,sys; print(json.dumps([r["slug"] for r in json.load(sys.stdin) if r["enabled"]]))')" >> "$GITHUB_OUTPUT"
+          atlas exchanges --json > venues.json
+          echo "venues=$(python -c 'import json; print(json.dumps([r["slug"] for r in json.load(open("venues.json")) if r["enabled"] and r["egress"] == "direct"]))')" >> "$GITHUB_OUTPUT"
+          echo "relay_venues=$(python -c 'import json; print(json.dumps([r["slug"] for r in json.load(open("venues.json")) if r["enabled"] and r["egress"] == "relay"]))')" >> "$GITHUB_OUTPUT"
 
   collect:
     needs: plan
@@ -64,8 +70,36 @@ jobs:
           path: collected/
           retention-days: 2
 
+  relay:
+    needs: plan
+    if: ${{ needs.plan.outputs.relay_venues != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        venue: ${{ fromJSON(needs.plan.outputs.relay_venues) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e .
+      # Always writes a result: a stale or unreachable relay becomes an explicit `failed`
+      # result, so the venue's gap is recorded instead of silently disappearing.
+      - name: Pull ${{ matrix.venue }} from the relay
+        run: atlas fetch-relay --exchange "${{ matrix.venue }}" --output collected
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: collected-${{ matrix.venue }}
+          path: collected/
+          retention-days: 2
+
   aggregate:
-    needs: collect
+    needs: [collect, relay]
     # Aggregate even if some collection jobs died outright; the missing venues are
     # simply absent, and the validity gate decides whether enough remain.
     if: ${{ !cancelled() }}

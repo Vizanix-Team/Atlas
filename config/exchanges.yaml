@@ -556,36 +556,54 @@ exchanges:
   # --------------------------------------------------------------------------
   - id: bybit
     display_name: Bybit
-    enabled: false
+    enabled: true
     priority: core
-    disabled_reason: >-
-      Every Bybit API host (api.bybit.com, api.bytick.com, api.bybit.nl) returned
-      HTTP 403 from a CloudFront edge with the body "The Amazon CloudFront
-      distribution is configured to block access from your country" on 2026-09-27.
-      No live payload could be captured, so no fixture exists and no parser could
-      be written against a verified schema. Writing one from memory would violate
-      the project's rule against inventing response fields. The adapter is a
-      documented stub. To enable it, capture fixtures from an unrestricted network
-      and follow the adapter checklist in CONTRIBUTING.md.
+    egress: relay
     documentation_url: https://bybit-exchange.github.io/docs/v5/intro
+    terms_url: https://www.bybit.com/en/help-center/article/Terms-of-Service
+    terms_reviewed_on: "2026-10-11"
+    redistributes_raw_observations: false
     capabilities:
+      spot: true
+      perpetual: true
+      future: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
       liquidations: unknown_semantics
     rate_limit:
       requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 4
+    notes:
+      # Verified 2026-10-11 against live responses (see adapters/bybit.py).
+      - "Collected from a non-US network: Bybit refuses some jurisdictions at its CDN edge (HTTP 403), including GitHub-hosted runner addresses. See docs/DATA_SOURCES.md."
+      - "One bulk instruments-info and one bulk tickers request per category (spot, linear, inverse) covers the venue; tickers carry mark, index, funding and open interest."
+      - "Tokenised equities, ETFs, commodities and FX contracts (symbolType stock, ETF, commodity, forex, xstocks) are skipped: Atlas is a crypto market-state layer."
+      - "Inverse volume24h is in contracts (1 USD each) and turnover24h in the base coin; linear and spot volume24h is base volume and turnover24h is quote volume."
 
   - id: bitmex
     display_name: BitMEX
     enabled: false
     priority: standard
     disabled_reason: >-
-      Reachable on 2026-09-27, but the instrument catalogue returned from the
-      network used to build this release was not representative of the venue:
-      /api/v1/instrument/active returned 12 unlisted placeholder spot pairs with
-      listing dates in the year 2200, /api/v1/instrument/activeIntervals returned
-      empty arrays, and XBTUSD (the venue's flagship perpetual) was reported with
-      state "Settled". An adapter cannot be validated against a catalogue that
-      does not reflect the venue's real state. Re-capture from an unrestricted
-      network before enabling.
+      BitMEX has closed. Its own announcements (bitmex.com/blog/bitmex-closure and
+      bitmex.com/blog/bitmex-closure-live, dated 2026-09-22 "BitMEX Exchange Now
+      Closed") state that the exchange ceased all trading in September 2026. This
+      was re-checked on 2026-10-11 from an unrestricted European network, so the
+      earlier suspicion of a network artefact is ruled out: /api/v1/instrument/active
+      lists only 12 unlisted placeholder spot pairs dated 2200, every other
+      instrument is Settled (XBTUSD included, expiry 2026-09-16), the order book is
+      empty and the last XBTUSD trade is that settlement. There is no live market,
+      so enabling an adapter would publish nothing true. The venue stays listed so
+      that its absence is explained rather than silent.
     documentation_url: https://www.bitmex.com/app/apiOverview
     capabilities:
       liquidations: unknown_semantics
@@ -594,17 +612,34 @@ exchanges:
 
   - id: binance_derivatives
     display_name: Binance Derivatives
-    enabled: false
+    enabled: true
     priority: core
-    disabled_reason: >-
-      fapi.binance.com (USD-M) and dapi.binance.com (COIN-M) both returned HTTP
-      451 on 2026-09-27 with the venue's jurisdiction-restriction message. Unlike
-      Binance spot, these hosts have no market-data-only mirror, so no fixture
-      could be captured. Binance is one of the largest derivative venues, so its
-      absence materially reduces Atlas's funding and open-interest coverage; this
-      is stated in docs/LIMITATIONS.md rather than hidden.
+    egress: relay
     documentation_url: https://developers.binance.com/docs/derivatives
+    terms_url: https://www.binance.com/en/terms
+    terms_reviewed_on: "2026-10-11"
+    redistributes_raw_observations: false
     capabilities:
+      perpetual: true
+      future: true
+      bulk_tickers: true
+      bulk_instruments: true
+      top_of_book_in_bulk: true
+      quote_volume_in_bulk: true
+      orderbook: true
+      funding: true
+      open_interest: true
+      index_price: true
+      mark_price: true
+      server_time: true
       liquidations: unknown_semantics
     rate_limit:
       requests_per_second: 4.0
+      burst: 4
+      max_concurrency: 4
+    notes:
+      # Verified 2026-10-11 against live responses (see adapters/binance_derivatives.py).
+      - "Collected from a non-US network: fapi.binance.com and dapi.binance.com answer HTTP 451 to United States addresses, including GitHub-hosted runners, and have no market-data-only mirror. See docs/DATA_SOURCES.md."
+      - "USD-M (linear, base-unit quantities) and COIN-M (inverse, contractSize USD per contract) share one slug; mark, index and funding come from one premiumIndex request per product."
+      - "Binance publishes open interest only per symbol, so Atlas samples the highest-volume contracts (15 USD-M, 10 COIN-M); other contracts carry mark, index and funding with open interest left empty, never zero."
+      - "TRADIFI_PERPETUAL contracts (equities, commodities, FX) are skipped: Atlas is a crypto market-state layer."

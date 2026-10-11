@@ -1,0 +1,99 @@
+{
+ "retCode": 0,
+ "retMsg": "OK",
+ "result": {
+  "category": "spot",
+  "list": [
+   {
+    "symbol": "BTCUSDT",
+    "bid1Price": "83698.9",
+    "bid1Size": "1.488756",
+    "ask1Price": "83699",
+    "ask1Size": "0.599506",
+    "lastPrice": "83699",
+    "prevPrice24h": "83064.1",
+    "price24hPcnt": "0.0076",
+    "highPrice24h": "84198.6",
+    "lowPrice24h": "82792.8",
+    "turnover24h": "290806178.12362849",
+    "volume24h": "3489.155977",
+    "usdIndexPrice": "83612.245642"
+   },
+   {
+    "symbol": "ETHUSDT",
+    "bid1Price": "2538.05",
+    "bid1Size": "5.74177",
+    "ask1Price": "2538.06",
+    "ask1Size": "10.12141",
+    "lastPrice": "2538.05",
+    "prevPrice24h": "2507.74",
+    "price24hPcnt": "0.0121",
+    "highPrice24h": "2555.21",
+    "lowPrice24h": "2497.66",
+    "turnover24h": "115632156.8130967",
+    "volume24h": "45895.36305",
+    "usdIndexPrice": "2535.390869"
+   },
+   {
+    "symbol": "BTCUSD",
+    "bid1Price": "83551.8",
+    "bid1Size": "0.0001",
+    "ask1Price": "83685.4",
+    "ask1Size": "0.0001",
+    "lastPrice": "83520.2",
+    "prevPrice24h": "82964.3",
+    "price24hPcnt": "0.0067",
+    "highPrice24h": "84064.8",
+    "lowPrice24h": "82795.3",
+    "turnover24h": "143047.4670115",
+    "volume24h": "1.724151"
+   },
+   {
+    "symbol": "ETHBTC",
+    "bid1Price": "0.03032",
+    "bid1Size": "0.0961",
+    "ask1Price": "0.030323",
+    "ask1Size": "0.02797",
+    "lastPrice": "0.030309",
+    "prevPrice24h": "0.030202",
+    "price24hPcnt": "0.0035",
+    "highPrice24h": "0.030412",
+    "lowPrice24h": "0.030091",
+    "turnover24h": "10.93175851789",
+    "volume24h": "360.97013"
+   },
+   {
+    "symbol": "MCRTUSDT",
+    "bid1Price": "0.00010609",
+    "bid1Size": "858069.6",
+    "ask1Price": "0.00010713",
+    "ask1Size": "849739.6",
+    "lastPrice": "0.0001065",
+    "prevPrice24h": "0.00011195",
+    "price24hPcnt": "-0.0487",
+    "highPrice24h": "0.00011327",
+    "lowPrice24h": "0.00009961",
+    "turnover24h": "26584.055228451",
+    "volume24h": "242207532.5",
+    "usdIndexPrice": "0.000106696"
+   },
+   {
+    "symbol": "NVDAXUSDT",
+    "bid1Price": "231.83",
+    "bid1Size": "10.851",
+    "ask1Price": "231.89",
+    "ask1Size": "1.659",
+    "lastPrice": "231.95",
+    "prevPrice24h": "230.94",
+    "price24hPcnt": "0.0044",
+    "highPrice24h": "232.02",
+    "lowPrice24h": "230.72",
+    "turnover24h": "9447.79053",
+    "volume24h": "40.897",
+    "usdIndexPrice": "231.700104"
+   }
+  ]
+ },
+ "retExtInfo": {},
+ "time": 1791751163150
+}

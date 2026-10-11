@@ -7,6 +7,8 @@ test-covered fact about a venue's public API, not an aspiration.
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import Field, field_validator
 
 from vizanix_atlas.models.base import AtlasModel
@@ -138,6 +140,17 @@ class Venue(AtlasModel):
     )
     priority: str = Field(
         default="standard", description="Collection priority band: core, standard or extended."
+    )
+    egress: Literal["direct", "relay"] = Field(
+        default="direct",
+        description=(
+            "Where the venue is collected from. ``direct`` venues are collected by the "
+            "scheduled workflow's own runners. ``relay`` venues refuse those runners' "
+            "network (for example HTTP 403 or 451 for United States addresses) and are "
+            "collected from a network where they answer normally; the workflow then pulls "
+            "the validated result (see ``docs/RELAY.md``). The venue is never reached "
+            "through a proxy or any other way of disguising where Atlas runs."
+        ),
     )
 
     @field_validator("disabled_reason")
