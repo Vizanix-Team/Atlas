@@ -19,6 +19,7 @@ from vizanix_atlas.core.errors import PublicationFailure
 from vizanix_atlas.publishing.publisher import DATA_LATEST_TAG, GitHubReleasePublisher
 
 OWNER, REPO = "vizanix", "atlas"
+STORAGE_HOST = "objects.githubusercontent.test"
 
 
 class FakeGitHub:
@@ -113,12 +114,27 @@ class FakeGitHub:
             release["assets"].append(asset)
             return httpx.Response(201, json={k: v for k, v in asset.items() if k != "_content"})
 
-        if method == "GET" and "/releases/assets/" in path:
+        if method == "GET" and request.url.host == STORAGE_HOST:
+            # The signed storage URL the API redirects to. Real storage hosts reject a
+            # GitHub bearer token, so receiving one here would be a leak.
+            assert "authorization" not in request.headers
             asset_id = int(path.rsplit("/", 1)[-1])
             for release in self.releases.values():
                 for asset in release["assets"]:
                     if asset["id"] == asset_id:
                         return httpx.Response(200, content=asset["_content"])
+            return httpx.Response(404)
+
+        if method == "GET" and "/releases/assets/" in path:
+            # Real GitHub answers the octet-stream asset request with a 302 to a
+            # signed storage URL, never with the bytes themselves.
+            asset_id = int(path.rsplit("/", 1)[-1])
+            for release in self.releases.values():
+                for asset in release["assets"]:
+                    if asset["id"] == asset_id:
+                        return httpx.Response(
+                            302, headers={"Location": f"https://{STORAGE_HOST}/asset/{asset_id}"}
+                        )
             return httpx.Response(404, json={"message": "Not Found"})
 
         return httpx.Response(404, json={"message": f"no fake route for {method} {path}"})
@@ -255,6 +271,38 @@ async def test_list_generation_ids_filters_to_data_releases(
 
     ids = await publisher.list_generation_ids()
     assert set(ids) == {"gen1", "gen2"}
+
+
+async def test_reading_an_asset_follows_the_redirect_without_leaking_the_token(
+    fake_github: FakeGitHub, tmp_path
+) -> None:
+    """Asset downloads are answered with a 302 to signed storage, not with bytes.
+
+    The bearer token must reach the API host but not the storage host it redirects to.
+    This is the failure that stopped the scheduled collect workflow: a client that did
+    not follow the redirect saw status 302 and treated it as a failed download.
+    """
+    seen: list[tuple[str, str | None]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append((request.url.host, request.headers.get("authorization")))
+        return fake_github.handle(request)
+
+    client = httpx.AsyncClient(
+        transport=httpx.MockTransport(handler),
+        base_url="https://api.github.com",
+        headers={"Authorization": "Bearer secret"},
+    )
+    publisher = GitHubReleasePublisher(owner=OWNER, repo=REPO, token="secret", client=client)
+    local = tmp_path / "manifest.json"
+    local.write_text('{"ok": true}', encoding="utf-8")
+    await publisher.upload_generation_file("gen1", "manifest.json", local)
+
+    content = await publisher._read_asset("atlas-data-gen1", "manifest.json")
+
+    assert json.loads(content) == {"ok": True}
+    storage_calls = [auth for host, auth in seen if host == STORAGE_HOST]
+    assert storage_calls == [None], "the storage host must be reached once, without the token"
 
 
 async def test_an_unexpected_status_raises_a_publication_failure(tmp_path) -> None:

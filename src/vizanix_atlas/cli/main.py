@@ -37,7 +37,7 @@ from vizanix_atlas.discovery.pipeline import build_generation
 from vizanix_atlas.models.manifest import DailyCompactionReport, GenerationManifest
 from vizanix_atlas.models.observations import CollectionResult
 from vizanix_atlas.publishing.daily import compact_day
-from vizanix_atlas.publishing.publish import publish_generation
+from vizanix_atlas.publishing.publish import PublishOutcome, publish_generation
 from vizanix_atlas.publishing.publisher import (
     FilesystemPublisher,
     GitHubReleasePublisher,
@@ -407,17 +407,27 @@ def _build_and_publish(input_dir: Path, staging_root: Path, publisher: Publisher
 
     staging_dir = staging_root / generation.generation_id
     built = build_dataset_files(generation, staging_dir, config=config)
-    outcome = asyncio.run(
-        publish_generation(
-            generation,
-            dataset_dir=staging_dir,
-            written_files=list(built.written_files),
-            publisher=publisher,
-            config=config,
-            release_tag=f"atlas-data-{generation.generation_id}",
-            shard_indices=built.shard_indices,
-        )
-    )
+
+    async def publish() -> PublishOutcome:
+        # The publisher's HTTP clients are bound to this event loop, so they must be
+        # closed here: a later asyncio.run() would see a closed loop and raise
+        # "Event loop is closed", hiding the real publication error.
+        try:
+            return await publish_generation(
+                generation,
+                dataset_dir=staging_dir,
+                written_files=list(built.written_files),
+                publisher=publisher,
+                config=config,
+                release_tag=f"atlas-data-{generation.generation_id}",
+                shard_indices=built.shard_indices,
+            )
+        finally:
+            close = getattr(publisher, "aclose", None)
+            if close is not None:
+                await close()
+
+    outcome = asyncio.run(publish())
     if not outcome.published:
         error_console.print(f"[bold red]not published:[/bold red] {outcome.reason}")
         raise typer.Exit(code=1)
@@ -461,10 +471,7 @@ def publish_github(
     """Build a generation and publish it to GitHub Releases (used by the collect workflow)."""
     owner, _, repo = repository.partition("/")
     publisher = GitHubReleasePublisher(owner=owner, repo=repo, token=token)
-    try:
-        _build_and_publish(input_dir, staging, publisher)
-    finally:
-        asyncio.run(publisher.aclose())
+    _build_and_publish(input_dir, staging, publisher)
 
 
 @app.command(name="compact-day")

@@ -336,8 +336,13 @@ class GitHubReleasePublisher:
         assets = {a["name"]: a["url"] for a in response.json().get("assets", [])}
         if filename not in assets:
             return None
+        # The asset endpoint answers 302 with a signed storage URL. httpx drops the
+        # Authorization header when a redirect crosses origins, so the token is not
+        # forwarded to the storage host.
         download = await self._api.get(
-            assets[filename], headers={"Accept": "application/octet-stream"}
+            assets[filename],
+            headers={"Accept": "application/octet-stream"},
+            follow_redirects=True,
         )
         if download.status_code != 200:
             raise PublicationFailure(
