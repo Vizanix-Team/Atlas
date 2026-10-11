@@ -18,7 +18,7 @@ btc.raw()                     # every published field for the asset
 
 Exchanges provide events. Atlas provides market state.
 
-[![CI](https://github.com/Vizanix/Atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/Vizanix/Atlas/actions/workflows/ci.yml)
+[![CI](https://github.com/Vizanix-Team/Atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/Vizanix-Team/Atlas/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue.svg)](LICENSE)
 ![Status: alpha](https://img.shields.io/badge/status-0.x%20alpha-orange)
 
@@ -56,7 +56,7 @@ Windowed metrics start empty and warm up as snapshots accumulate. Atlas never fa
 ## Install
 
 ```bash
-git clone https://github.com/Vizanix/Atlas && cd Atlas
+git clone https://github.com/Vizanix-Team/Atlas && cd Atlas
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 atlas --help

@@ -5,7 +5,7 @@ Thank you for helping. Atlas values correctness, explainability and honesty abou
 ## Setup
 
 ```bash
-git clone https://github.com/Vizanix/Atlas && cd Atlas
+git clone https://github.com/Vizanix-Team/Atlas && cd Atlas
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 ruff check src tests && ruff format --check src tests

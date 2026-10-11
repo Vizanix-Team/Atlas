@@ -1,4 +1,4 @@
-export const REPO = "https://github.com/Vizanix/Atlas";
+export const REPO = "https://github.com/Vizanix-Team/Atlas";
 export const DOCS = `${REPO}/blob/main/docs`;
 export function safeHttpUrl(url: string | null | undefined): string | null {
   if (!url) return null;

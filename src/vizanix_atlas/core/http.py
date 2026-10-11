@@ -52,7 +52,7 @@ _log = get_logger(__name__)
 #: Identifies Atlas to venues. A venue that wants to contact or throttle Atlas
 #: specifically can do so; Atlas never imitates a browser to defeat a control.
 USER_AGENT: Final = (
-    "VizanixAtlas/0.1.0 (+https://github.com/Vizanix/Atlas; open-source market-data collector)"
+    "VizanixAtlas/0.1.0 (+https://github.com/Vizanix-Team/Atlas; open-source market-data collector)"
 )
 
 #: Statuses venues use for jurisdiction refusals. Separated from generic HTTP

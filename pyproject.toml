@@ -69,11 +69,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Vizanix/Atlas"
-Documentation = "https://github.com/Vizanix/Atlas/tree/main/docs"
-Source = "https://github.com/Vizanix/Atlas"
-Issues = "https://github.com/Vizanix/Atlas/issues"
-Changelog = "https://github.com/Vizanix/Atlas/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/Vizanix-Team/Atlas"
+Documentation = "https://github.com/Vizanix-Team/Atlas/tree/main/docs"
+Source = "https://github.com/Vizanix-Team/Atlas"
+Issues = "https://github.com/Vizanix-Team/Atlas/issues"
+Changelog = "https://github.com/Vizanix-Team/Atlas/blob/main/CHANGELOG.md"
 
 [project.scripts]
 atlas = "vizanix_atlas.cli.main:app"
