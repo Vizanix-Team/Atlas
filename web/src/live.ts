@@ -258,6 +258,11 @@ export function liveBoard(limit = 10): HTMLElement {
           : "The live feed is unavailable right now; the tables below are the last scheduled snapshot.";
   };
   draw();
+  // The first data should appear at once, not after the next timer tick.
+  const firstData = live.subscribe(() => {
+    firstData();
+    draw();
+  });
   // Rows are rebuilt about once a second (ordering and the venue/dispersion columns change
   // slowly); the price cells themselves update on every tick.
   const timer = window.setInterval(() => {
