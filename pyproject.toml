@@ -60,7 +60,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# The live layer holds long-lived WebSocket connections to venues. Reading datasets, running
+# the batch pipeline and watching a live service (`atlas live`) need nothing beyond the
+# core dependencies; only *running* `atlas stream serve` needs this.
+stream = ["websockets>=13,<16"]
 dev = [
+  "websockets>=13,<16",
   "pytest>=8.2",
   "pytest-asyncio>=0.23",
   "pytest-cov>=5.0",
@@ -132,6 +137,8 @@ ignore = [
 "tests/**" = ["D100", "D101", "D102", "D103", "D104", "ANN", "B011"]
 "examples/**" = ["D100", "D103", "T201", "ANN"]
 "scripts/**" = ["D100", "D103", "ANN"]
+# Feed subclasses override the abstract subscribe/parse documented once on the base class.
+"src/vizanix_atlas/stream/feeds.py" = ["D102"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "parents"
@@ -145,7 +152,7 @@ files = ["src", "tests", "scripts"]
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["duckdb.*", "zstandard.*"]
+module = ["duckdb.*", "zstandard.*", "websockets.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

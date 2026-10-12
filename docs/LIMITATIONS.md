@@ -2,9 +2,13 @@
 
 Atlas earns trust by saying plainly what it cannot do. Read this before relying on any number.
 
-## It is not real time
+## Datasets are not real time
 
-Snapshots are scheduled every 15 minutes at best. GitHub Actions can delay or drop scheduled runs (especially at busy times, and inactive repositories can have scheduled workflows disabled). Delays change the effective slot; drops become recorded gaps. Do not use Atlas for execution, latency-sensitive decisions, or anything where minutes matter.
+Snapshots are scheduled every 15 minutes at best. GitHub Actions can delay or drop scheduled runs (especially at busy times, and inactive repositories can have scheduled workflows disabled). Delays change the effective slot; drops become recorded gaps. In the first production days after the publication fix, scheduled collects came 3 to 7 hours apart. Do not use Atlas datasets for execution, latency-sensitive decisions, or anything where minutes matter.
+
+## The live layer is current, not exact
+
+The [live layer](STREAMING.md) streams a reference price per asset from public venue WebSockets, so it is as fresh as the venues' own updates plus network and aggregation latency. It is a moving estimate: nothing is stored, nothing is reproducible, there is no SLA, and it covers the 150 most liquid assets of the latest generation on eight venues. It is not an execution price and not a substitute for a venue's own feed. An asset the dataset leaves venue-scoped (identity is conservative) has no live price. Per-venue detail explains how each venue entered the price but does not redistribute the venue's own quote.
 
 ## Public data only
 

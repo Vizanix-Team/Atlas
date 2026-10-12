@@ -1,5 +1,6 @@
 import "./style.css";
 import { buildShell } from "./shell";
+import { live } from "./live";
 import { home } from "./pages/home";
 import { assets } from "./pages/assets";
 import { asset } from "./pages/asset";
@@ -9,6 +10,7 @@ import { exchanges } from "./pages/exchanges";
 import { about, dataset, methodology } from "./pages/static";
 
 const shell = buildShell();
+live.start();
 
 async function route(): Promise<void> {
   const hash = location.hash.replace(/^#/, "") || "/";

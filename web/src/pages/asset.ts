@@ -4,6 +4,7 @@ import { barChart } from "../charts";
 import { bps, num, pct, price, signedPct, usd } from "../format";
 import { dataTable } from "../table";
 import { DOCS } from "../links";
+import { liveStrip } from "../live";
 import { errorBox, fixtureBanner, pageHead } from "./common";
 
 type State = Record<string, unknown>;
@@ -36,11 +37,12 @@ export async function asset(main: HTMLElement, file: string): Promise<void> {
       pageHead(`${symbol}${s["name"] ? ` · ${String(s["name"])}` : ""}`, "One asset, decomposed by venue. The reference price is a robust cross-venue estimate, not a single exchange's last trade."),
       fixtureBanner(overview) ?? "",
       h("p", { class: "muted small" }, `Identity: ${String(s["resolution_state"])} · ${String(s["asset_id"])}`),
+      liveStrip(String(s["asset_id"] ?? ""), n(s, "reference_price__value")),
       h(
         "div",
         { class: "price-line" },
         h("span", { class: "big" }, price(n(s, "reference_price__value"))),
-        h("span", { class: "muted" }, ` reference price · method ${String(s["reference_price__method"] ?? "n/a")} · ${included.length} venues included, ${excluded.length} excluded`),
+        h("span", { class: "muted" }, ` snapshot reference price · method ${String(s["reference_price__method"] ?? "n/a")} · ${included.length} venues included, ${excluded.length} excluded`),
       ),
       h(
         "div",

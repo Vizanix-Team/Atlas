@@ -1,6 +1,7 @@
 import { h } from "../dom";
 import { loadAssets, loadOverview, type AssetRow } from "../data";
 import { bps, price, usd } from "../format";
+import { live, liveCell } from "../live";
 import { dataTable } from "../table";
 import { errorBox, fixtureBanner, pageHead } from "./common";
 
@@ -13,7 +14,22 @@ export function assetColumns() {
       render: (r: AssetRow) =>
         r.file ? h("a", { href: `#/asset/${encodeURIComponent(r.file)}` }, r.symbol, r.name ? h("span", { class: "muted" }, ` ${r.name}`) : null) : h("span", {}, r.symbol, r.name ? h("span", { class: "muted" }, ` ${r.name}`) : null),
     },
-    { key: "price", label: "Reference price", align: "right" as const, sort: (r: AssetRow) => r.price, render: (r: AssetRow) => price(r.price) },
+    {
+      key: "live",
+      label: "Live price",
+      align: "right" as const,
+      title: "Streamed reference price, updated between scheduled snapshots",
+      sort: (r: AssetRow) => live.records.get(r.id)?.price ?? null,
+      render: (r: AssetRow) => liveCell(r.id),
+    },
+    {
+      key: "price",
+      label: "Snapshot price",
+      align: "right" as const,
+      title: "Reference price in the latest published generation",
+      sort: (r: AssetRow) => r.price,
+      render: (r: AssetRow) => price(r.price),
+    },
     { key: "venues", label: "Venues", align: "right" as const, sort: (r: AssetRow) => r.venues, render: (r: AssetRow) => String(r.venues) },
     { key: "volume", label: "Reported 24h volume", align: "right" as const, sort: (r: AssetRow) => r.volume_usd, render: (r: AssetRow) => usd(r.volume_usd) },
     { key: "disp", label: "Dispersion", align: "right" as const, secondary: true, sort: (r: AssetRow) => r.dispersion_bps, render: (r: AssetRow) => bps(r.dispersion_bps) },

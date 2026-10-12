@@ -1,0 +1,296 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t d">
+  <title id="t">Atlas live layer</title><desc id="d">Venue WebSocket feeds merged into a continuously updated reference price served over SSE.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1020"/><stop offset="1" stop-color="#101B33"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF"/><stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <linearGradient id="spoke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#243455" opacity="0.55"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8FA0B8"/>
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+            orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="arrow-violet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7"
+            markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+<rect width="1280" height="640" fill="url(#dots)" opacity="0.35"/>
+<text x="64.0" y="62.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="800" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Between snapshots: the live layer</text>
+<text x="64.0" y="88.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Venue WebSockets in, one reference price per asset out, sub-second. It is a moving view, not a dataset.</text>
+<text x="64.0" y="136.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#8FA0B8" text-anchor="start" opacity="1.0" >9 public WebSocket feeds</text>
+<rect x="64.0" y="152.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="84" cy="170" r="5" fill="#2DD4BF"/>
+<text x="98.0" y="175.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Binance · spot</text>
+<rect x="260.0" y="152.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="280" cy="170" r="5" fill="#2DD4BF"/>
+<text x="294.0" y="175.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bybit · spot</text>
+<rect x="64.0" y="198.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#A78BFA" stroke-width="1.0"/>
+<circle cx="84" cy="216" r="5" fill="#A78BFA"/>
+<text x="98.0" y="221.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bybit · perps</text>
+<rect x="260.0" y="198.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="280" cy="216" r="5" fill="#2DD4BF"/>
+<text x="294.0" y="221.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >OKX · spot</text>
+<rect x="64.0" y="244.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="84" cy="262" r="5" fill="#2DD4BF"/>
+<text x="98.0" y="267.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Coinbase · spot</text>
+<rect x="260.0" y="244.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="280" cy="262" r="5" fill="#2DD4BF"/>
+<text x="294.0" y="267.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Gate.io · spot</text>
+<rect x="64.0" y="290.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="84" cy="308" r="5" fill="#2DD4BF"/>
+<text x="98.0" y="313.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Bitget · spot</text>
+<rect x="260.0" y="290.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#2DD4BF" stroke-width="1.0"/>
+<circle cx="280" cy="308" r="5" fill="#2DD4BF"/>
+<text x="294.0" y="313.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Crypto.com · spot</text>
+<rect x="64.0" y="336.0" width="184.0" height="36.0" rx="18" fill="#101B33" opacity="1.0" stroke="#A78BFA" stroke-width="1.0"/>
+<circle cx="84" cy="354" r="5" fill="#A78BFA"/>
+<text x="98.0" y="359.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Deribit · perps</text>
+<path d="M460 250 L520 250" fill="none" stroke="#2DD4BF" stroke-width="2" marker-end="url(#arrow-teal)"/>
+<rect x="520.0" y="136.0" width="400.0" height="230.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="520.0" y="136.0" width="6" height="230.0" rx="3" fill="#2DD4BF"/>
+<text x="542.0" y="168.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Live book</text>
+<text x="542.0" y="194.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Merge partial updates per instrument</text>
+<text x="542.0" y="215.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >USD through observed stablecoin rates</text>
+<text x="542.0" y="236.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Weighted median, capped venue weights</text>
+<text x="542.0" y="257.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Reject outliers against the live centre</text>
+<text x="542.0" y="278.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Expire quiet quotes, drop dead feeds</text>
+<text x="542.0" y="299.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >Funding, mark and basis from perpetuals</text>
+<path d="M920 250 L980 250" fill="none" stroke="#60A5FA" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="980.0" y="136.0" width="236.0" height="230.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="980.0" y="136.0" width="6" height="230.0" rx="3" fill="#60A5FA"/>
+<text x="1002.0" y="168.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >HTTP + SSE</text>
+<text x="1002.0" y="194.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >/v1/stream</text>
+<text x="1002.0" y="215.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >/v1/live</text>
+<text x="1002.0" y="236.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >/v1/live/{SYMBOL}</text>
+<text x="1002.0" y="257.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >/v1/health</text>
+<text x="1002.0" y="278.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" ></text>
+<text x="1002.0" y="299.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="400" fill="#8FA0B8" text-anchor="start" opacity="1.0" >vizanix.tech/atlas-stream</text>
+<text x="64.0" y="420.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#8FA0B8" text-anchor="start" opacity="1.0" >What a consumer sees over one hour</text>
+<rect x="64.0" y="436.0" width="1152.0" height="70.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="84.0" y="464.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#E6EDF3" text-anchor="start" opacity="1.0" >Dataset</text>
+<text x="84.0" y="490.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#2DD4BF" text-anchor="start" opacity="1.0" >Live</text>
+<rect x="190" y="452" width="10" height="18" rx="3" fill="#60A5FA"/>
+<rect x="435" y="452" width="10" height="18" rx="3" fill="#60A5FA"/>
+<rect x="680" y="452" width="10" height="18" rx="3" fill="#60A5FA"/>
+<rect x="925" y="452" width="10" height="18" rx="3" fill="#60A5FA"/>
+<rect x="1170" y="452" width="10" height="18" rx="3" fill="#60A5FA"/>
+<text x="1216.0" y="420.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="400" fill="#8FA0B8" text-anchor="end" opacity="1.0" >dataset: scheduled generations, best effort</text>
+<rect x="190.0" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="195.2" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="200.4" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="205.6" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="210.8" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="216.0" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="221.2" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="226.4" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="231.6" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="236.8" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="242.0" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="247.2" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="252.4" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="257.6" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="262.8" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="268.0" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="273.2" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="278.4" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="283.6" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="288.8" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="294.0" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="299.2" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="304.4" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="309.6" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="314.8" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="320.0" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="325.2" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="330.4" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="335.6" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="340.8" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="346.0" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="351.2" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="356.4" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="361.6" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="366.8" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="372.0" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="377.2" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="382.4" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="387.6" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="392.8" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="398.0" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="403.2" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="408.4" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="413.6" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="418.8" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="424.0" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="429.2" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="434.4" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="439.6" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="444.8" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="450.0" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="455.2" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="460.4" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="465.6" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="470.8" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="476.0" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="481.2" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="486.4" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="491.6" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="496.8" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="502.0" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="507.2" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="512.4" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="517.6" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="522.8" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="528.0" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="533.2" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="538.4" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="543.6" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="548.8" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="554.0" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="559.2" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="564.4" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="569.6" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="574.8" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="580.0" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="585.2" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="590.4" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="595.6" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="600.8" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="606.0" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="611.2" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="616.4" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="621.6" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="626.8" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="632.0" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="637.2" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="642.4" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="647.6" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="652.8" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="658.0" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="663.2" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="668.4" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="673.6" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="678.8" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="684.0" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="689.2" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="694.4" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="699.6" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="704.8" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="710.0" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="715.2" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="720.4" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="725.6" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="730.8" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="736.0" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="741.2" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="746.4" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="751.6" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="756.8" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="762.0" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="767.2" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="772.4" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="777.6" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="782.8" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="788.0" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="793.2" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="798.4" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="803.6" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="808.8" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="814.0" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="819.2" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="824.4" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="829.6" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="834.8" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="840.0" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="845.2" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="850.4" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="855.6" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="860.8" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="866.0" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="871.2" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="876.4" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="881.6" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="886.8" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="892.0" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="897.2" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="902.4" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="907.6" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="912.8" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="918.0" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="923.2" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="928.4" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="933.6" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="938.8" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="944.0" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="949.2" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="954.4" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="959.6" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="964.8" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="970.0" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="975.2" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="980.4" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="985.6" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="990.8" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="996.0" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1001.2" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1006.4" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1011.6" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1016.8" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1022.0" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1027.2" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1032.4" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1037.6" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1042.8" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1048.0" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1053.2" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1058.4" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1063.6" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1068.8" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1074.0" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1079.2" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1084.4" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1089.6" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1094.8" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1100.0" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1105.2" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1110.4" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1115.6" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1120.8" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1126.0" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1131.2" y="491" width="2" height="7" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1136.4" y="490" width="2" height="8" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1141.6" y="489" width="2" height="9" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1146.8" y="488" width="2" height="10" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1152.0" y="487" width="2" height="11" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1157.2" y="486" width="2" height="12" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1162.4" y="485" width="2" height="13" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1167.6" y="484" width="2" height="14" fill="#2DD4BF" opacity="0.85"/>
+<rect x="1172.8" y="492" width="2" height="6" fill="#2DD4BF" opacity="0.85"/>
+<path d="M640 366 L640 420" fill="none" stroke="#8FA0B8" stroke-width="2" stroke-dasharray="4 5" marker-end="url(#arrow)"/>
+<rect x="64.0" y="546.0" width="1152.0" height="58.0" rx="14" fill="#131F3A" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<rect x="88.0" y="560.0" width="313.0" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="244.5" y="580.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >website: Live pill and price column</text>
+<rect x="415.0" y="560.0" width="173.6" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="501.8" y="580.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >atlas live BTC ETH</text>
+<rect x="602.6" y="560.0" width="198.2" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="701.7" y="580.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >LiveClient().stream()</text>
+<rect x="814.8" y="560.0" width="239.2" height="30.0" rx="15" fill="#101B33" opacity="1.0" stroke="#243455" stroke-width="1.0"/>
+<text x="934.4" y="580.0" font-family="Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13.5" font-weight="600" fill="#E6EDF3" text-anchor="middle" opacity="1.0" >EventSource in any browser</text>
+</svg>

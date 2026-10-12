@@ -13,6 +13,49 @@ A fresh repository has no data releases and scheduled workflows do not run until
 
 Repository topics to set: `cryptocurrency`, `market-data`, `quantitative-finance`, `algorithmic-trading`, `order-book`, `crypto-data`, `market-microstructure`, `derivatives`, `python`, `parquet`, `duckdb`, `polars`, `github-actions`, `open-data`.
 
+## The live layer service
+
+The live layer ([STREAMING](STREAMING.md)) is a long-running process, not a workflow. The project's own instance runs next to the relay, as its own unprivileged user, from `systemd`:
+
+```ini
+[Service]
+User=atlas
+Environment=ATLAS_CACHE_DIR=/opt/atlas-stream/cache
+ExecStart=/opt/atlas-stream/venv/bin/atlas stream serve --host 127.0.0.1 --port 8787
+Restart=always
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/atlas-stream/cache
+MemoryMax=1G
+```
+
+A second unit and timer run a health check every minute: it restarts the service after two consecutive failures to answer `/v1/health` or after it reports `"status": "down"` (every feed dropped or no asset priced). `Restart=always` covers crashes; the check covers a process that is alive but not serving.
+
+Reading it:
+
+| Signal | Meaning |
+|---|---|
+| `status: ok` | Every configured feed is connected and assets are priced |
+| `status: degraded` | At least one feed is down, or the last universe refresh failed (the previous universe keeps serving) |
+| `status: down` | No feed connected, or no asset has a live price |
+| a feed's `parse_failures` rising | That venue changed its message format |
+| a feed's `refused_by_venue: true` | The venue refuses this network (403, 429, 451) |
+
+After a code change: install the new wheel into the service's virtual environment and `systemctl restart atlas-stream`. The universe is reloaded from the newest generation every 30 minutes without a restart.
+
+## Keeping the schedule honest (optional dispatcher)
+
+GitHub throttles `schedule:` triggers on low-traffic repositories, so Collect may run every few hours instead of every 15 minutes. A `workflow_dispatch` is not throttled. A tiny timer on any always-on host can fire Collect on time:
+
+```bash
+curl -fsS -X POST \
+  -H "Authorization: Bearer $ATLAS_DISPATCH_TOKEN" -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/<owner>/<repo>/actions/workflows/collect.yml/dispatches \
+  -d '{"ref":"main"}'
+```
+
+The token should be a fine-grained personal access token for this one repository with only **Actions: read and write**: it can start workflows and nothing else (it cannot read secrets or write contents). Keep it in a root-only environment file. The workflow's own concurrency group stops an overlapping run from stacking up. The live layer does not need this; it exists for the dataset's cadence.
+
 ## Working state between runs
 
 Besides generations, the `data-latest` release holds small auxiliary assets, all written after a generation is published and none of them allowed to fail a run:

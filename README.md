@@ -13,7 +13,7 @@
 
 **One reproducible market-state object per asset, across 18 venues, with coverage, quality and provenance shown next to every number.**
 
-[Quick start](#quick-start) · [Venue coverage](#venue-coverage) · [How it works](#how-it-works) · [Query language](#market-query-language) · [Status](#what-works-today) · [Docs](#documentation)
+[Quick start](#quick-start) · [Live prices](#live-prices) · [Venue coverage](#venue-coverage) · [How it works](#how-it-works) · [Query language](#market-query-language) · [Status](#what-works-today) · [Docs](#documentation)
 
 </div>
 
@@ -46,6 +46,7 @@ btc.raw()                                # every published field for the asset
 | **Explainable numbers** | Every venue row shows its price, weight, deviation and, if excluded, the reason. |
 | **Reproducible and verifiable** | Sharded Parquet, a manifest with per-file SHA-256, a validity gate, and last-known-good publication. Nothing is back-filled or interpolated. |
 | **Market Query Language** | A small, safe language that runs locally over the downloaded Parquet. No server, no API key. |
+| **Live prices** | A streaming layer holds venue WebSockets and serves one continuously updated reference price per asset over SSE, so the numbers are current between scheduled snapshots. `atlas live BTC ETH`. |
 | **GitHub-native** | Collection, aggregation, publication and the website run on GitHub Actions, Releases and Pages. |
 
 ## Install
@@ -54,7 +55,7 @@ btc.raw()                                # every published field for the asset
 pip install vizanix-atlas
 ```
 
-This installs the `atlas` command (also available as `vizanix-atlas`) and the `vizanix_atlas` package. Python 3.11 or newer, no Docker, no credentials.
+This installs the `atlas` command (also available as `vizanix-atlas`) and the `vizanix_atlas` package. Python 3.11 or newer, no Docker, no credentials. To *run* a live service of your own (watching one needs nothing extra), add the extra: `pip install "vizanix-atlas[stream]"`.
 
 > The name `atlas` on PyPI belongs to an unrelated project, which is why the package is `vizanix-atlas`. Until the first PyPI release is published, install straight from the repository: `pip install "git+https://github.com/Vizanix-Team/Atlas"`.
 
@@ -116,6 +117,26 @@ BTC  Bitcoin
   is_partial          True
 ```
 
+## Live prices
+
+<img src="docs/assets/live.svg" alt="Venue WebSockets merged by the live book and served over HTTP and SSE" width="100%">
+
+Dataset generations are reproducible but arrive in slots, and GitHub's scheduler gives no guarantee about them. The live layer holds public WebSocket connections to nine venue feeds and keeps one **reference price per asset** current to the second, with the same robust method as the dataset (weighted median, capped weights, outlier rejection) and an honest rule for staleness: a quote nobody has updated stops counting, and an asset with no usable quote has no live price.
+
+```bash
+atlas live BTC ETH SOL       # a table that updates as prices move
+```
+
+```python
+from vizanix_atlas.sdk.live import LiveClient
+
+live = LiveClient()                         # the project's own instance, or $ATLAS_LIVE_URL
+live.price("BTC")                           # one-shot reference price in USD
+for update in live.stream(["BTC", "ETH"]):  # Server-Sent Events, reconnects on its own
+    print(update["symbol"], update["price"], update["venues"], update["dispersion_bps"])
+```
+
+The website's **Live** indicator, price column and home page board use the same stream. It is a moving view, not a dataset: nothing is stored, it is not for execution, and it does not republish venue data (per-venue detail shows how each venue entered the price, not the venue's own quote). Details and failure behaviour: [STREAMING](docs/STREAMING.md). Run your own with `pip install "vizanix-atlas[stream]"` and `atlas stream serve`.
 ## Venue coverage
 
 <img src="docs/assets/coverage.svg" alt="Which markets, order books and derivative data each of the 18 venues provides, and who collects it" width="100%">
@@ -163,7 +184,7 @@ Only metrics with data behind them are selectable ([MQL reference](docs/MQL.md))
 
 ## CLI
 
-`status` · `asset` · `search` · `market` · `query` · `exchanges` · `methodology` · `verify` · `collect` · `aggregate` · `build-dataset` · `publish-github` · `fetch-relay` · `relay-publish` · `compact-day` · `housekeeping` · `export-web`
+`status` · `asset` · `search` · `market` · `query` · `live` · `stream serve` · `exchanges` · `methodology` · `verify` · `collect` · `aggregate` · `build-dataset` · `publish-github` · `fetch-relay` · `relay-publish` · `compact-day` · `housekeeping` · `export-web`
 
 Every read command accepts `--source` (a local path or generation ID) and most accept `--json`.
 
@@ -179,11 +200,12 @@ Every read command accepts `--source` (a local path or generation ID) and most a
 | Reference price, dispersion, reported volume, funding (8 h-normalised), open interest, basis | Working, where venues supply inputs |
 | Sharded Parquet dataset, manifest, checksums, validity gate, last-known-good publication | Working |
 | Python SDK with lazy, checksum-verified downloads; `atlas` CLI; MQL | Working |
-| Static website: assets, market, scanner, exchanges, methodology, dataset | Working |
+| Live layer: nine venue WebSocket feeds, one live reference price per asset, SSE and JSON API, `atlas live`, `LiveClient` | Working in production (`vizanix.tech/atlas-stream`) |
+| Static website: assets, market, scanner, exchanges, methodology, dataset, live prices | Working |
 | Order-book liquidity: depth bands, impact estimates (tier B) | Wired into the scheduled runs; the first books appear one generation after the first publish |
 | History store and the windowed metrics that read it | Wired; accumulates from the first publish. Each metric appears once its minimum observations exist (for example 24 h volatility after 48 snapshots, the 30-day funding percentile after 720) |
 | Market Genome, similarity search | Needs 28 days of history; empty until then, by design |
-| Scheduled workflows: collect, daily compaction, housekeeping, Pages, CodeQL | Written and tested; first runs on the new organisation pending |
+| Scheduled workflows: collect, daily compaction, housekeeping, Pages, CodeQL | Running: the scheduled Collect, Pages, daily compaction and maintenance runs of 2026-10-12 all succeeded and published generations. GitHub spaces scheduled runs hours apart on a quiet repository; see the live layer and the optional [dispatcher](docs/OPERATIONS.md) |
 | Option surfaces, skew and term structure | Not yet |
 | DEXs | Not supported |
 
@@ -191,14 +213,14 @@ Roadmap and the reasons behind each gap: [ROADMAP](docs/ROADMAP.md) · [LIMITATI
 
 ## Data freshness and honesty
 
-- Snapshots are **scheduled (every 15 minutes, best effort), not real time**. GitHub can delay or drop scheduled runs; delays and gaps are recorded, never filled.
+- Dataset snapshots are **scheduled (every 15 minutes at best), not real time**. GitHub can delay or drop scheduled runs, and on a quiet repository often does; delays and gaps are recorded, never filled. The [live layer](docs/STREAMING.md) is the current view between them: continuous, but a moving estimate with no history and no SLA, not a dataset and not for execution.
 - Volume is **reported by venues** and not independently verified.
 - Public endpoints only. No private data, no accounts, no API keys. Atlas never uses a proxy or any other trick to reach a venue that has refused its network; relay venues are collected from a network where they answer normally, and that is stated everywhere it matters.
 - Read [limitations](docs/LIMITATIONS.md) before relying on any number.
 
 ## Documentation
 
-[Architecture](docs/ARCHITECTURE.md) · [Specification](docs/SPECIFICATION.md) · [Methodology](docs/METHODOLOGY.md) · [Metric dictionary](docs/METRICS.md) · [Market state](docs/MARKET_STATE.md) · [MQL](docs/MQL.md) · [Data model](docs/DATA_MODEL.md) · [Asset resolution](docs/ASSET_RESOLUTION.md) · [Quality](docs/QUALITY.md) · [Exchange adapters](docs/EXCHANGE_ADAPTERS.md) · [Data sources](docs/DATA_SOURCES.md) · [Relay](docs/RELAY.md) · [Data policy](docs/DATA_POLICY.md) · [Operations](docs/OPERATIONS.md) · [Releasing](docs/RELEASING.md) · [Benchmarks](docs/BENCHMARKS.md) · [Roadmap](docs/ROADMAP.md) · [Limitations](docs/LIMITATIONS.md)
+[Architecture](docs/ARCHITECTURE.md) · [Specification](docs/SPECIFICATION.md) · [Methodology](docs/METHODOLOGY.md) · [Metric dictionary](docs/METRICS.md) · [Market state](docs/MARKET_STATE.md) · [MQL](docs/MQL.md) · [Data model](docs/DATA_MODEL.md) · [Asset resolution](docs/ASSET_RESOLUTION.md) · [Quality](docs/QUALITY.md) · [Exchange adapters](docs/EXCHANGE_ADAPTERS.md) · [Data sources](docs/DATA_SOURCES.md) · [Relay](docs/RELAY.md) · [Streaming](docs/STREAMING.md) · [Data policy](docs/DATA_POLICY.md) · [Operations](docs/OPERATIONS.md) · [Releasing](docs/RELEASING.md) · [Benchmarks](docs/BENCHMARKS.md) · [Roadmap](docs/ROADMAP.md) · [Limitations](docs/LIMITATIONS.md)
 
 ## Contributing and security
 

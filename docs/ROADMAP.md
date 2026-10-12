@@ -7,7 +7,8 @@ Public adapters for 18 venues (16 collected by CI runners, Bybit and Binance der
 
 ## Phase 2 — Global market state *(built, expanding)*
 Reference price, dispersion, reported volume, funding/OI/basis, fragmentation, sharded Parquet publication with a validity gate, SDK, CLI, MQL, static website.
-Next: run the scheduled workflows and measure GitHub-hosted runner behaviour; widen asset pooling (more contract-address and curated evidence); per-venue redistribution gating once terms are reviewed.
+The scheduled workflows run in production. GitHub spaces scheduled runs hours apart on a quiet repository, which is why the [live layer](STREAMING.md) exists (nine venue WebSocket feeds, a continuously updated reference price over SSE) and why an optional dispatcher is documented in [OPERATIONS](OPERATIONS.md).
+Next: widen asset pooling (the dataset resolves about 1,150 assets firmly and about 600 probably; more contract-address and curated evidence is the largest single lever on coverage); per-venue redistribution gating once terms are reviewed; more live feeds (Kraken once its base symbols resolve, KuCoin, MEXC, HTX), live liquidity from order-book streams, and an opt-in history for the live layer.
 
 ## Phase 3 — Liquidity and advanced derivatives *(tier B built; surfaces not)*
 Order-book depth bands and impact estimates are collected as tier B: after each published generation a deterministic plan names the liquid markets to snapshot, and every collector fetches those books in the same pass as its tier A data. Still to do: the liquidity *surface*; a `derivative_observations` table; option surface, term structure and skew from Deribit/OKX data; liquidation feeds where semantics are compatible.
@@ -23,10 +24,10 @@ AMM pools are not forced into order-book semantics; options get their own capabi
 
 ## Housekeeping items
 - `redistributes_raw_observations` enforcement and a legal review of venue terms.
-- A second relay host, so that a single relay outage does not remove Bybit and Binance derivatives from a generation.
+- A second relay host, so that a single relay outage does not remove Bybit and Binance derivatives from a generation (and a second live-layer instance behind it).
 - Per-contract open interest for Binance in bulk, if the venue ever publishes it.
 - Golden-schema compatibility test that compares against the previous released schema (today CI checks that generated schemas match the committed ones).
 - In-browser MQL (DuckDB-WASM) is optional and not planned before the Python implementation is settled.
 
 ## Non-goals
-Not an exchange emulator, backtesting engine, execution engine, paper-trading system, trading bot, brokerage, wallet, portfolio manager, or advice product; no private endpoints, accounts, or API-key management; no token, NFT or blockchain component; no Vizanix-hosted backend.
+Not an exchange emulator, backtesting engine, execution engine, paper-trading system, trading bot, brokerage, wallet, portfolio manager, or advice product; no private endpoints, accounts, or API-key management; no token, NFT or blockchain component. Nothing requires a hosted backend: datasets, the SDK and the website work from GitHub alone. The relay and the live layer are optional services that the project runs and that anyone can run.

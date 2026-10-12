@@ -8,6 +8,10 @@ The **code** is Apache-2.0. That license says nothing about **data**. Venue-deri
 
 Atlas does not publish raw ticks, raw order books, or raw API responses. It publishes derived, aggregated state: per-asset market state, and a per-venue summary row per asset (a representative price, reported 24h volume, funding, open interest, and how the venue entered the reference price). The per-venue rows are the most sensitive part: they are venue-derived observations at 15-minute granularity.
 
+### The live layer
+
+The [live layer](STREAMING.md) holds public WebSocket connections and serves **derived** state only: a reference price per asset, the number of venues behind it, dispersion, and the share of the move since the last generation. Its per-asset detail explains how each venue entered the price (weight, deviation from the reference, quote source, age, exclusion reason) but never passes on a venue's own price, volume or mark price, which would be real-time redistribution of that venue's market data. Perpetuals contribute funding (normalised to 8 hours), open interest and basis. Nothing from a venue's stream is stored.
+
 ## Current status: not cleared
 
 `config/exchanges.yaml` sets `redistributes_raw_observations: false` for every venue, the conservative default, and records terms URLs. **No legal review of any venue's terms has been done**, and the published per-venue summary rows may go beyond what some venues' terms allow. Until a maintainer reviews each venue, treat the published dataset as **for research use, with no data license granted by this project**, and do not redistribute it commercially. If you are a venue and object to the use of your public data, open an issue and it will be removed.

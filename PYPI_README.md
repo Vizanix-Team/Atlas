@@ -35,10 +35,27 @@ atlas market --top 15
 atlas query "SELECT asset, venue_count FROM market ORDER BY venue_count DESC LIMIT 10"
 ```
 
+## Live prices
+
+```bash
+atlas live BTC ETH SOL
+```
+
+```python
+from vizanix_atlas.sdk.live import LiveClient
+
+live = LiveClient()                         # the project's instance, or $ATLAS_LIVE_URL
+live.price("BTC")                           # reference price in USD, current to the second
+for update in live.stream(["BTC", "ETH"]):  # Server-Sent Events, reconnects on its own
+    print(update["symbol"], update["price"], update["venues"])
+```
+
+Run your own with `pip install "vizanix-atlas[stream]"` and `atlas stream serve`.
+
 ## What it is, and is not
 
 - **Public data only.** No accounts, no API keys, no private endpoints.
-- **Scheduled, not real time.** Snapshots are best effort every 15 minutes; gaps are recorded, never filled.
+- **Datasets are scheduled; the live layer is not.** Generations are best effort every 15 minutes at most and gaps are recorded, never filled. The live layer streams a current reference price between them. It is a moving estimate, not a dataset, and not for execution.
 - **Reported volume is not verified volume.** It is labelled as reported everywhere.
 - **Conservative identity.** Two tokens sharing a ticker stay apart unless evidence says they are one.
 - **Not investment advice.**

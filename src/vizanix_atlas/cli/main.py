@@ -665,6 +665,116 @@ def export_web(
     console.print(f"exported {len(sizes)} files, {sum(sizes.values()) / 1024:.0f} KiB -> {output}")
 
 
+stream_app = typer.Typer(help="The live layer: streaming prices from venue WebSockets.")
+app.add_typer(stream_app, name="stream")
+
+
+@stream_app.command("serve")
+def stream_serve(
+    host: Annotated[str | None, typer.Option(help="Interface to bind. Defaults to config.")] = None,
+    port: Annotated[int | None, typer.Option(help="Port to bind. Defaults to config.")] = None,
+    assets: Annotated[
+        int | None, typer.Option(help="How many of the most liquid assets to follow.")
+    ] = None,
+) -> None:
+    """Run the live service: venue WebSocket feeds in, an HTTP + SSE API out."""
+    import logging
+
+    from vizanix_atlas.stream.config import load_stream_config
+    from vizanix_atlas.stream.server import LiveServer
+    from vizanix_atlas.stream.service import LiveService, default_universe_loader
+
+    try:
+        import websockets  # noqa: F401
+    except ImportError as error:
+        error_console.print(
+            "[bold red]error:[/bold red] the live service needs the stream extra: "
+            "pip install 'vizanix-atlas[stream]'"
+        )
+        raise typer.Exit(code=1) from error
+
+    config = load_stream_config()
+    if assets is not None:
+        config = config.model_copy(
+            update={"universe": config.universe.model_copy(update={"assets": assets})}
+        )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+    # Release downloads redirect to short-lived signed URLs; they do not belong in a log.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+
+    async def run() -> None:
+        service = LiveService(config=config, loader=default_universe_loader(config))
+        server = LiveServer(service, config.server)
+        await service.start()
+        bound = await server.start(host=host, port=port)
+        console.print(
+            f"live service on {host or config.server.host}:{bound} "
+            f"({len(service.book.universe.assets)} assets, {len(service.runners)} feeds)"
+        )
+        try:
+            await asyncio.Event().wait()
+        finally:
+            await server.close()
+            await service.stop()
+
+    try:
+        asyncio.run(run())
+    except KeyboardInterrupt:
+        console.print("stopped")
+    except AtlasError as error:
+        raise _fail(error) from error
+
+
+@app.command()
+def live(
+    symbols: Annotated[
+        list[str] | None, typer.Argument(help="Symbols to follow, for example BTC ETH SOL.")
+    ] = None,
+    url: Annotated[
+        str | None, typer.Option(envvar="ATLAS_LIVE_URL", help="Base URL of a live service.")
+    ] = None,
+    as_json: JsonOption = False,
+) -> None:
+    """Watch live reference prices as they change (needs a reachable live service)."""
+    from rich.live import Live
+
+    from vizanix_atlas.sdk.live import LiveClient
+
+    client = LiveClient(url)
+    wanted = [s.upper() for s in symbols] if symbols else None
+    state: dict[str, dict[str, object]] = {}
+
+    def render() -> Table:
+        table = Table(title="Atlas live", expand=False)
+        for column in ("Asset", "Price (USD)", "Venues", "Dispersion", "vs generation"):
+            table.add_column(column, justify="left" if column == "Asset" else "right")
+        for record in sorted(state.values(), key=lambda r: -(r.get("volume_24h_usd") or 0)):  # type: ignore[operator]
+            dispersion = record.get("dispersion_bps")
+            drift = record.get("vs_generation_bps")
+            table.add_row(
+                str(record["symbol"]),
+                f"{record['price']:,.6g}",
+                str(record["venues"]),
+                "-" if dispersion is None else f"{dispersion:.1f} bps",
+                "-" if drift is None else f"{drift:+.1f} bps",
+            )
+        return table
+
+    try:
+        if as_json:
+            for record in client.stream(wanted):
+                console.print_json(json.dumps(record))
+            return
+        with Live(render(), console=console, refresh_per_second=4) as display:
+            for record in client.stream(wanted):
+                state[str(record["asset_id"])] = record
+                display.update(render())
+    except KeyboardInterrupt:
+        return
+    except AtlasError as error:
+        raise _fail(error) from error
+
+
 def _read_collection_results(input_dir: Path) -> list[CollectionResult]:
     return [
         CollectionResult.model_validate_json(path.read_text(encoding="utf-8"))

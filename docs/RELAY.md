@@ -25,6 +25,8 @@ systemd timer, every 15 min (:02 :17 :32 :47)
 
 The relay holds no GitHub credential and the workflow holds no credential for the relay: the files are public, read-only market data.
 
+The relay is batch collection for the dataset. The same host also runs the [live layer](STREAMING.md), which is separate: it streams venue WebSockets and serves them continuously, and it never feeds a generation.
+
 ## What `fetch-relay` checks
 
 | Check | Why |

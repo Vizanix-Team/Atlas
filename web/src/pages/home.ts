@@ -3,6 +3,7 @@ import { loadOverview, type TopEntry } from "../data";
 import { bps, num, usd } from "../format";
 import { dataTable } from "../table";
 import { DOCS } from "../links";
+import { liveBoard } from "../live";
 import { errorBox, fixtureBanner, freshness, kpi } from "./common";
 
 function topTable(caption: string, entries: TopEntry[], fmt: (v: number) => string, valueLabel: string): HTMLElement {
@@ -25,7 +26,7 @@ export async function home(main: HTMLElement): Promise<void> {
     h("p", { class: "lede" }, "Exchanges provide events. Atlas provides market state. Atlas turns fragmented public exchange observations into a reproducible, cross-venue market state, with coverage, quality and provenance shown next to every number."),
     h("p", {}, h("a", { class: "button", href: "#/assets" }, "Explore assets"), " ", h("a", { class: "button ghost", href: `${DOCS}/METHODOLOGY.md` }, "Read the methodology")),
   );
-  main.replaceChildren(hero);
+  main.replaceChildren(hero, liveBoard());
   try {
     const o = await loadOverview();
     main.append(

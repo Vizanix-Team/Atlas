@@ -1,0 +1,65 @@
+# The live layer (`atlas stream serve`): venue WebSocket feeds merged into a continuously
+# updated reference price. See docs/STREAMING.md.
+#
+# This is deliberately separate from the dataset pipeline. The dataset is versioned and
+# reproducible; the live layer is a moving view with no history of its own.
+schema_version: "1"
+
+universe:
+  # The live layer covers the most liquid resolved assets of the latest published
+  # generation. Subscribing to every market of every venue would multiply connections
+  # without making the reference price better for assets that trade almost nowhere.
+  assets: 150
+  # An asset needs at least this many venues in the generation to be streamed, so that
+  # a live price is always a cross-venue price.
+  min_venue_count: 2
+  # Follow `probable` identities as well as `resolved` ones. The dataset already pools a
+  # probable asset across venues (several venues agree on its name and ticker), so the live
+  # layer is consistent with it by following the same identity; every live record states which
+  # kind it is, and the outlier rule plus the dispersion figure expose a mismatched ticker.
+  include_probable: true
+  # The universe (and the stablecoin rates) are rebuilt from the newest generation this
+  # often. A change in the symbol set reconnects only the feeds it affects.
+  refresh_seconds: 1800
+
+reference:
+  # A venue's last quote stops counting after this long without an update. Feeds that
+  # push only on change (trades, book moves) stay valid while the connection is healthy,
+  # so this bounds how long a quiet market's last quote is trusted.
+  stale_after_seconds: 300
+  # A venue is excluded for the current instant when its price sits further than this
+  # from the provisional robust centre. Tighter than the dataset's bound: a live view has
+  # no second chance to be corrected before someone reads it.
+  max_deviation_bps: 300
+  # Outlier rejection needs a majority to define "the market".
+  min_venues_for_rejection: 3
+  # A venue whose connection dropped is kept for this long before it stops counting.
+  disconnect_grace_seconds: 20
+
+emit:
+  # An asset is announced at most this often, however fast the venues tick.
+  interval_ms: 500
+  # Prices only move the announcement when they differ by at least this many bps from
+  # the last announced value, or when this much time passed (a heartbeat of state).
+  min_change_bps: 0.0
+  heartbeat_seconds: 10
+
+server:
+  host: 127.0.0.1
+  port: 8787
+  max_clients: 400
+  keepalive_seconds: 15
+  cors_origin: "*"
+
+# Feeds to run. Each is one venue and one instrument class on that venue's public
+# WebSocket endpoint; no credentials are used.
+feeds:
+  - binance
+  - bybit_spot
+  - bybit_linear
+  - okx
+  - coinbase
+  - gateio
+  - bitget
+  - cryptocom
+  - deribit

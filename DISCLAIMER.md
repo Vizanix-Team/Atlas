@@ -3,7 +3,7 @@
 Vizanix Atlas is a research and infrastructure tool. It is **not investment advice**, a recommendation, an offer, or a solicitation, and nothing it publishes should be read as a signal to buy, sell or hold anything.
 
 - **Exchange data can be wrong.** Atlas reads public endpoints and validates what it can, but venues publish errors, stale quotes, mislabelled units and unreliable volume. A value that passes Atlas's checks is not thereby correct.
-- **Data is delayed.** Snapshots are scheduled (every 15 minutes at best) and GitHub can delay or skip scheduled runs. Atlas is not real time and must not be used for execution or latency-sensitive decisions.
+- **Data is delayed or estimated.** Dataset snapshots are scheduled (every 15 minutes at best) and GitHub can delay or skip scheduled runs. The live layer streams a current estimate with no history, no uptime guarantee and network latency. Neither is for execution or latency-sensitive decisions.
 - **No guarantee of completeness.** Venues, assets and instruments can be missing, unresolved or ambiguous, and the dataset can be partial. Coverage is reported in the data itself; read it.
 - **Derived metrics are methodological estimates.** Reference prices, dispersion, basis, funding normalisation and any liquidity estimate depend on documented but debatable choices ([methodology](docs/METHODOLOGY.md)). "Observable order-book impact" is not slippage: fees, latency, hidden liquidity and market response are not modelled.
 - **Reported volume is not verified volume.** Atlas does not detect wash trading.

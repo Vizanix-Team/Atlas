@@ -68,6 +68,9 @@ jobs:
           "$PY" -m vizanix_atlas.cli.main --help > /dev/null
           "$PY" -c "import vizanix_atlas; from vizanix_atlas import Atlas; print(vizanix_atlas.__version__)"
           "$PY" -m vizanix_atlas.cli.main exchanges --json | "$PY" -c "import json,sys; v=json.load(sys.stdin); assert len(v) >= 19, len(v); print(len(v), 'venues')"
+          # The live layer must import and find its bundled config without the optional extra.
+          "$PY" -c "from vizanix_atlas.stream.config import load_stream_config; from vizanix_atlas.stream.feeds import FEEDS; c = load_stream_config(); assert set(c.feeds) <= set(FEEDS); print(len(c.feeds), 'live feeds')"
+          "$PY" -c "from vizanix_atlas.sdk.live import LiveClient; print(LiveClient().base_url)"
 
   github-release:
     needs: [build, smoke]

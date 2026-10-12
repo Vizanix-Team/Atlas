@@ -585,6 +585,145 @@ def snapshot_chart() -> str:
     )
 
 
+# ---------------------------------------------------------------------- live layer
+
+
+_FEED_LABELS = {
+    "binance": "Binance",
+    "bybit": "Bybit",
+    "okx": "OKX",
+    "coinbase": "Coinbase",
+    "gateio": "Gate.io",
+    "bitget": "Bitget",
+    "cryptocom": "Crypto.com",
+    "deribit": "Deribit",
+}
+
+
+def live_layer() -> str:
+    """The streaming layer: venue WebSockets in, a continuously updated price out."""
+    from vizanix_atlas.stream.config import load_stream_config
+    from vizanix_atlas.stream.feeds import FEEDS
+
+    config = load_stream_config()
+    feeds = [FEEDS[name] for name in config.feeds]
+    w, h = 1280, 640
+    p = [f'<rect width="{w}" height="{h}" fill="url(#dots)" opacity="0.35"/>']
+    p.append(t(64, 62, "Between snapshots: the live layer", size=26, weight=800))
+    p.append(
+        t(
+            64,
+            88,
+            "Venue WebSockets in, one reference price per asset out, sub-second. "
+            "It is a moving view, not a dataset.",
+            size=15,
+            fill=MUTED,
+        )
+    )
+
+    # Feed chips: spot feeds in teal, derivative feeds in violet.
+    p.append(t(64, 136, f"{len(feeds)} public WebSocket feeds", size=14, weight=700, fill=MUTED))
+    for index, feed in enumerate(feeds):
+        col, row = index % 2, index // 2
+        x, y = 64 + col * 196, 152 + row * 46
+        derivative = feed.instrument_class != "spot"
+        accent = VIOLET if derivative else TEAL
+        label = _FEED_LABELS.get(feed.venue, feed.venue)
+        kind = {"spot": "spot", "linear-perp": "perps", "inverse-perp": "perps"}[
+            feed.instrument_class
+        ]
+        p.append(rect(x, y, 184, 36, r=18, fill=BG1, stroke=accent))
+        p.append(f'<circle cx="{x + 20}" cy="{y + 18}" r="5" fill="{accent}"/>')
+        p.append(t(x + 34, y + 23, f"{label} · {kind}", size=13.5, weight=600))
+    p.append(arrow(460, 250, 520, 250, colour=TEAL, marker="arrow-teal"))
+
+    p.append(
+        box(
+            520,
+            136,
+            400,
+            230,
+            "Live book",
+            [
+                "Merge partial updates per instrument",
+                "USD through observed stablecoin rates",
+                "Weighted median, capped venue weights",
+                "Reject outliers against the live centre",
+                "Expire quiet quotes, drop dead feeds",
+                "Funding, mark and basis from perpetuals",
+            ],
+            accent=TEAL,
+        )
+    )
+    p.append(arrow(920, 250, 980, 250, colour=BLUE, marker="arrow"))
+    p.append(
+        box(
+            980,
+            136,
+            236,
+            230,
+            "HTTP + SSE",
+            [
+                "/v1/stream",
+                "/v1/live",
+                "/v1/live/{SYMBOL}",
+                "/v1/health",
+                "",
+                "vizanix.tech/atlas-stream",
+            ],
+            accent=BLUE,
+        )
+    )
+
+    # Timeline: scheduled snapshots against the stream.
+    p.append(t(64, 420, "What a consumer sees over one hour", size=14, weight=700, fill=MUTED))
+    p.append(rect(64, 436, 1152, 70, r=14, fill=CARD, stroke=LINE))
+    p.append(t(84, 464, "Dataset", size=13, weight=700))
+    p.append(t(84, 490, "Live", size=13, weight=700, fill=TEAL))
+    for k in range(5):
+        x = 190 + k * 245
+        p.append(f'<rect x="{x}" y="452" width="10" height="18" rx="3" fill="{BLUE}"/>')
+    p.append(
+        t(
+            1216,
+            420,
+            "dataset: scheduled generations, best effort",
+            size=12,
+            fill=MUTED,
+            anchor="end",
+        )
+    )
+    for k in range(190):
+        x = 190 + k * 5.2
+        height = 6 + (k * 37) % 9
+        p.append(
+            f'<rect x="{x:.1f}" y="{498 - height}" width="2" height="{height}" fill="{TEAL}" '
+            f'opacity="0.85"/>'
+        )
+
+    p.append(arrow(640, 366, 640, 420, colour=MUTED, dash="4 5"))
+    p.append(rect(64, 546, 1152, 58, r=14, fill=CARD, stroke=LINE))
+    consumers = [
+        "website: Live pill and price column",
+        "atlas live BTC ETH",
+        "LiveClient().stream()",
+        "EventSource in any browser",
+    ]
+    x = 88
+    for name in consumers:
+        width = 26 + 8.2 * len(name)
+        p.append(rect(x, 560, width, 30, r=15, fill=BG1, stroke=LINE))
+        p.append(t(x + width / 2, 580, name, size=13.5, weight=600, anchor="middle"))
+        x += width + 14
+    return svg(
+        w,
+        h,
+        "\n".join(p),
+        title="Atlas live layer",
+        desc="Venue WebSocket feeds merged into a continuously updated reference price served over SSE.",
+    )
+
+
 # -------------------------------------------------------------------------- main
 
 
@@ -593,6 +732,7 @@ def render() -> dict[str, str]:
     return {
         "hero.svg": hero(venues),
         "architecture.svg": architecture(venues),
+        "live.svg": live_layer(),
         "coverage.svg": coverage(venues),
         "btc-snapshot.svg": snapshot_chart(),
     }

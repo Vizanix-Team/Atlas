@@ -1,4 +1,5 @@
 import { h } from "./dom";
+import { livePill } from "./live";
 
 export interface Route { path: string; label: string }
 
@@ -48,6 +49,7 @@ export function buildShell(): { main: HTMLElement; setActive: (path: string) => 
       { class: "inner" },
       h("a", { class: "brand", href: "#/" }, h("span", { class: "mark", "aria-hidden": "true" }), "Vizanix Atlas"),
       h("nav", { "aria-label": "Primary" }, ...links),
+      livePill(),
       themeBtn,
     ),
   );
@@ -58,7 +60,7 @@ export function buildShell(): { main: HTMLElement; setActive: (path: string) => 
     h(
       "div",
       { class: "inner" },
-      h("p", {}, "Vizanix Atlas is a research and infrastructure project, not investment advice. Venue data is reported by the venues, may contain errors, and is sampled on a schedule (not real time)."),
+      h("p", {}, "Vizanix Atlas is a research and infrastructure project, not investment advice. Venue data is reported by the venues and may contain errors. The tables are scheduled snapshots; the Live price streams from venue WebSockets between them and is not part of any published dataset."),
       h("p", {}, "Maintained by Vizanix. Code: Apache-2.0. Data terms: see the Dataset and Exchanges pages."),
     ),
   );
